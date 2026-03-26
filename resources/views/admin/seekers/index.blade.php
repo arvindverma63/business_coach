@@ -39,11 +39,23 @@
                             <form id="importSeekerForm" enctype="multipart/form-data">
                                 @csrf
                                 <div class="mb-3">
-                                    <label class="form-label">Choose Excel File</label>
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <label class="form-label mb-0">Choose Excel File</label>
+                                        <a href="{{ route('download.seeker.sample') }}"
+                                            class="btn btn-outline-success btn-sm d-flex align-items-center gap-1">
+                                            <iconify-icon icon="tabler:download" class="fs-16"></iconify-icon>
+                                            Download Sample
+                                        </a>
+                                    </div>
+
                                     <input type="file" name="file" class="form-control" required
                                         accept=".xlsx,.xls,.csv">
-                                    <small class="text-muted">Columns: name, email, company_name, business_domain, city,
-                                        state</small>
+
+                                    <div class="mt-2 p-2 bg-light rounded border">
+                                        <small class="text-muted fw-medium d-block mb-1">Required Columns:</small>
+                                        <code class="small text-dark">name, email, company_name, business_domain, city,
+                                            state</code>
+                                    </div>
                                 </div>
 
                                 <div class="progress d-none mb-3" id="progressBarContainer" style="height: 20px;">
@@ -54,10 +66,10 @@
 
                                 <div id="importStatus" class="mt-2"></div>
 
-                                <div class="text-end">
+                                <div class="text-end border-top pt-3">
                                     <button type="button" class="btn btn-secondary"
                                         data-bs-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-primary" id="btnUpload">Upload</button>
+                                    <button type="submit" class="btn btn-primary px-4" id="btnUpload">Upload</button>
                                 </div>
                             </form>
                         </div>

@@ -107,9 +107,24 @@
                                 <div class="mb-3">
                                     <label class="form-label fw-bold">Current Cover</label>
                                     <div class="border rounded p-1 text-center bg-light">
-                                        <img src="{{ asset($blog->featured_image ?? 'assets/images/placeholder-img.png') }}"
-                                            id="blog-preview" class="img-fluid rounded mb-2"
-                                            style="max-height: 120px; width: 100%; object-fit: cover;">
+                                        @php
+                                            // Determine the current image path
+                                            $currentImage = asset('assets/images/placeholder-img.png');
+
+                                            if (
+                                                $blog->featured_image &&
+                                                Illuminate\Support\Facades\Storage::disk('public')->exists(
+                                                    $blog->featured_image,
+                                                )
+                                            ) {
+                                                $currentImage = asset('storage/' . $blog->featured_image);
+                                            }
+                                        @endphp
+
+                                        <img src="{{ $currentImage }}" id="blog-preview" class="img-fluid rounded mb-2"
+                                            style="max-height: 120px; width: 100%; object-fit: cover;"
+                                            onerror="this.src='{{ asset('assets/images/placeholder-img.png') }}'">
+
                                         <input type="file" name="featured_image" class="form-control form-control-sm"
                                             onchange="previewBlogImg(this)">
                                     </div>

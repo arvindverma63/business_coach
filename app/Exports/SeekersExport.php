@@ -18,7 +18,6 @@ class SeekersExport implements FromCollection, WithHeadings, WithMapping
     public function headings(): array
     {
         return [
-            'ID',
             'Name',
             'Email',
             'Phone',
@@ -26,7 +25,6 @@ class SeekersExport implements FromCollection, WithHeadings, WithMapping
             'Domain',
             'City',
             'State',
-            'Verified',
             'Joined Date',
         ];
     }
@@ -34,7 +32,6 @@ class SeekersExport implements FromCollection, WithHeadings, WithMapping
     public function map($seeker): array
     {
         return [
-            $seeker->id,
             $seeker->user->name ?? 'N/A',
             $seeker->user->email ?? 'N/A',
             $seeker->user->phone ?? 'N/A',
@@ -42,7 +39,6 @@ class SeekersExport implements FromCollection, WithHeadings, WithMapping
             $seeker->business_domain,
             $seeker->city,
             $seeker->state,
-            $seeker->is_verified ? 'Yes' : 'No',
             $seeker->created_at->format('d M Y'),
         ];
     }

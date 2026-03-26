@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\BodyPartController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CoachController;
+use App\Http\Controllers\Admin\ContactController;
 use App\Http\Controllers\Admin\EquipmentController;
 use App\Http\Controllers\Admin\ExerciseController;
 use App\Http\Controllers\Admin\PageController;
@@ -25,17 +26,19 @@ use Illuminate\Support\Facades\Artisan;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\DB;
 
+use App\Http\Controllers\Admin\NewsletterController;
 
-Route::get('/sitemap-generate',function(){
+
+Route::get('/sitemap-generate', function () {
     Artisan::call('sitemap:generate');
 });
 
 
-Route::get('setup-notification',function(){
+Route::get('setup-notification', function () {
     Artisan::call('notifications:table');
 });
 
-Route::get('/export',function(){
+Route::get('/export', function () {
     Artisan::call('make:import SeekersImport --model=SeekerProfile');
 });
 
@@ -49,7 +52,26 @@ Route::get('/migrate', function () {
     return 'Migration executed successfully';
 });
 
-Route::middleware('auth','role:0,1')->group(function () {
+Route::get('/download-coach-sample', function () {
+    $file = public_path('coach.csv');
+    return response()->download($file, 'coach_sample.csv', [
+        'Content-Type' => 'text/csv',
+    ]);
+})->name('download.coach.sample');
+
+
+Route::get('/download-seeker-sample', function () {
+    $path = public_path('seekers.csv');
+    if (!file_exists($path)) {
+        abort(404, "Sample file not found.");
+    }
+    return response()->download($path, 'seeker_sample.csv', [
+        'Content-Type' => 'text/csv',
+    ]);
+})->name('download.seeker.sample');
+
+
+Route::middleware('auth', 'role:0,1')->group(function () {
 
     // 1. Main Dashboard (Redirects here after login)
 
@@ -58,18 +80,29 @@ Route::middleware('auth','role:0,1')->group(function () {
     Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::prefix('admin')->as('admin.')->group(function () {
+        Route::get('/', [ContactController::class, 'adminIndex'])->name('contacts.index');
+        Route::post('/settings', [ContactController::class, 'updateSettings'])->name('contact.settings.update');
+        Route::delete('/inquiry/{id}', [ContactController::class, 'destroyInquiry'])->name('inquiry.destroy');
 
-    Route::get('/connection-logs', [MessageRequestController::class, 'index'])->name('requests.index');
-    Route::delete('/connection-logs/{id}', [MessageRequestController::class, 'destroy'])->name('requests.destroy');
-    Route::get('/message-user/{id}', [InteractionController::class, 'createDirectMessage'])->name('messages.create');
-    Route::post('/message-user', [InteractionController::class, 'storeDirectMessage'])->name('messages.store');
 
-    Route::controller(MediaGalleryController::class)->group(function () {
-        Route::get('/media', 'index')->name('media.index');
-        Route::post('/media/upload', 'upload')->name('media.upload');
+        Route::prefix('newsletters')->name('newsletters.')->group(function () {
+            Route::get('/', [NewsletterController::class, 'index'])->name('index');
+            Route::post('/store', [NewsletterController::class, 'store'])->name('store');
+            Route::post('/toggle-status', [NewsletterController::class, 'toggleStatus'])->name('toggle-status');
+            Route::delete('/{id}', [NewsletterController::class, 'destroy'])->name('destroy');
+        });
 
-        Route::delete('/media/{id}', 'destroy')->name('media.destroy');
-    });
+        Route::get('/connection-logs', [MessageRequestController::class, 'index'])->name('requests.index');
+        Route::delete('/connection-logs/{id}', [MessageRequestController::class, 'destroy'])->name('requests.destroy');
+        Route::get('/message-user/{id}', [InteractionController::class, 'createDirectMessage'])->name('messages.create');
+        Route::post('/message-user', [InteractionController::class, 'storeDirectMessage'])->name('messages.store');
+
+        Route::controller(MediaGalleryController::class)->group(function () {
+            Route::get('/media', 'index')->name('media.index');
+            Route::post('/media/upload', 'upload')->name('media.upload');
+
+            Route::delete('/media/{id}', 'destroy')->name('media.destroy');
+        });
 
         Route::resource('blogs', BlogController::class);
 
@@ -120,9 +153,9 @@ Route::middleware('auth','role:0,1')->group(function () {
         Route::resource('categories', CategoryController::class);
 
         Route::patch('/coaches/{id}/status', [CoachController::class, 'updateStatus'])
-        ->name('coaches.update-status');
+            ->name('coaches.update-status');
 
-            // Page Routes
+        // Page Routes
         Route::controller(PageController::class)->group(function () {
             // List all pages
             Route::get('pages', 'index')->name('pages.index');
@@ -133,9 +166,9 @@ Route::middleware('auth','role:0,1')->group(function () {
         });
 
         Route::get('/notifications/read', function () {
-                auth()->user()->unreadNotifications->markAsRead();
-                return back();
-            })->name('notifications.markAsRead');
+            auth()->user()->unreadNotifications->markAsRead();
+            return back();
+        })->name('notifications.markAsRead');
     });
 });
 

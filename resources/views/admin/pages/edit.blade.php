@@ -19,7 +19,7 @@
         </div>
         <div class="text-end">
             <ol class="breadcrumb m-0 py-0">
-                <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
                 <li class="breadcrumb-item active">{{ ucfirst(str_replace('_', ' ', $type)) }} Page</li>
             </ol>
         </div>
@@ -56,11 +56,11 @@
 
                             <div class="col-md-12 mt-3">
                                 <label class="form-label">Page Content <span class="text-danger">*</span></label>
-                                
+
                                 <div id="quill-editor">{!! old('description', $page->description ?? '') !!}</div>
-                                
+
                                 <input type="hidden" name="description" id="description-input">
-                                
+
                                 <div class="invalid-feedback d-block" id="quill-error" style="display: none;">Page Content is required</div>
                             </div>
                         </div>
@@ -78,7 +78,7 @@
 
     @push('scripts')
         <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
-        
+
         <script>
             $(document).ready(function() {
                 // Full Toolbar Configuration
@@ -119,7 +119,7 @@
                     } else {
                         $('#quill-error').hide();
                     }
-                    
+
                     return true;
                 };
             });

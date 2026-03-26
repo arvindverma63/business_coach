@@ -18,7 +18,6 @@ class CoachesExport implements FromCollection, WithHeadings, WithMapping
     public function headings(): array
     {
         return [
-            'ID',
             'Name',
             'Email',
             'Phone',
@@ -34,7 +33,6 @@ class CoachesExport implements FromCollection, WithHeadings, WithMapping
     public function map($coach): array
     {
         return [
-            $coach->id,
             $coach->user->name ?? 'N/A',
             $coach->user->email ?? 'N/A',
             $coach->user->phone ?? 'N/A',

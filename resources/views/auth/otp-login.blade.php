@@ -7,15 +7,16 @@
                         <iconify-icon icon="tabler:shield-lock" class="text-primary fs-48"></iconify-icon>
                     </div>
                     <h3 class="fw-bold text-dark">Welcome Back</h3>
-                    <p class="text-muted small">Enter your email to receive a secure login code.</p>
+                    {{-- <p class="text-muted small">Enter your email to receive a secure login code.</p> --}}
                 </div>
 
                 <div id="email-section">
                     <div class="mb-3">
                         <label class="form-label fw-medium">Email Address</label>
                         <div class="input-group">
-                            <span class="input-group-text bg-light border-end-0"><iconify-icon
-                                    icon="tabler:mail"></iconify-icon></span>
+                            <span class="input-group-text bg-light border-end-0">
+                                <iconify-icon icon="tabler:mail"></iconify-icon>
+                            </span>
                             <input type="email" id="email" class="form-control bg-light border-start-0"
                                 placeholder="name@company.com" required>
                         </div>
@@ -37,14 +38,24 @@
                         <label class="form-label fw-medium">Verification Code</label>
                         <input type="text" id="otp"
                             class="form-control text-center fs-24 fw-bold letter-spacing-5 bg-light" maxlength="6"
-                            placeholder="000000" inputmode="numeric">
+                            placeholder="000000" inputmode="numeric"
+                            oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 6);">
                         <div id="otp-error" class="text-danger small mt-1 d-none">Invalid code entered.</div>
                     </div>
+
                     <button id="btn-verify-otp"
                         class="btn btn-success w-100 py-2 fw-bold shadow-sm d-flex align-items-center justify-content-center">
                         <span>Verify & Login</span>
                         <div class="spinner-border spinner-border-sm ms-2 d-none" role="status"></div>
                     </button>
+
+                    <div class="text-center mt-3">
+                        <p class="small text-muted mb-1">Didn't receive the code?</p>
+                        <button id="btn-resend-otp" class="btn btn-link btn-sm text-decoration-none fw-bold p-0"
+                            disabled>
+                            Resend OTP in <span id="timer">60</span>s
+                        </button>
+                    </div>
 
                     <div class="text-center mt-3">
                         <button class="btn btn-link btn-sm text-decoration-none text-muted" id="btn-back">
@@ -53,6 +64,7 @@
                     </div>
                 </div>
             </div>
+
             <p class="text-center mt-4 text-muted small">
                 Don't have an account?
                 <a href="{{ route('webapp.home', ['register' => 'seeker']) }}"
@@ -78,11 +90,24 @@
                 width: 1rem;
                 height: 1rem;
             }
+
+            #btn-resend-otp:disabled {
+                color: #6c757d;
+                cursor: not-allowed;
+            }
+
+            .letter-spacing-5 {
+                letter-spacing: 5px;
+                padding-left: 5px;
+                /* Offsets the letter-spacing of the last character */
+            }
         </style>
     @endpush
 
     @push('scripts')
         <script>
+            let timerInterval;
+
             // Helper function for loading state
             function toggleLoading(btnId, isLoading) {
                 const btn = $(`#${btnId}`);
@@ -99,6 +124,27 @@
                 }
             }
 
+            // Countdown Timer Logic
+            function startTimer() {
+                let timeLeft = 60;
+                const timerDisplay = $('#timer');
+                const resendBtn = $('#btn-resend-otp');
+
+                resendBtn.prop('disabled', true);
+                clearInterval(timerInterval);
+
+                timerInterval = setInterval(function() {
+                    timeLeft--;
+                    timerDisplay.text(timeLeft);
+
+                    if (timeLeft <= 0) {
+                        clearInterval(timerInterval);
+                        resendBtn.prop('disabled', false).text('Resend OTP Now');
+                    }
+                }, 1000);
+            }
+
+            // Send OTP Action
             $('#btn-send-otp').click(function() {
                 const email = $('#email').val();
                 if (!email) {
@@ -118,6 +164,7 @@
                         $('#display-email').text(email);
                         $('#email-section').fadeOut(300, function() {
                             $('#otp-section').removeClass('d-none').hide().fadeIn(300);
+                            startTimer();
                         });
                     })
                     .fail(function(err) {
@@ -127,6 +174,26 @@
                     });
             });
 
+            // Resend OTP Action
+            $('#btn-resend-otp').click(function() {
+                const email = $('#email').val();
+                $(this).prop('disabled', true).text('Sending...');
+
+                $.post("{{ route('auth.otp.send') }}", {
+                        _token: "{{ csrf_token() }}",
+                        email: email
+                    })
+                    .done(function(res) {
+                        toastr.success('New OTP sent!');
+                        startTimer();
+                    })
+                    .fail(function() {
+                        toastr.error('Failed to resend. Try again.');
+                        $(this).prop('disabled', false).text('Resend OTP Now');
+                    });
+            });
+
+            // Verify OTP Action
             $('#btn-verify-otp').click(function() {
                 const otp = $('#otp').val();
                 if (otp.length < 6) {
@@ -153,11 +220,12 @@
                     });
             });
 
+            // Back button
             $('#btn-back').click(function() {
                 $('#otp-section').fadeOut(300, function() {
                     $('#email-section').hide().removeClass('d-none').fadeIn(300);
                     toggleLoading('btn-send-otp', false);
-                    $('#btn-send-otp span').text('Send OTP');
+                    clearInterval(timerInterval);
                 });
             });
         </script>

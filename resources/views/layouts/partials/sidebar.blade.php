@@ -5,7 +5,7 @@
         <div id="sidebar-menu">
 
             <div class="logo-box">
-                <a href="{{ route('admin.dashboard') }}" class="logo logo-light">
+                <a href="{{ route('dashboard') }}" class="logo logo-light">
                     <span class="logo-sm">
                         <img src="{{ $settings->getImageUrl('logo') }}" alt="" height="22">
                     </span>
@@ -13,7 +13,7 @@
                         <img src="{{ $settings->getImageUrl('logo') }}" alt="" height="60">
                     </span>
                 </a>
-                <a href="{{ route('admin.dashboard') }}" class="logo logo-dark">
+                <a href="{{ route('dashboard') }}" class="logo logo-dark">
                     <span class="logo-sm">
                         <img src="{{ $settings->getImageUrl('logo') }}" alt="" height="22">
                     </span>
@@ -27,8 +27,8 @@
 
                 <li class="menu-title">Menu</li>
                 <li>
-                    <a href="{{ route('admin.dashboard') }}"
-                        class="tp-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+                    <a href="{{ route('dashboard') }}"
+                        class="tp-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
                         <span class="nav-icon">
                             <iconify-icon icon="tabler:assembly"></iconify-icon>
                         </span>
@@ -187,6 +187,30 @@
                                 @endcan
                             </ul>
                         </div>
+                    </li>
+                @endcan
+
+                @can('newsletters.view')
+                    <li>
+                        <a href="{{ route('admin.newsletters.index') }}"
+                            class="tp-link {{ request()->routeIs('admin.newsletters.*') ? 'active' : '' }}">
+                            <span class="nav-icon">
+                                <iconify-icon icon="tabler:mail"></iconify-icon>
+                            </span>
+                            <span class="sidebar-text"> Newsletters </span>
+                        </a>
+                    </li>
+                @endcan
+
+                @can('contacts.view')
+                    <li>
+                        <a href="{{ route('admin.contacts.index') }}"
+                            class="tp-link {{ request()->routeIs('admin.contacts.*') ? 'active' : '' }}">
+                            <span class="nav-icon">
+                                <iconify-icon icon="tabler:phone"></iconify-icon>
+                            </span>
+                            <span class="sidebar-text"> Contact Inquiries </span>
+                        </a>
                     </li>
                 @endcan
 

@@ -9,6 +9,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Intervention\Image\Laravel\Facades\Image;
 use Illuminate\Support\Facades\File;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver; // or Imagick\Driver
+use Illuminate\Support\Facades\Storage;
 
 class BlogController extends Controller
 {
@@ -77,7 +80,7 @@ class BlogController extends Controller
             if ($blog->featured_image && File::exists(public_path($blog->featured_image))) {
                 File::delete(public_path($blog->featured_image));
             }
-            
+
             $data['featured_image'] = $this->uploadImage($request->file('featured_image'));
         }
 
@@ -89,7 +92,7 @@ class BlogController extends Controller
     public function destroy(string $id)
     {
         $blog = $this->blogRepo->findCoachBlog(Auth::id(), $id);
-        
+
         if ($blog->featured_image && File::exists(public_path($blog->featured_image))) {
             File::delete(public_path($blog->featured_image));
         }
@@ -103,19 +106,22 @@ class BlogController extends Controller
      */
     private function uploadImage($file)
     {
+        // 1. Generate a unique filename
         $filename = time() . '_' . uniqid() . '.webp';
         $directory = 'uploads/blogs';
-        $path = public_path($directory . '/' . $filename);
+        $path = $directory . '/' . $filename;
 
-        if (!File::exists(public_path($directory))) {
-            File::makeDirectory(public_path($directory), 0755, true);
-        }
+        // 2. Initialize Intervention Image Manager
+        $manager = new ImageManager(new Driver());
 
-        Image::read($file)
-            ->cover(800, 450) // Standard 16:9 blog aspect ratio
-            ->toWebp(80)
-            ->save($path);
+        // 3. Read, Resize, and Encode
+        $encoded = $manager->read($file)
+            ->cover(800, 450) // Maintain 16:9 ratio
+            ->toWebp(80);     // 80% quality WebP
 
-        return $directory . '/' . $filename;
+        Storage::disk('public')->put($path, (string) $encoded);
+
+        // 5. Return the path (Store this in the DB)
+        return $path;
     }
 }

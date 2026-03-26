@@ -26,11 +26,26 @@
                                     <tr>
                                         <td class="ps-4">
                                             <div class="d-flex align-items-center">
-                                                <img src="{{ ($blog->featured_image && file_exists(public_path($blog->featured_image))) ? asset($blog->featured_image) : asset('assets/images/default-blog.png') }}" 
-                                                    class="rounded me-2" 
-                                                    style="width: 40px; height: 40px; object-fit: cover;">
-                                                <span
-                                                    class="fw-medium text-dark">{{ Str::limit($blog->title, 40) }}</span>
+                                                @php
+                                                    $displayImage = asset('assets/images/default-blog.png'); // Default fallback
+
+                                                    if (
+                                                        $blog->featured_image &&
+                                                        Illuminate\Support\Facades\Storage::disk('public')->exists(
+                                                            $blog->featured_image,
+                                                        )
+                                                    ) {
+                                                        $displayImage = asset('storage/' . $blog->featured_image);
+                                                    }
+                                                @endphp
+
+                                                <img src="{{ $displayImage }}" class="rounded me-2"
+                                                    style="width: 40px; height: 40px; object-fit: cover;"
+                                                    alt="Blog Title">
+
+                                                <span class="fw-medium text-dark">
+                                                    {{ Str::limit($blog->title, 40) }}
+                                                </span>
                                             </div>
                                         </td>
                                         <td><span

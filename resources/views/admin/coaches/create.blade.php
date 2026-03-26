@@ -12,6 +12,10 @@
                 border: none;
                 color: white;
             }
+
+            .is-invalid+.select2-container--default .select2-selection--multiple {
+                border-color: #dc3545;
+            }
         </style>
     @endpush
 
@@ -40,26 +44,28 @@
                                 <div class="row">
                                     <div class="col-md-4 mb-3">
                                         <label class="form-label">Full Name <span class="text-danger">*</span></label>
-                                        <input type="text" name="name" class="form-control" value="{{ old('name') }}">
+                                        <input type="text" name="name" class="form-control"
+                                            placeholder="Enter full name">
                                     </div>
                                     <div class="col-md-4 mb-3">
                                         <label class="form-label">Email Address <span
                                                 class="text-danger">*</span></label>
                                         <input type="email" name="email" class="form-control"
-                                            value="{{ old('email') }}">
+                                            placeholder="Enter email">
                                     </div>
                                     <div class="col-md-4 mb-3">
                                         <label class="form-label">Phone Number</label>
-                                        <input type="text" name="phone" class="form-control" value="{{ old('phone') }}">
+                                        <input type="tel" name="phone" id="phone_input" class="form-control"
+                                            value="+91" maxlength="13" placeholder="+919876543210"
+                                            oninput="validatePhoneNumber(this)">
+                                        <small class="text-muted">Format: +91 followed by 10 digits</small>
                                     </div>
                                     <div class="col-md-4 mb-3">
                                         <label class="form-label">Profile Image</label>
-                                        <input type="file" name="profile_image" id="profile_image" class="form-control"
-                                            accept="image/*">
-                                        {{-- Image Preview Container --}}
+                                        <input type="file" name="profile_image" id="profile_image"
+                                            class="form-control" accept="image/png, image/jpeg">
                                         <div class="mt-2">
-                                            <img id="image_preview"
-                                                src="{{ asset('website/assets/img/Rectangle5339.png') }}" alt="Preview"
+                                            <img id="image_preview" src="" alt="Preview"
                                                 style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px; display: none; border: 1px solid #ddd;">
                                         </div>
                                     </div>
@@ -67,19 +73,16 @@
                                         <label class="form-label">Gender</label>
                                         <select name="gender" class="form-select">
                                             <option value="">Select Gender</option>
-                                            <option value="male" {{ old('gender') == 'male' ? 'selected' : '' }}>Male
-                                            </option>
-                                            <option value="female" {{ old('gender') == 'female' ? 'selected' : '' }}>
-                                                Female</option>
-                                            <option value="other" {{ old('gender') == 'other' ? 'selected' : '' }}>Other
-                                            </option>
+                                            <option value="male">Male</option>
+                                            <option value="female">Female</option>
+                                            <option value="other">Other</option>
                                         </select>
                                     </div>
                                     <div class="col-md-4 mb-3">
                                         <label class="form-label d-block">Account Status</label>
                                         <div class="form-check form-switch mt-2">
-                                            <input class="form-check-input" type="checkbox" name="status" value="1"
-                                                id="accStatus" checked>
+                                            <input class="form-check-input" type="checkbox" name="status"
+                                                value="1" id="accStatus" checked>
                                             <label class="form-check-label" for="accStatus">Active</label>
                                         </div>
                                     </div>
@@ -91,52 +94,46 @@
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">Designation / Title</label>
                                         <input type="text" name="designation" class="form-control"
-                                            placeholder="e.g. Senior Business Consultant"
-                                            value="{{ old('designation') }}">
+                                            placeholder="e.g. Senior Business Consultant">
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">Company Name</label>
-                                        <input type="text" name="company_name" class="form-control"
-                                            value="{{ old('company_name') }}">
+                                        <input type="text" name="company_name" class="form-control">
                                     </div>
                                     <div class="col-md-4 mb-3">
                                         <label class="form-label">City <span class="text-danger">*</span></label>
-                                        <input type="text" name="city" class="form-control" value="{{ old('city') }}">
+                                        <input type="text" name="city" class="form-control">
                                     </div>
                                     <div class="col-md-4 mb-3">
                                         <label class="form-label">State</label>
-                                        <input type="text" name="state" class="form-control" value="{{ old('state') }}">
+                                        <input type="text" name="state" class="form-control">
                                     </div>
                                     <div class="col-md-4 mb-3">
                                         <label class="form-label">Total Experience (Years)</label>
                                         <input type="number" name="experience_years" class="form-control"
-                                            value="{{ old('experience_years', 0) }}">
+                                            value="0">
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">LinkedIn URL</label>
                                         <input type="url" name="linkedin_url" class="form-control"
-                                            placeholder="https://linkedin.com/in/..." value="{{ old('linkedin_url') }}">
+                                            placeholder="https://linkedin.com/in/...">
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">Website URL</label>
                                         <input type="url" name="website_url" class="form-control"
-                                            placeholder="https://..." value="{{ old('website_url') }}">
+                                            placeholder="https://...">
                                     </div>
                                     <div class="col-md-12 mb-3">
                                         <label class="form-label">Expertise Categories</label>
-                                        <select name="categories[]" class="form-control select2" multiple="multiple"
-                                            data-placeholder="Select Categories...">
+                                        <select name="categories[]" class="form-control select2" multiple="multiple">
                                             @foreach ($categories as $category)
-                                                <option value="{{ $category->id }}" {{ in_array($category->id, old('categories', [])) ? 'selected' : '' }}>
-                                                    {{ $category->name }}
-                                                </option>
+                                                <option value="{{ $category->id }}">{{ $category->name }}</option>
                                             @endforeach
                                         </select>
                                     </div>
                                     <div class="col-md-12 mb-3">
                                         <label class="form-label">Bio / Achievements</label>
-                                        <textarea name="bio" class="form-control" rows="4"
-                                            placeholder="Tell us why this coach is famous...">{{ old('bio') }}</textarea>
+                                        <textarea name="bio" class="form-control" rows="4" placeholder="Tell us why this coach is famous..."></textarea>
                                     </div>
                                 </div>
 
@@ -146,19 +143,18 @@
                                     <div class="col-md-3 mb-3">
                                         <label class="form-label">Ranking Score</label>
                                         <input type="number" name="ranking_score" class="form-control"
-                                            value="{{ old('ranking_score', 0) }}">
+                                            value="0">
                                     </div>
                                     <div class="col-md-3 mb-3">
                                         <label class="form-label">Current Rank</label>
-                                        <input type="number" name="current_rank" class="form-control"
-                                            value="{{ old('current_rank') }}">
+                                        <input type="number" name="current_rank" class="form-control">
                                     </div>
                                     <div class="col-md-3 mb-3">
                                         <label class="form-label">Approval Status</label>
                                         <select name="approval_status" class="form-select">
-                                            <option value="pending" {{ old('approval_status') == 'pending' ? 'selected' : '' }}>Pending</option>
-                                            <option value="approved" {{ old('approval_status') == 'approved' ? 'selected' : '' }}>Approved</option>
-                                            <option value="rejected" {{ old('approval_status') == 'rejected' ? 'selected' : '' }}>Rejected</option>
+                                            <option value="pending">Pending</option>
+                                            <option value="approved">Approved</option>
+                                            <option value="rejected">Rejected</option>
                                         </select>
                                     </div>
                                     <div class="col-md-3 mb-3">
@@ -166,19 +162,24 @@
                                             <div class="form-check form-check-inline">
                                                 <input class="form-check-input" type="checkbox" name="is_visible"
                                                     value="1" id="isVisible" checked>
-                                                <label class="form-check-label" for="isVisible">Publicly Visible</label>
+                                                <label class="form-check-label" for="isVisible">Publicly
+                                                    Visible</label>
                                             </div>
                                             <div class="form-check form-check-inline">
                                                 <input class="form-check-input" type="checkbox" name="is_featured"
                                                     value="1" id="isFeatured">
-                                                <label class="form-check-label" for="isFeatured">Featured Coach</label>
+                                                <label class="form-check-label" for="isFeatured">Featured</label>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="mt-4 text-end">
-                                    <button type="submit" class="btn btn-primary px-5">Create Coach Account</button>
+                                    <button type="submit" id="btnSubmit" class="btn btn-primary px-5">
+                                        <span class="spinner-border spinner-border-sm d-none me-1" role="status"
+                                            aria-hidden="true"></span>
+                                        Create Coach Account
+                                    </button>
                                 </div>
                             </form>
                         </div>
@@ -191,54 +192,117 @@
     @push('scripts')
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-        <script>
-            $(document).ready(function () {
-                $('.select2').select2({ width: '100%', hideSelected: true });
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-                $('#profile_image').change(function () {
+        <script>
+            $(document).ready(function() {
+                $('.select2').select2({
+                    width: '100%'
+                });
+
+                function validatePhoneNumber(input) {
+                    let value = input.value;
+
+                    // 1. Ensure it always starts with '+'
+                    if (!value.startsWith('+')) {
+                        value = '+' + value.replace(/\D/g, '');
+                    }
+
+                    // 2. Keep the '+' but allow only digits for the rest
+                    const plusSign = value.charAt(0);
+                    const digits = value.slice(1).replace(/\D/g, '');
+                    value = plusSign + digits;
+
+                    // 3. Cap at 13 characters (+91 + 10 digits)
+                    if (value.length > 13) {
+                        value = value.slice(0, 13);
+                    }
+
+                    input.value = value;
+                }
+
+                // Attach the function to the global window scope so the oninput attribute can find it
+                window.validatePhoneNumber = validatePhoneNumber;
+
+                // Prevent backspacing into the +91 prefix
+                $('#phone_input').on('keydown', function(e) {
+                    if (this.selectionStart <= 3 && e.key === 'Backspace') {
+                        if (this.value.length <= 3) {
+                            e.preventDefault();
+                        }
+                    }
+                });
+
+                // Image Preview
+                $('#profile_image').change(function() {
                     const file = this.files[0];
                     if (file) {
                         let reader = new FileReader();
-                        reader.onload = function (event) {
-                            // Update the src of the preview image and make it visible
-                            $('#image_preview').attr('src', event.target.result).show();
-                        }
+                        reader.onload = (e) => $('#image_preview').attr('src', e.target.result).show();
                         reader.readAsDataURL(file);
-                    } else {
-                        // Hide preview if no file is selected
-                        $('#image_preview').hide();
                     }
                 });
 
-                $('#coachForm').on('submit', function (e) {
-                    let isValid = true;
+                // AJAX Form Submission
+                $('#coachForm').on('submit', function(e) {
+                    e.preventDefault();
+
+                    let form = $(this);
+                    let url = form.attr('action');
+                    let formData = new FormData(this);
+                    let btn = $('#btnSubmit');
+
+                    // Reset errors
                     $('.error-text').remove();
-                    $('.form-control').removeClass('is-invalid');
+                    $('.form-control, .form-select').removeClass('is-invalid');
 
-                    const requiredFields = {
-                        'name': 'Full Name is required.',
-                        'email': 'Email Address is required.',
-                        'city': 'City is required.'
-                    };
+                    // Show loading
+                    btn.prop('disabled', true).find('.spinner-border').removeClass('d-none');
 
-                    for (let field in requiredFields) {
-                        let el = $(`[name="${field}"]`);
-                        if (el.val().trim() === '') {
-                            showError(el, requiredFields[field]);
-                            isValid = false;
+                    $.ajax({
+                        url: url,
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function(res) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success!',
+                                text: res.message || 'Coach onboarded successfully.',
+                                timer: 2000,
+                                showConfirmButton: false
+                            }).then(() => {
+                                window.location.href = "{{ route('admin.coaches.index') }}";
+                            });
+                        },
+                        error: function(xhr) {
+                            btn.prop('disabled', false).find('.spinner-border').addClass('d-none');
+
+                            if (xhr.status === 422) {
+                                let errors = xhr.responseJSON.errors;
+                                $.each(errors, function(key, value) {
+                                    // Handle array fields like categories[]
+                                    let fieldName = key.replace(/\./g, '_');
+                                    let input = $(`[name="${key}"], [name="${key}[]"]`);
+
+                                    input.addClass('is-invalid');
+                                    input.after(
+                                        `<span class="text-danger error-text small mt-1 d-block">${value[0]}</span>`
+                                    );
+                                });
+
+                                // Scroll to first error
+                                $('html, body').animate({
+                                    scrollTop: $(".is-invalid").first().offset().top - 120
+                                }, 500);
+                            } else {
+                                Swal.fire('Error', 'Something went wrong. Please try again.',
+                                    'error');
+                            }
                         }
-                    }
-
-                    if (!isValid) {
-                        e.preventDefault();
-                        $('html, body').animate({ scrollTop: $(".is-invalid").first().offset().top - 100 }, 500);
-                    }
+                    });
                 });
-
-                function showError(element, message) {
-                    element.addClass('is-invalid');
-                    element.after('<span class="text-danger error-text small mt-1 d-block">' + message + '</span>');
-                }
             });
         </script>
     @endpush

@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\SeekersExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreCoachProfileRequest;
 use App\Http\Requests\Admin\UpdateCoachProfileRequest;
+use App\Imports\CoachesImport;
 use App\Repositories\Contracts\CoachRepositoryInterface;
 use App\Repositories\Contracts\CategoryRepositoryInterface;
 use App\Models\User;
@@ -14,6 +16,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Database\QueryException;
+
 
 class CoachController extends Controller
 {
@@ -71,9 +76,18 @@ class CoachController extends Controller
                 $categoryIds = $this->processCategories($request->categories);
 
                 $profileData = $request->only([
-                    'gender', 'company_name', 'designation', 'city', 'state',
-                    'linkedin_url', 'website_url', 'experience_years',
-                    'bio', 'ranking_score', 'current_rank', 'approval_status'
+                    'gender',
+                    'company_name',
+                    'designation',
+                    'city',
+                    'state',
+                    'linkedin_url',
+                    'website_url',
+                    'experience_years',
+                    'bio',
+                    'ranking_score',
+                    'current_rank',
+                    'approval_status'
                 ]);
 
                 $profileData['user_id'] = $user->id;
@@ -132,9 +146,18 @@ class CoachController extends Controller
                 $categoryIds = $this->processCategories($request->categories);
 
                 $profileData = $request->only([
-                    'gender', 'company_name', 'designation', 'city', 'state',
-                    'linkedin_url', 'website_url', 'experience_years',
-                    'bio', 'ranking_score', 'current_rank', 'approval_status'
+                    'gender',
+                    'company_name',
+                    'designation',
+                    'city',
+                    'state',
+                    'linkedin_url',
+                    'website_url',
+                    'experience_years',
+                    'bio',
+                    'ranking_score',
+                    'current_rank',
+                    'approval_status'
                 ]);
 
                 $profileData['categories'] = $categoryIds;
@@ -192,5 +215,10 @@ class CoachController extends Controller
             );
             return $newCategory->id;
         })->toArray();
+    }
+
+    public function exportExcel()
+    {
+        return Excel::download(new SeekersExport, 'seekers_list.xlsx');
     }
 }

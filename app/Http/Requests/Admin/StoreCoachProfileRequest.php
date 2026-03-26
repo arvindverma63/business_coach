@@ -8,7 +8,7 @@ class StoreCoachProfileRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true; 
+        return true;
     }
 
     public function rules(): array
@@ -16,8 +16,7 @@ class StoreCoachProfileRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:8|confirmed',
-            
+
             'gender' => 'nullable|in:male,female,other',
             'show_personal_details' => 'boolean',
             'company_name' => 'nullable|string|max:255',
@@ -27,7 +26,7 @@ class StoreCoachProfileRequest extends FormRequest
             'website_url' => 'nullable|url|max:255',
             'experience_years' => 'nullable|integer|min:0',
             'bio' => 'nullable|string',
-            
+
             'categories' => 'nullable|array',
             'categories.*' => 'nullable|string' // Removed 'exists' to allow new tag strings
         ];

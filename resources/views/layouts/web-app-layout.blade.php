@@ -1,4 +1,5 @@
 @props(['title' => 'Businesscoach'])
+@inject('settings', 'App\Services\SettingService')
 <!doctype html>
 <html lang="en">
 
@@ -8,6 +9,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="BusinesCoach" name="description" />
+    <link rel="shortcut icon" href="{{ $settings->getImageUrl('favicon') }}">
 
     @include('webapp.common.styles-lib')
     @stack('styles-lib')
@@ -30,12 +32,12 @@
     @stack('scripts-lib')
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
 
             const forms = document.querySelectorAll('.needs-validation');
 
-            Array.prototype.slice.call(forms).forEach(function (form) {
-                form.addEventListener('submit', function (event) {
+            Array.prototype.slice.call(forms).forEach(function(form) {
+                form.addEventListener('submit', function(event) {
 
                     if (!form.checkValidity()) {
                         event.preventDefault();
@@ -66,8 +68,8 @@
             @endif
         @endif
 
-        document.addEventListener('DOMContentLoaded', function () {
-            document.body.addEventListener('submit', function (e) {
+        document.addEventListener('DOMContentLoaded', function() {
+            document.body.addEventListener('submit', function(e) {
                 if (e.target.classList.contains('delete-form')) {
                     e.preventDefault();
 

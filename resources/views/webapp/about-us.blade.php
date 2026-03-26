@@ -205,7 +205,7 @@
                                     standard dummy
                                 </div>
 
-                                <a href="#" class="btn">Contact us →</a>
+                                <a href="{{ route('webapp.contact') }}" class="btn">Contact us →</a>
                             </div>
 
                             <img src="{{ asset('website/assets/img/aboutpr-bg.png') }}" alt="" class="aboutpr-bg" />
@@ -253,11 +253,11 @@
                                     Custom Software Development Tailored Solutions.
                                 </p>
                                 <div class="row g-2 align-items-center">
-                                    <div class="col-12 col-sm-8 col-lg-7">
+                                    {{-- <div class="col-12 col-sm-8 col-lg-7">
                                         <input type="email" class="cta-input w-100" placeholder="Enter Email" />
-                                    </div>
+                                    </div> --}}
                                     <div class="col-auto">
-                                        <button class="cta-btn">Contact us</button>
+                                        <a href="{{ route('webapp.contact') }}" class="cta-btn">Contact us</a>
                                     </div>
                                 </div>
                             </div>
