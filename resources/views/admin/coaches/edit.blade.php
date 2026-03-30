@@ -55,7 +55,11 @@
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">Phone Number</label>
-                                        <input type="text" name="phone" class="form-control" value="{{ old('phone', $coach->user->phone) }}">
+                                        <input type="text" name="phone" id="phoneInput" class="form-control" value="{{ old('phone', $coach->user->phone ?: '+91') }}" maxlength="13" placeholder="+919876543210">
+                                        <small class="text-muted d-block mt-1">Default country code is +91. Enter 10 digits only.</small>
+                                        @error('phone')
+                                            <span class="text-danger small mt-1 d-block">{{ $message }}</span>
+                                        @enderror
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">Gender</label>
@@ -207,12 +211,38 @@
                     @endif
                 });
 
+                function normalizePhoneInput(input) {
+                    let digits = input.value.replace(/\D/g, '');
+
+                    if (digits.startsWith('91')) {
+                        digits = digits.slice(2);
+                    }
+
+                    digits = digits.slice(0, 10);
+                    input.value = '+91' + digits;
+                }
+
+                normalizePhoneInput(document.getElementById('phoneInput'));
+
+                $('#phoneInput').on('input', function() {
+                    normalizePhoneInput(this);
+                });
+
+                $('#phoneInput').on('keydown', function(e) {
+                    if (this.selectionStart <= 3 && e.key === 'Backspace') {
+                        if (this.value.length <= 3) {
+                            e.preventDefault();
+                        }
+                    }
+                });
+
                 $('#editCoachForm').on('submit', function(e) {
                     let isValid = true;
                     $('.error-text').remove();
                     $('.form-control').removeClass('is-invalid');
                     if ($('input[name="name"]').val().trim() === '') { showError($('input[name="name"]'), 'Name is required'); isValid = false; }
                     if ($('input[name="city"]').val().trim() === '') { showError($('input[name="city"]'), 'City is required'); isValid = false; }
+                    if ($('#phoneInput').val().trim() !== '+91' && !/^\+91\d{10}$/.test($('#phoneInput').val().trim())) { showError($('#phoneInput'), 'Phone number must be 10 digits after +91.'); isValid = false; }
                     if (!isValid) { e.preventDefault(); $('html, body').animate({ scrollTop: $(".is-invalid").first().offset().top - 100 }, 500); }
                 });
 

@@ -133,7 +133,18 @@ class PageController extends Controller
     }
     public function viewProfile($id){
         $coach = \App\Models\CoachProfile::with('user')->findOrFail($id);
-        return view('webapp.view-profile', compact('coach'));
+        $coachBlogs = \App\Models\Blog::where('user_id', $coach->user_id)
+            ->where('is_published', true)
+            ->latest()
+            ->take(6)
+            ->get();
+
+        $blogs = \App\Models\Blog::where('is_published', true)
+            ->latest()
+            ->take(3)
+            ->get();
+
+        return view('webapp.view-profile', compact('coach', 'coachBlogs', 'blogs'));
     }
 
     public function privacyPolicy(){

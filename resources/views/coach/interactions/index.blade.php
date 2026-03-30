@@ -27,7 +27,7 @@
                                         <tr>
                                             <td class="ps-4">
                                                 <div class="d-flex align-items-center">
-                                                    <img src="{{ $interaction->seeker->profile_image && file_exists(public_path($interaction->seeker->profile_image)) ? asset($interaction->seeker->profile_image) : asset('assets/images/users/user.avif') }}"
+                                                    <img src="{{ asset($interaction->seeker->profile_image) ?? asset('assets/images/users/user.avif') }}"
                                                         class="rounded-circle border"
                                                         style="width: 40px; height: 40px; object-fit: cover;">
                                                     <div class="ms-3">

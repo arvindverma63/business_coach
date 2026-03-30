@@ -56,9 +56,9 @@
                                     <div class="col-md-4 mb-3">
                                         <label class="form-label">Phone Number</label>
                                         <input type="tel" name="phone" id="phone_input" class="form-control"
-                                            value="+91" maxlength="13" placeholder="+919876543210"
+                                            value="{{ old('phone', '+91') }}" maxlength="13" placeholder="+919876543210"
                                             oninput="validatePhoneNumber(this)">
-                                        <small class="text-muted">Format: +91 followed by 10 digits</small>
+                                        <small class="text-muted">Default country code is +91. Enter 10 digits only.</small>
                                     </div>
                                     <div class="col-md-4 mb-3">
                                         <label class="form-label">Profile Image</label>
@@ -203,26 +203,20 @@
                 function validatePhoneNumber(input) {
                     let value = input.value;
 
-                    // 1. Ensure it always starts with '+'
-                    if (!value.startsWith('+')) {
-                        value = '+' + value.replace(/\D/g, '');
+                    // Keep only digits and force Indian prefix
+                    let digits = value.replace(/\D/g, '');
+
+                    if (digits.startsWith('91')) {
+                        digits = digits.slice(2);
                     }
 
-                    // 2. Keep the '+' but allow only digits for the rest
-                    const plusSign = value.charAt(0);
-                    const digits = value.slice(1).replace(/\D/g, '');
-                    value = plusSign + digits;
-
-                    // 3. Cap at 13 characters (+91 + 10 digits)
-                    if (value.length > 13) {
-                        value = value.slice(0, 13);
-                    }
-
-                    input.value = value;
+                    digits = digits.slice(0, 10);
+                    input.value = '+91' + digits;
                 }
 
                 // Attach the function to the global window scope so the oninput attribute can find it
                 window.validatePhoneNumber = validatePhoneNumber;
+                validatePhoneNumber(document.getElementById('phone_input'));
 
                 // Prevent backspacing into the +91 prefix
                 $('#phone_input').on('keydown', function(e) {

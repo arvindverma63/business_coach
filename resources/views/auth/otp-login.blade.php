@@ -1,3 +1,8 @@
+@php
+    $loginRole = request('role') === 'coach' ? 'coach' : 'seeker';
+    $registerLabel = $loginRole === 'coach' ? 'Register as Coach' : 'Register as Seeker';
+@endphp
+
 <x-guest-layout title="Login | BestBusinessCoach">
     <div class="container vh-100 d-flex align-items-center justify-content-center">
         <div class="col-md-5 col-lg-4">
@@ -53,7 +58,7 @@
                         <p class="small text-muted mb-1">Didn't receive the code?</p>
                         <button id="btn-resend-otp" class="btn btn-link btn-sm text-decoration-none fw-bold p-0"
                             disabled>
-                            Resend OTP in <span id="timer">60</span>s
+                            <span id="resend-label">Resend OTP in <span id="timer">60</span>s</span>
                         </button>
                     </div>
 
@@ -67,9 +72,9 @@
 
             <p class="text-center mt-4 text-muted small">
                 Don't have an account?
-                <a href="{{ route('webapp.home', ['register' => 'seeker']) }}"
+                <a href="{{ route('webapp.home', ['register' => $loginRole]) }}"
                     class="text-primary fw-bold text-decoration-none">
-                    Register as Seeker
+                    {{ $registerLabel }}
                 </a>
             </p>
         </div>
@@ -108,6 +113,32 @@
         <script>
             let timerInterval;
 
+            function setResendButtonState({
+                disabled,
+                sending = false,
+                timeLeft = null,
+                ready = false
+            }) {
+                const resendBtn = $('#btn-resend-otp');
+                const resendLabel = $('#resend-label');
+
+                resendBtn.prop('disabled', disabled);
+
+                if (sending) {
+                    resendLabel.text('Sending...');
+                    return;
+                }
+
+                if (ready) {
+                    resendLabel.text('Resend OTP Now');
+                    return;
+                }
+
+                if (timeLeft !== null) {
+                    resendLabel.html(`Resend OTP in <span id="timer">${timeLeft}</span>s`);
+                }
+            }
+
             // Helper function for loading state
             function toggleLoading(btnId, isLoading) {
                 const btn = $(`#${btnId}`);
@@ -127,19 +158,25 @@
             // Countdown Timer Logic
             function startTimer() {
                 let timeLeft = 60;
-                const timerDisplay = $('#timer');
-                const resendBtn = $('#btn-resend-otp');
-
-                resendBtn.prop('disabled', true);
                 clearInterval(timerInterval);
+                setResendButtonState({
+                    disabled: true,
+                    timeLeft
+                });
 
                 timerInterval = setInterval(function() {
                     timeLeft--;
-                    timerDisplay.text(timeLeft);
+                    setResendButtonState({
+                        disabled: true,
+                        timeLeft
+                    });
 
                     if (timeLeft <= 0) {
                         clearInterval(timerInterval);
-                        resendBtn.prop('disabled', false).text('Resend OTP Now');
+                        setResendButtonState({
+                            disabled: false,
+                            ready: true
+                        });
                     }
                 }, 1000);
             }
@@ -177,7 +214,11 @@
             // Resend OTP Action
             $('#btn-resend-otp').click(function() {
                 const email = $('#email').val();
-                $(this).prop('disabled', true).text('Sending...');
+                clearInterval(timerInterval);
+                setResendButtonState({
+                    disabled: true,
+                    sending: true
+                });
 
                 $.post("{{ route('auth.otp.send') }}", {
                         _token: "{{ csrf_token() }}",
@@ -189,7 +230,10 @@
                     })
                     .fail(function() {
                         toastr.error('Failed to resend. Try again.');
-                        $(this).prop('disabled', false).text('Resend OTP Now');
+                        setResendButtonState({
+                            disabled: false,
+                            ready: true
+                        });
                     });
             });
 

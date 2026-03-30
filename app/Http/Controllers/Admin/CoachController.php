@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Exports\SeekersExport;
+use App\Exports\CoachesExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreCoachProfileRequest;
 use App\Http\Requests\Admin\UpdateCoachProfileRequest;
@@ -18,6 +18,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Database\QueryException;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 
 class CoachController extends Controller
@@ -55,8 +56,8 @@ class CoachController extends Controller
         try {
             DB::transaction(function () use ($request) {
                 $profilePicturePath = null;
-                if ($request->hasFile('profile_picture') && $request->file('profile_picture')->isValid()) {
-                    $file = $request->file('profile_picture');
+                if ($request->hasFile('profile_image') && $request->file('profile_image')->isValid()) {
+                    $file = $request->file('profile_image');
                     $filename = 'coach_' . uniqid() . '.' . $file->getClientOriginalExtension();
                     $path = $file->storeAs('users/coaches', $filename, 'public');
                     $profilePicturePath = 'storage/' . $path;
@@ -131,11 +132,11 @@ class CoachController extends Controller
                     'status' => $request->has('status') ? 1 : 0,
                 ];
 
-                if ($request->hasFile('profile_picture') && $request->file('profile_picture')->isValid()) {
+                if ($request->hasFile('profile_image') && $request->file('profile_image')->isValid()) {
                     if ($coach->user->profile_image) {
                         Storage::disk('public')->delete(str_replace('storage/', '', $coach->user->profile_image));
                     }
-                    $file = $request->file('profile_picture');
+                    $file = $request->file('profile_image');
                     $filename = 'coach_' . uniqid() . '.' . $file->getClientOriginalExtension();
                     $path = $file->storeAs('users/coaches', $filename, 'public');
                     $userData['profile_image'] = 'storage/' . $path;
@@ -219,6 +220,43 @@ class CoachController extends Controller
 
     public function exportExcel()
     {
-        return Excel::download(new SeekersExport, 'seekers_list.xlsx');
+        return Excel::download(new CoachesExport, 'coaches_list.xlsx');
+    }
+
+    public function exportPdf()
+    {
+        $coaches = $this->coachRepo->getAll();
+
+        $pdf = Pdf::loadView('admin.coaches.pdf', compact('coaches'));
+
+        return $pdf->download('coaches_list.pdf');
+    }
+
+    public function importExcel(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls,csv|max:2048',
+        ]);
+
+        try {
+            Excel::import(new CoachesImport, $request->file('file'));
+
+            return response()->json(['success' => 'Coaches imported successfully!']);
+        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+            $failures = $e->failures();
+            $errorMsg = 'Row ' . $failures[0]->row() . ': ' . implode(', ', $failures[0]->errors());
+
+            return response()->json(['error' => $errorMsg], 422);
+        } catch (QueryException $e) {
+            $errorCode = $e->errorInfo[1] ?? null;
+
+            if ($errorCode == 1062) {
+                return response()->json(['error' => 'Duplicate Entry Error: Email or User ID already exists.'], 422);
+            }
+
+            return response()->json(['error' => 'Database Error: ' . $e->getMessage()], 500);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error importing file: ' . $e->getMessage()], 500);
+        }
     }
 }

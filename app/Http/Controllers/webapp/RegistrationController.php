@@ -1,8 +1,12 @@
 <?php
 
 namespace App\Http\Controllers\webapp;
+
 use App\Http\Controllers\Controller;
+use App\Models\CoachProfile;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class RegistrationController extends Controller
 {
@@ -10,6 +14,9 @@ class RegistrationController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
+            'phone' => ['nullable', 'string', 'max:20', 'unique:users,phone'],
+            'categories' => 'required|array|min:1',
+            'categories.*' => 'exists:categories,id',
             'gender' => 'nullable|string|in:male,female,other',
             'experience_years' => 'nullable|integer|min:0',
             'city' => 'nullable|string|max:255',
@@ -31,18 +38,17 @@ class RegistrationController extends Controller
             $profilePicturePath = $file->storeAs('users/coaches', $filename, 'public');
         }
 
-        // Create user with user_type = 2 for coaches
+        DB::transaction(function () use ($validated, $profilePicturePath) {
+            $user = User::create([
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'phone' => $validated['phone'] ?? null,
+                'password' => bcrypt($validated['email']),
+                'user_type' => 2,
+                'profile_image' => $profilePicturePath ? 'storage/' . $profilePicturePath : null,
+            ]);
 
-        $user = \App\Models\User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'password' => bcrypt($validated['email']),
-            'user_type' => 2,
-            'profile_image' => $profilePicturePath ? 'storage/' . $profilePicturePath : null,
-        ]);
-
-        if($user){
-            \App\Models\CoachProfile::create([
+            $coachProfile = CoachProfile::create([
                 'user_id' => $user->id,
                 'approval_status' => 'pending',
                 'gender' => $validated['gender'] ?? null,
@@ -63,7 +69,9 @@ class RegistrationController extends Controller
                 'linkedin_url' => $validated['linkedin_url'] ?? null,
                 'website_url' => $validated['website_url'] ?? null,
             ]);
-        }
+
+            $coachProfile->categories()->sync($validated['categories']);
+        });
 
         // Return JSON response for AJAX requests
         if ($request->expectsJson()) {
@@ -81,7 +89,7 @@ class RegistrationController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'phone' => 'nullable|string|max:20',
+            'phone' => 'nullable|unique:users,phone',
             'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'business_domain' => 'nullable|string|max:255',
             'company_name' => 'nullable|string|max:255',

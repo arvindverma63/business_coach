@@ -533,16 +533,17 @@
     @push('scripts')
         <script>
             $(document).ready(function() {
-                // Check if the URL has ?register=seeker
                 const urlParams = new URLSearchParams(window.location.search);
 
                 if (urlParams.get('register') === 'seeker') {
-                    // This triggers the "Login As Seeker" modal (profileModal1)
-                    // from your navbar code provided earlier
                     var seekerModal = new bootstrap.Modal(document.getElementById('profileModal1'));
                     seekerModal.show();
+                } else if (urlParams.get('register') === 'coach') {
+                    var coachModal = new bootstrap.Modal(document.getElementById('profileModal'));
+                    coachModal.show();
+                }
 
-                    // Optional: Clean up the URL so the modal doesn't pop up again on refresh
+                if (urlParams.get('register') === 'seeker' || urlParams.get('register') === 'coach') {
                     window.history.replaceState({}, document.title, window.location.pathname);
                 }
             });

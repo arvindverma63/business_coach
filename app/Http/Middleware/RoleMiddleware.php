@@ -16,21 +16,25 @@ class RoleMiddleware
      * @param  \Closure  $next
      * @param  int  $type  The required user_type (0, 1, 2, or 3)
      */
-    public function handle(Request $request, Closure $next, $type): Response
+    public function handle(Request $request, Closure $next, ...$types): Response
     {
         if (!Auth::check()) {
             return redirect()->route('login');
         }
 
         $user = Auth::user();
+        $allowedTypes = collect($types)
+            ->flatMap(fn ($type) => explode(',', (string) $type))
+            ->map(fn ($type) => trim($type))
+            ->filter(fn ($type) => $type !== '')
+            ->map(fn ($type) => (int) $type)
+            ->values()
+            ->all();
 
-        // Check if the user's type matches the required type for the route
-        // Note: $type comes from the route as a string, so we cast to int
-        if ((int)$user->user_type !== (int)$type) {
-            
-            // Strict Redirection Logic
+        if (!in_array((int) $user->user_type, $allowedTypes, true)) {
+
             return match ((int)$user->user_type) {
-                0, 1    => redirect()->route('admin.dashboard'),
+                0, 1    => redirect()->route('dashboard'),
                 2       => redirect()->route('coach.dashboard')
                             ->with('error', 'Access restricted to your dashboard.'),
                 3       => redirect()->route('seeker.dashboard'), // Adjust route name as needed

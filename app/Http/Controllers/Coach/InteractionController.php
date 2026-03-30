@@ -36,7 +36,7 @@ class InteractionController extends Controller
 
         // Mark database notifications as read for this specific conversation
         auth()->user()->unreadNotifications()
-            ->where('data->type', 'chat_message')
+            ->where('data->notification_type', 'chat_message')
             ->where('data->sender_id', $seekerId)
             ->get()
             ->markAsRead();

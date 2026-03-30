@@ -89,6 +89,12 @@
                                     value="{{ old('email', $user->email) }}">
                             </div>
                             <div class="col-md-6">
+                                <label class="form-label fw-medium">Phone Number</label>
+                                <input type="text" name="phone"
+                                    class="form-control @error('phone') is-invalid @enderror"
+                                    value="{{ old('phone', $user->phone) }}" placeholder="+919876543210">
+                            </div>
+                            <div class="col-md-6">
                                 <label class="form-label fw-medium">Company Name</label>
                                 <input type="text" name="company_name" class="form-control"
                                     value="{{ old('company_name', $user->coachProfile->company_name ?? '') }}">

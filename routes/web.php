@@ -70,6 +70,59 @@ Route::get('/download-seeker-sample', function () {
     ]);
 })->name('download.seeker.sample');
 
+Route::middleware('auth')->get('/notifications/read', function () {
+    auth()->user()->unreadNotifications->markAsRead();
+    return back();
+})->name('notifications.markAsRead');
+
+Route::middleware('auth')->get('/notifications/feed', function () {
+    $notifications = auth()->user()
+        ->unreadNotifications()
+        ->latest()
+        ->take(10)
+        ->get()
+        ->map(function ($notification) {
+            return [
+                'id' => $notification->id,
+                'title' => $notification->data['title'] ?? 'Notification',
+                'message' => $notification->data['message'] ?? '',
+                'type' => $notification->data['type'] ?? 'primary',
+                'icon' => $notification->data['icon'] ?? 'tabler:info-circle',
+                'time' => $notification->created_at?->diffForHumans() ?? '',
+            ];
+        })
+        ->values();
+
+    return response()->json([
+        'count' => $notifications->count(),
+        'notifications' => $notifications,
+    ]);
+})->name('notifications.feed');
+
+Route::middleware('auth')->get('/notifications/all', function () {
+    $notifications = auth()->user()
+        ->notifications()
+        ->latest()
+        ->take(100)
+        ->get()
+        ->map(function ($notification) {
+            return [
+                'id' => $notification->id,
+                'title' => $notification->data['title'] ?? 'Notification',
+                'message' => $notification->data['message'] ?? '',
+                'type' => $notification->data['type'] ?? 'primary',
+                'icon' => $notification->data['icon'] ?? 'tabler:info-circle',
+                'time' => $notification->created_at?->diffForHumans() ?? '',
+                'read' => ! is_null($notification->read_at),
+            ];
+        })
+        ->values();
+
+    return response()->json([
+        'notifications' => $notifications,
+    ]);
+})->name('notifications.all');
+
 
 Route::middleware('auth', 'role:0,1')->group(function () {
 
@@ -165,10 +218,6 @@ Route::middleware('auth', 'role:0,1')->group(function () {
             Route::put('pages/{type}', 'update')->name('pages.update');
         });
 
-        Route::get('/notifications/read', function () {
-            auth()->user()->unreadNotifications->markAsRead();
-            return back();
-        })->name('notifications.markAsRead');
     });
 });
 

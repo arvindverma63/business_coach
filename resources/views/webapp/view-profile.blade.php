@@ -38,22 +38,36 @@
                                     </div>
 
                                     <div class="col">
+                                        @php
+                                            $gender = strtolower($coach->gender ?? '');
+                                            $showPersonalDetails = (bool) $coach->show_personal_details;
+                                            $canShowPersonalDetails = $gender !== 'female' && $showPersonalDetails;
+                                            $canShowEmail = $canShowPersonalDetails && filled($coach->user->email);
+                                            $canShowPhone = $canShowPersonalDetails && filled($coach->user->phone);
+                                        @endphp
                                         <div class="coach-name">{{ $coach->user->name }}</div>
                                         <div class="coach-title">{{ $coach->designation ?? 'Business Coach' }}</div>
                                         <p class="coach-desc">
                                             {{ $coach->company_name }}<br>
                                             {{ $coach->city }}, {{ $coach->state }}, {{ $coach->country }}
                                         </p>
+                                        <div class="mb-2">
+                                            <span class="badge {{ $showPersonalDetails ? 'bg-success-subtle text-success' : 'bg-secondary-subtle text-secondary' }}">
+                                                Show Personal Details: {{ $showPersonalDetails ? 'On' : 'Off' }}
+                                            </span>
+                                        </div>
                                         <div class="contact-row">
-                                            <a href="mailto:{{ $coach->user->email }}" class="contact-item">
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                    <rect x="2" y="4" width="20" height="16" rx="2" />
-                                                    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-                                                </svg>
-                                                {{ $coach->user->email }}
-                                            </a>
-                                            @if($coach->user->phone)
+                                            @if($canShowEmail)
+                                                <a href="mailto:{{ $coach->user->email }}" class="contact-item">
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                        <rect x="2" y="4" width="20" height="16" rx="2" />
+                                                        <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+                                                    </svg>
+                                                    {{ $coach->user->email }}
+                                                </a>
+                                            @endif
+                                            @if($canShowPhone)
                                                 <a href="tel:{{ $coach->user->phone }}" class="contact-item">
                                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -62,6 +76,16 @@
                                                     </svg>
                                                     {{ $coach->user->phone }}
                                                 </a>
+                                            @endif
+                                            @if(!$canShowEmail && !$canShowPhone)
+                                                <span class="contact-item">
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                        <path d="M12 1v22" />
+                                                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7H14a3.5 3.5 0 0 1 0 7H6" />
+                                                    </svg>
+                                                    Personal details are hidden
+                                                </span>
                                             @endif
                                         </div>
                                     </div>
@@ -150,30 +174,43 @@
 
                 <div class="row">
                     <div class="col-12">
-                        <h2 class="resource-title">Resource</h2>
+                        <h2 class="resource-title">Coach Blogs</h2>
                     </div>
                 </div>
 
-                {{-- Resources loop if you have them in DB --}}
                 <div class="row g-3">
-                    <div class="col-12 col-md-6">
-                        <div class="resource-item">
-                            <div class="resource-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-                                    stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                                    <polyline points="14 2 14 8 20 8" />
-                                    <line x1="9" y1="13" x2="15" y2="13" />
-                                    <line x1="9" y1="17" x2="15" y2="17" />
-                                </svg>
-                            </div>
-                            <div>
-                                <div class="resource-label">PDF</div>
-                                <div class="resource-name">Key Techniques to Close Deals Effectively</div>
-                                <div class="resource-sub">Mastering the Art of Negotiation</div>
-                            </div>
+                    @forelse($coachBlogs as $coachBlog)
+                        <div class="col-12 col-md-6">
+                            <a href="{{ route('blog-detail', $coachBlog->slug) }}" class="text-decoration-none text-reset">
+                                <div class="resource-item h-100">
+                                    <div class="resource-icon">
+                                        @if($coachBlog->featured_image)
+                                            <img src="{{ asset('storage/' . $coachBlog->featured_image) }}"
+                                                alt="{{ $coachBlog->title }}"
+                                                style="width: 56px; height: 56px; object-fit: cover; border-radius: 12px;">
+                                        @else
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                                                stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                                <polyline points="14 2 14 8 20 8" />
+                                                <line x1="9" y1="13" x2="15" y2="13" />
+                                                <line x1="9" y1="17" x2="15" y2="17" />
+                                            </svg>
+                                        @endif
+                                    </div>
+                                    <div>
+                                        <div class="resource-label">Blog</div>
+                                        <div class="resource-name">{{ \Illuminate\Support\Str::limit($coachBlog->title, 60) }}</div>
+                                        <div class="resource-sub">{{ \Illuminate\Support\Str::limit(strip_tags($coachBlog->content), 90) }}</div>
+                                    </div>
+                                </div>
+                            </a>
                         </div>
-                    </div>
+                    @empty
+                        <div class="col-12">
+                            <div class="text-muted">No blogs published by this coach yet.</div>
+                        </div>
+                    @endforelse
                 </div>
             </div>
         </section>
@@ -196,7 +233,7 @@
                                         <h3>{{ Str::limit($post->title, 45) }}</h3>
                                         <p>{{ Str::limit(strip_tags($post->content), 120) }}</p>
                                     </div>
-                                    <a href="{{ route('webapp.blogDetail', $post->slug) }}" class="button-blog">
+                                    <a href="{{ route('blog-detail', $post->slug) }}" class="button-blog">
                                         <i class="bi bi-arrow-right-short"></i>
                                     </a>
                                 </div>

@@ -3,7 +3,7 @@
 namespace App\Models;
 
 // 1. Remove the custom trait import
-// use App\Traits\HasUuid; 
+// use App\Traits\HasUuid;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids; // Keep this (Standard Laravel UUIDs)
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -65,7 +65,7 @@ class User extends Authenticatable
         }
 
         // 3. Final fallback to default
-        return asset('assets/images/users/user-1.jpg');
+        return asset('assets/images/users/user.avif');
     }
     /**
      * Get the Coach Profile associated with the user.
@@ -75,11 +75,22 @@ class User extends Authenticatable
         return $this->hasOne(CoachProfile::class);
     }
 
+    public function categories()
+    {
+        // Adjust 'coach_category' and the foreign keys if your pivot table name is different
+        return $this->belongsToMany(Category::class, 'coach_category', 'coach_profile_id', 'category_id');
+    }
+
     /**
      * Get the Seeker Profile associated with the user.
      */
     public function seekerProfile()
     {
         return $this->hasOne(SeekerProfile::class);
+    }
+
+    public function blogs()
+    {
+        return $this->hasMany(Blog::class, 'user_id');
     }
 }

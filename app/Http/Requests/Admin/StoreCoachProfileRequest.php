@@ -16,6 +16,7 @@ class StoreCoachProfileRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
+            'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
 
             'gender' => 'nullable|in:male,female,other',
             'show_personal_details' => 'boolean',

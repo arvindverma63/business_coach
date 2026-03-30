@@ -30,6 +30,7 @@ class ProfileController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . Auth::id(),
+            'phone' => 'nullable|string|max:20|unique:users,phone,' . Auth::id(),
             'profile_image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'company_name' => 'nullable|string|max:255',
             'designation' => 'nullable|string|max:255',
@@ -46,7 +47,7 @@ class ProfileController extends Controller
         ]);
 
         $user = Auth::user();
-        $userData = $request->only(['name', 'email']);
+        $userData = $request->only(['name', 'email', 'phone']);
 
         if ($request->hasFile('profile_image')) {
             $file = $request->file('profile_image');

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Seeker;
 
 use App\Http\Controllers\Controller;
+use App\Models\Blog;
 use App\Models\User;
 use App\Models\MessageRequest;
 use App\Repositories\Contracts\InteractionRepositoryInterface;
@@ -30,16 +31,21 @@ class MessagingController extends Controller
                 ->with('error', 'You must have an accepted connection request to message this coach.');
         }
 
-        $coach = User::findOrFail($coachId);
+        $coach = User::with(['coachProfile.categories'])->findOrFail($coachId);
+        $coachContents = Blog::with('category')
+            ->where('user_id', $coachId)
+            ->where('is_published', true)
+            ->latest()
+            ->get();
         $messages = $this->interactionRepo->getConversation($seekerId, $coachId);
 
         auth()->user()->unreadNotifications()
-            ->where('data->type', 'chat_message')
+            ->where('data->notification_type', 'chat_message')
             ->where('data->sender_id', $coachId)
             ->get()
             ->markAsRead();
 
-        return view('seeker.messaging.chat', compact('coach', 'messages'));
+        return view('seeker.messaging.chat', compact('coach', 'messages', 'coachContents'));
     }
 
     public function fetchMessages($coachId) {

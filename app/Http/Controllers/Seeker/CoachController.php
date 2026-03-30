@@ -16,11 +16,30 @@ class CoachController extends Controller
 
     public function index(Request $request)
     {
-        // Filter users by type 2 (Coach) and active status
-        $query = User::where('user_type', 2)->where('status', 1);
+        $query = User::with([
+                'categories',
+                'coachProfile.categories',
+                'blogs' => function ($query) {
+                    $query->with('category')
+                        ->where('is_published', true)
+                        ->latest();
+                },
+            ])
+            ->where('user_type', 2) // Coach
+            ->whereHas('coachProfile', function ($q) {
+                $q->where('approval_status', 'approved');
+            });
 
+        // Search by name OR category
         if ($request->filled('search')) {
-            $query->where('name', 'like', '%' . $request->search . '%');
+            $search = $request->search;
+
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%')
+                    ->orWhereHas('categories', function ($catQuery) use ($search) {
+                        $catQuery->where('name', 'like', '%' . $search . '%');
+                    });
+            });
         }
 
         $coaches = $query->latest()->paginate(12);

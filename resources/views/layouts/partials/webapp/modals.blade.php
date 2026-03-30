@@ -55,7 +55,7 @@
                             @endphp
                             <!-- Expertise Categories -->
                             <div class="sidebar-section">
-                                <div class="sidebar-section-title">Expertise Categories</div>
+                                <div class="sidebar-section-title">Expertise Categories <span class="text-danger">*</span></div>
                                 @forelse($categories ?? [] as $category)
                                     <label class="category-check">
                                         <input type="checkbox" name="categories[]" value="{{ $category->id }}" />
@@ -97,6 +97,15 @@
                                     <label class="form-label">Email Address <span class="text-danger">*</span></label>
                                     <input type="email" name="email" class="form-control" value=""
                                         placeholder="Enter email" required />
+                                </div>
+                            </div>
+
+                            <div class="row g-3 mb-3">
+                                <div class="col-12 col-sm-6">
+                                    <label class="form-label">Phone Number</label>
+                                    <input type="tel" name="phone" id="coach_phone_input" class="form-control"
+                                        value="+91" placeholder="+919876543210" maxlength="13"
+                                        oninput="validatePhone(this)" />
                                 </div>
                             </div>
 
@@ -183,6 +192,10 @@
 
             <!-- Footer -->
             <div class="modal-footer">
+                <div class="w-100 text-center mb-2">
+                    <span class="text-muted">Already have any account? </span>
+                    <a href="{{ route('user.login', ['role' => 'coach']) }}" class="text-decoration-none">Login</a>
+                </div>
                 <button type="button" class="btn-cancel" data-bs-dismiss="modal">Cancel</button>
                 <button type="submit" form="coachRegistrationForm" class="btn-update">Create Profile</button>
             </div>
@@ -316,6 +329,25 @@
                 emailInput.addClass('is-invalid');
             } else {
                 emailInput.removeClass('is-invalid');
+            }
+
+            const phoneInput = $form.find('input[name="phone"]');
+            const phone = phoneInput.val().trim();
+            if (phone && !/^\+[0-9]{12}$/.test(phone)) {
+                isValid = false;
+                errors.push('Phone number must be in +91XXXXXXXXXX format');
+                phoneInput.addClass('is-invalid');
+            } else {
+                phoneInput.removeClass('is-invalid');
+            }
+
+            const selectedCategories = $form.find('input[name="categories[]"]:checked').length;
+            if (selectedCategories === 0) {
+                isValid = false;
+                errors.push('Please select at least one expertise category');
+                $form.find('input[name="categories[]"]').addClass('is-invalid');
+            } else {
+                $form.find('input[name="categories[]"]').removeClass('is-invalid');
             }
 
             if (!isValid && errors.length > 0) {
@@ -785,6 +817,10 @@
 
             <!-- Footer -->
             <div class="modal-footer">
+                <div class="w-100 text-center mb-2">
+                    <span class="text-muted">Already have any account? </span>
+                    <a href="{{ route('user.login', ['role' => 'seeker']) }}" class="text-decoration-none">Login</a>
+                </div>
                 <button type="button" class="btn-cancel" data-bs-dismiss="modal">Cancel</button>
                 <button type="submit" form="seekerRegistrationForm" class="btn-update">Register</button>
             </div>
@@ -817,13 +853,16 @@
     }
 
     // Optional: Prevent the user from deleting the +91 prefix entirely
-    document.getElementById('phone_input').addEventListener('keydown', function(e) {
-        // If the cursor is at the start (position 0-3) and they hit backspace
-        if (this.selectionStart <= 3 && e.key === 'Backspace') {
-            // Allow backspace only if text is longer than +91
-            if (this.value.length <= 3) {
-                e.preventDefault();
-            }
+    ['phone_input', 'coach_phone_input'].forEach(function(inputId) {
+        const input = document.getElementById(inputId);
+        if (input) {
+            input.addEventListener('keydown', function(e) {
+                if (this.selectionStart <= 3 && e.key === 'Backspace') {
+                    if (this.value.length <= 3) {
+                        e.preventDefault();
+                    }
+                }
+            });
         }
     });
 </script>

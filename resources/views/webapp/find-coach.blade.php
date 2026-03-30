@@ -41,7 +41,7 @@
                 <div class="row">
                     <div class="col">
                         <section class="hero">
-                            
+
                             <div class="hero-bg" id="heroBg">
                                 <img src="{{ asset('website/assets/img/findcoachbanner.webp') }}" alt="" />
                             </div>
@@ -50,7 +50,7 @@
                             <!-- <div class="blob-right"></div> -->
 
                             <div class="search-bar-wrap">
-                                
+
                                     <div class="search-bar">
                                         <div class="name-field">
                                             <input type="text" name="name" placeholder="Name"
@@ -88,9 +88,9 @@
                                         </div>
                                     </div>
 
-                                    
+
                             </div>
-                            
+
                         </section>
                     </div>
                 </div>
@@ -124,10 +124,10 @@
                             </p>
 
                             <div class="btn-wrap">
-                                <a href="serach-coach.html" class="explore-btn">
+                                {{-- <a href="serach-coach.html" class="explore-btn">
                                     Explore Coaching Specializations
                                     <span class="arrow">→</span>
-                                </a>
+                                </a> --}}
                             </div>
                         </div>
                     </div>
@@ -185,7 +185,7 @@
                                         <li>Experience working with founders, CEOs, and organizations  </li>
                                         <li>Industry exposure and leadership background   </li>
                                         <li>Coaching philosophy and approach</li>
-                                        
+
                                     </ol>
                                 </div>
                                 <p>
@@ -216,7 +216,7 @@
                                         <li>Request an introductory conversation  </li>
                                         <li>Discuss your business goals and challenges  </li>
                                         <li> Begin your personalized business coaching journey</li>
-                                      
+
                                     </ol>
                                 </div>
                                 <p>

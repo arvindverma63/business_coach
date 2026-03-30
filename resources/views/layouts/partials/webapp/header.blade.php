@@ -64,7 +64,7 @@
 
                 <div class="d-lg-flex gap-2">
                     <button class="btn-login me-2" data-bs-toggle="modal" data-bs-target="#profileModal1">
-                        Login As Seeker
+                        Be a Seeker
                     </button>
                     <button class="btn-coach" data-bs-toggle="modal" data-bs-target="#profileModal">
                         Be a Coach

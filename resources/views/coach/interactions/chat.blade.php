@@ -11,7 +11,7 @@
                             <div class="d-flex align-items-center">
                                 <div class="position-relative">
                                     {{-- Profile image logic --}}
-                                    <img src="{{ $seeker->profile_image && file_exists(public_path($seeker->profile_image)) ? asset($seeker->profile_image) : asset('assets/images/users/user.avif') }}"
+                                    <img src="{{ asset($seeker->profile_image) ?? asset('assets/images/users/user.avif') }}"
                                         class="rounded-circle border"
                                         style="width: 48px; height: 48px; object-fit: cover;">
                                     <span
