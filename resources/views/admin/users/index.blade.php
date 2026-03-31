@@ -141,17 +141,6 @@
                                                             class="btn btn-sm btn-soft-info" title="Edit">
                                                             <i class="mdi mdi-pencil"></i>
                                                         </a>
-
-                                                        {{-- Delete Form (SweetAlert) --}}
-                                                        <form action="{{ route('admin.users.destroy', $user->id) }}"
-                                                            method="POST" class="delete-form d-inline">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="btn btn-sm btn-soft-danger"
-                                                                title="Delete">
-                                                                <i class="mdi mdi-trash-can"></i>
-                                                            </button>
-                                                        </form>
                                                     </div>
                                                 </td>
                                             </tr>

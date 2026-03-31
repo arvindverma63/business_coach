@@ -20,7 +20,8 @@ class EloquentCoachRepository implements CoachRepositoryInterface
     {
         $query = $this->model->with(['user' => function ($q) {
             $q->withTrashed();
-        }, 'categories']);
+        }, 'categories'])
+            ->withCount(['receivedConnectionRequests as connection_requests_count']);
 
         // Search by User Name, User Email, or Coach Company
         if (request()->filled('search')) {
@@ -38,7 +39,13 @@ class EloquentCoachRepository implements CoachRepositoryInterface
             $query->where('approval_status', request('status'));
         }
 
-        return $query->latest()->paginate($perPage)->withQueryString();
+        return $query
+            ->orderByRaw('COALESCE(NULLIF(ranking_score, 0), connection_requests_count) DESC')
+            ->orderByDesc('connection_requests_count')
+            ->orderByDesc('ranking_score')
+            ->orderByDesc('created_at')
+            ->paginate($perPage)
+            ->withQueryString();
     }
 
     public function getPending(int $perPage = 10): LengthAwarePaginator
@@ -47,6 +54,7 @@ class EloquentCoachRepository implements CoachRepositoryInterface
             ->with(['user' => function ($query) {
                 $query->withTrashed();
             }])
+            ->withCount(['receivedConnectionRequests as connection_requests_count'])
             ->latest()
             ->paginate($perPage);
     }
@@ -55,7 +63,9 @@ class EloquentCoachRepository implements CoachRepositoryInterface
     {
         return $this->model->with(['user' => function ($query) {
             $query->withTrashed();
-        }, 'categories'])->find($id);
+        }, 'categories'])
+            ->withCount(['receivedConnectionRequests as connection_requests_count'])
+            ->find($id);
     }
 
     public function findByUserId(string $userId): ?CoachProfile

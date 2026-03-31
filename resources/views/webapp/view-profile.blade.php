@@ -109,9 +109,26 @@
                                 <div class="row">
                                     <div class="col-12">
 
-                                        <div class="journey-header">
+                                    <div class="journey-header">
                                             <span class="journey-title">My Journey</span>
-                                            <a href="#" class="chat-btn">Chat With Us</a>
+                                            @php
+                                                $chatRoute = route('seeker.messaging.chat', $coach->user_id);
+                                                $connectRoute = route('seeker.coaches.connect', $coach->user_id);
+                                            @endphp
+
+                                            @if(auth()->check() && auth()->user()->user_type === 3)
+                                                @if($connectionRequest && $connectionRequest->status === 'accepted')
+                                                    <a href="{{ $chatRoute }}" class="chat-btn">Chat With Us</a>
+                                                @elseif($connectionRequest && $connectionRequest->status === 'pending')
+                                                    <button class="chat-btn" type="button" disabled style="opacity: .7; cursor: not-allowed;">Request Pending</button>
+                                                @elseif($connectionRequest && $connectionRequest->status === 'rejected')
+                                                    <a href="javascript:void(0)" class="chat-btn" data-bs-toggle="modal" data-bs-target="#connectCoachModal">Chat With Us</a>
+                                                @else
+                                                    <a href="javascript:void(0)" class="chat-btn" data-bs-toggle="modal" data-bs-target="#connectCoachModal">Chat With Us</a>
+                                                @endif
+                                            @else
+                                                <a href="{{ route('login') }}" class="chat-btn">Chat With Us</a>
+                                            @endif
                                         </div>
 
                                         <div class="journey-text">
@@ -244,4 +261,34 @@
             </div>
         </section>
     </main>
+
+    @if(auth()->check() && auth()->user()->user_type === 3 && (!isset($connectionRequest) || !$connectionRequest || $connectionRequest->status !== 'accepted'))
+        <div class="modal fade" id="connectCoachModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <form action="{{ $connectRoute }}" method="POST">
+                        @csrf
+                        <div class="modal-header border-0">
+                            <h5 class="modal-title fw-bold">Connect with {{ $coach->user->name }}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body py-0">
+                            <div class="alert alert-info py-2 small">
+                                Send a short introduction to request access to chat with this coach.
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold">Your Message</label>
+                                <textarea name="message" class="form-control" rows="4"
+                                    placeholder="Hi {{ $coach->user->name }}, I'd like to connect regarding..."></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer border-0">
+                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary px-4">Send Request</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    @endif
 </x-web-app-layout>

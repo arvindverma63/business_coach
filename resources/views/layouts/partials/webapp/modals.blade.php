@@ -166,20 +166,26 @@
 
                             <!-- Row 5: City + State + Country -->
                             <div class="form-section-title mt-2">Location</div>
-                            <div class="row g-3">
-                                <div class="col-12 col-sm-4">
-                                    <label class="form-label">City</label>
-                                    <input type="text" name="city" class="form-control" value=""
-                                        placeholder="City" />
-                                </div>
+                            <div class="row g-3" data-india-location-picker
+                                data-selected-state="{{ old('state') }}"
+                                data-selected-city="{{ old('city') }}"
+                                data-country-value="India">
                                 <div class="col-12 col-sm-4">
                                     <label class="form-label">State</label>
-                                    <input type="text" name="state" class="form-control" placeholder="State" />
+                                    <select name="state" class="form-select" required>
+                                        <option value="">Select state</option>
+                                    </select>
+                                </div>
+                                <div class="col-12 col-sm-4">
+                                    <label class="form-label">City</label>
+                                    <select name="city" class="form-select" required disabled>
+                                        <option value="">Select city</option>
+                                    </select>
                                 </div>
                                 <div class="col-12 col-sm-4">
                                     <label class="form-label">Country</label>
-                                    <input type="text" name="country" class="form-control" value=""
-                                        placeholder="Country" />
+                                    <input type="text" name="country" class="form-control bg-light"
+                                        value="India" readonly />
                                 </div>
                             </div>
                         </div>
@@ -339,6 +345,27 @@
                 phoneInput.addClass('is-invalid');
             } else {
                 phoneInput.removeClass('is-invalid');
+            }
+
+            const stateInput = $form.find('select[name="state"]');
+            const cityInput = $form.find('select[name="city"]');
+            const state = stateInput.val().trim();
+            const city = cityInput.val().trim();
+
+            if (!state) {
+                isValid = false;
+                errors.push('State is required');
+                stateInput.addClass('is-invalid');
+            } else {
+                stateInput.removeClass('is-invalid');
+            }
+
+            if (!city) {
+                isValid = false;
+                errors.push('City is required');
+                cityInput.addClass('is-invalid');
+            } else {
+                cityInput.removeClass('is-invalid');
             }
 
             const selectedCategories = $form.find('input[name="categories[]"]:checked').length;

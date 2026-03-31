@@ -57,4 +57,12 @@ class CoachProfile extends Model
     {
         return $this->belongsToMany(Category::class, 'coach_category');
     }
+
+    /**
+     * Connection requests received by this coach.
+     */
+    public function receivedConnectionRequests()
+    {
+        return $this->hasMany(MessageRequest::class, 'receiver_id', 'user_id');
+    }
 }

@@ -125,7 +125,7 @@
                                             <th>Coach Name</th>
                                             <th>Expertise</th>
                                             <th>Status</th>
-                                            <th>Ranking</th>
+                                            <th>Connection Requests</th>
                                             <th class="text-end">Action</th>
                                         </tr>
                                     </thead>
@@ -168,21 +168,15 @@
                                                     @endif
                                                 </td>
                                                 <td>
-                                                    <i class="mdi mdi-trophy-variant-outline text-warning"></i>
-                                                    {{ $coach->current_rank ?? '-' }}
+                                                    <span class="badge bg-soft-primary text-primary">
+                                                        {{ $coach->connection_requests_count ?? 0 }}
+                                                    </span>
                                                 </td>
                                                 <td class="text-end">
                                                     <a href="{{ route('admin.coaches.edit', $coach->id) }}"
                                                         class="btn btn-sm btn-soft-info">
                                                         <i class="mdi mdi-pencil"></i> Manage
                                                     </a>
-
-                                                    <form action="{{ route('admin.coaches.destroy', $coach->id) }}"
-                                                        method="POST" class="d-inline delete-form">
-                                                        @csrf @method('DELETE')
-                                                        <button type="submit" class="btn btn-sm btn-soft-danger"><i
-                                                                class="mdi mdi-trash-can"></i></button>
-                                                    </form>
                                                 </td>
                                             </tr>
                                         @empty

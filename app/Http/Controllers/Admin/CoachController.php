@@ -82,17 +82,19 @@ class CoachController extends Controller
                     'designation',
                     'city',
                     'state',
+                    'country',
                     'linkedin_url',
                     'website_url',
                     'experience_years',
                     'bio',
-                    'ranking_score',
                     'current_rank',
                     'approval_status'
                 ]);
 
                 $profileData['user_id'] = $user->id;
                 $profileData['categories'] = $categoryIds;
+                $profileData['ranking_score'] = (int) $request->input('ranking_score', 0);
+                $profileData['current_rank'] = $request->filled('current_rank') ? (int) $request->input('current_rank') : null;
                 $profileData['is_visible'] = $request->has('is_visible') ? 1 : 0;
                 $profileData['is_featured'] = $request->has('is_featured') ? 1 : 0;
                 $profileData['show_personal_details'] = $request->has('show_personal_details') ? 1 : 0;
@@ -152,16 +154,16 @@ class CoachController extends Controller
                     'designation',
                     'city',
                     'state',
+                    'country',
                     'linkedin_url',
                     'website_url',
                     'experience_years',
                     'bio',
-                    'ranking_score',
-                    'current_rank',
                     'approval_status'
                 ]);
 
                 $profileData['categories'] = $categoryIds;
+                $profileData['ranking_score'] = (int) $request->input('ranking_score', 0);
                 $profileData['is_visible'] = $request->has('is_visible') ? 1 : 0;
                 $profileData['is_featured'] = $request->has('is_featured') ? 1 : 0;
                 $profileData['show_personal_details'] = $request->has('show_personal_details') ? 1 : 0;

@@ -20,4 +20,11 @@ class StoreCategoryRequest extends FormRequest
             'is_active' => 'boolean',
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'name.unique' => 'This category name already exists. Please choose a different name.',
+        ];
+    }
 }

@@ -6,14 +6,6 @@
                     <h4 class="fs-18 fw-semibold m-0">Edit Seeker Profile</h4>
                     <p class="mb-0 text-muted">User: {{ $seeker->user->name }}</p>
                 </div>
-                <div>
-                    @if ($seeker->is_verified)
-                        <span class="badge bg-success fs-14 px-3 py-2"><i class="mdi mdi-check-decagram"></i>
-                            Verified</span>
-                    @else
-                        <span class="badge bg-warning text-dark fs-14 px-3 py-2">Unverified</span>
-                    @endif
-                </div>
             </div>
 
             <div class="row">
@@ -59,26 +51,31 @@
                                         <input type="text" name="business_domain" class="form-control"
                                             value="{{ old('business_domain', $seeker->business_domain) }}">
                                     </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label class="form-label">City <span class="text-danger">*</span></label>
-                                        <input type="text" name="city" class="form-control"
-                                            value="{{ old('city', $seeker->city) }}">
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label class="form-label">State</label>
-                                        <input type="text" name="state" class="form-control"
-                                            value="{{ old('state', $seeker->state) }}">
+                                    <div class="col-12">
+                                        <div class="row g-3" data-india-location-picker
+                                            data-selected-state="{{ old('state', $seeker->state) }}"
+                                            data-selected-city="{{ old('city', $seeker->city) }}"
+                                            data-country-value="India">
+                                            <div class="col-md-4 mb-3">
+                                                <label class="form-label">State <span class="text-danger">*</span></label>
+                                                <select name="state" class="form-select" required>
+                                                    <option value="">Select state</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-4 mb-3">
+                                                <label class="form-label">City <span class="text-danger">*</span></label>
+                                                <select name="city" class="form-select" required disabled>
+                                                    <option value="">Select city</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-4 mb-3">
+                                                <label class="form-label">Country</label>
+                                                <input type="text" name="country" class="form-control bg-light"
+                                                    value="India" readonly>
+                                            </div>
+                                        </div>
                                     </div>
 
-                                    <div class="col-md-6 mb-3 d-none">
-                                        <label class="form-label">Verification Status</label>
-                                        <select name="is_verified" class="form-select">
-                                            <option value="1" {{ $seeker->is_verified ? 'selected' : '' }}>Verified
-                                            </option>
-                                            <option value="0" {{ !$seeker->is_verified ? 'selected' : '' }}>
-                                                Unverified</option>
-                                        </select>
-                                    </div>
                                 </div>
 
                                 <div class="col-12 mt-2">
@@ -129,7 +126,7 @@
                 $('#editSeekerForm').on('submit', function(e) {
                     let isValid = true;
                     $('.error-text').remove();
-                    $('.form-control').removeClass('is-invalid');
+                    $('.form-control, .form-select').removeClass('is-invalid');
 
                     // Name
                     let name = $('input[name="name"]');
@@ -146,9 +143,16 @@
                     }
 
                     // City
-                    let city = $('input[name="city"]');
+                    let city = $('select[name="city"]');
                     if (city.val().trim() === '') {
                         showError(city, 'City is required.');
+                        isValid = false;
+                    }
+
+                    // State
+                    let state = $('select[name="state"]');
+                    if (state.val().trim() === '') {
+                        showError(state, 'State is required.');
                         isValid = false;
                     }
 

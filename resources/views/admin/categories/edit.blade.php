@@ -23,6 +23,9 @@
                                     <label class="form-label fw-medium">Category Name <span class="text-danger">*</span></label>
                                     <input type="text" name="name" id="name" class="form-control"
                                         value="{{ old('name', $category->name) }}" required>
+                                    @error('name')
+                                        <div class="text-danger small mt-1">{{ $message }}</div>
+                                    @enderror
                                 </div>
 
                                 <div class="mb-3">

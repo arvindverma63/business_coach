@@ -19,9 +19,9 @@ class RegistrationController extends Controller
             'categories.*' => 'exists:categories,id',
             'gender' => 'nullable|string|in:male,female,other',
             'experience_years' => 'nullable|integer|min:0',
-            'city' => 'nullable|string|max:255',
-            'state' => 'nullable|string|max:255',
-            'country' => 'nullable|string|max:255',
+            'city' => 'required|string|max:255',
+            'state' => 'required|string|max:255',
+            'country' => 'required|in:India',
             'designation' => 'nullable|string|max:255',
             'company_name' => 'nullable|string|max:255',
             'bio' => 'nullable|string',
@@ -62,7 +62,7 @@ class RegistrationController extends Controller
                 'experience_years' => $validated['experience_years'] ?? null,
                 'city' => $validated['city'] ?? null,
                 'state' => $validated['state'] ?? null,
-                'country' => $validated['country'] ?? null,
+                'country' => 'India',
                 'designation' => $validated['designation'] ?? null,
                 'company_name' => $validated['company_name'] ?? null,
                 'bio' => $validated['bio'] ?? null,
@@ -93,8 +93,8 @@ class RegistrationController extends Controller
             'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'business_domain' => 'nullable|string|max:255',
             'company_name' => 'nullable|string|max:255',
-            'city' => 'nullable|string|max:255',
-            'state' => 'nullable|string|max:255',
+            'city' => 'required|string|max:255',
+            'state' => 'required|string|max:255',
         ]);
 
         // Handle profile image upload

@@ -96,6 +96,9 @@
 <div class="col-12 col-md-8">
     <div class="row g-3" id="cardsGrid">
         @forelse($topCoaches as $coach)
+            @php
+                $rankPosition = $topCoaches->firstItem() ? $topCoaches->firstItem() + $loop->index : $loop->iteration;
+            @endphp
             <div class="col-12 col-md-6">
                 <div class="coach-card">
                     {{-- Added overflow-hidden and a background color to the wrap --}}
@@ -112,8 +115,11 @@
                     <div class="coach-card-body">
                         <div class="coach-name">
                             <a href="{{ route('view-profile', $coach->id) }}" style="text-decoration: none; color: inherit;">
-                                {{ str_pad($coach->current_rank, 2, '0', STR_PAD_LEFT) }} {{ $coach->user->name }}
+                                {{ str_pad($rankPosition, 2, '0', STR_PAD_LEFT) }} {{ $coach->user->name }}
                             </a>
+                        </div>
+                        <div class="text-muted small mb-2">
+                            {{ $coach->connection_requests_count ?? 0 }} connection requests
                         </div>
                         <p class="coach-desc">
                             {{ Str::limit($coach->bio, 140) }}

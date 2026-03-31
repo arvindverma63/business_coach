@@ -137,20 +137,28 @@
                                 <label class="form-label fw-medium">Professional Bio</label>
                                 <textarea name="bio" class="form-control" rows="6">{{ old('bio', $user->coachProfile->bio ?? '') }}</textarea>
                             </div>
-                            <div class="col-md-4">
-                                <label class="form-label fw-medium">City</label>
-                                <input type="text" name="city" class="form-control"
-                                    value="{{ old('city', $user->coachProfile->city ?? '') }}">
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label fw-medium">State</label>
-                                <input type="text" name="state" class="form-control"
-                                    value="{{ old('state', $user->coachProfile->state ?? '') }}">
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label fw-medium">Country</label>
-                                <input type="text" name="country" class="form-control"
-                                    value="{{ old('country', $user->coachProfile->country ?? '') }}">
+                            <div class="col-12">
+                                <div class="row g-3" data-india-location-picker
+                                    data-selected-state="{{ old('state', $user->coachProfile->state ?? '') }}"
+                                    data-selected-city="{{ old('city', $user->coachProfile->city ?? '') }}"
+                                    data-country-value="India">
+                                    <div class="col-md-4">
+                                        <label class="form-label fw-medium">State</label>
+                                        <select name="state" class="form-select" required>
+                                            <option value="">Select state</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label fw-medium">City</label>
+                                        <select name="city" class="form-select" required disabled>
+                                            <option value="">Select city</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label fw-medium">Country</label>
+                                        <input type="text" name="country" class="form-control bg-light" value="India" readonly>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -49,9 +49,9 @@
                                             </td>
                                             <td>{{ $req->created_at->format('d M, Y H:i') }}</td>
                                             <td class="text-end px-3">
-                                                <form action="{{ route('admin.requests.destroy', $req->id) }}" method="POST" class="d-inline">
+                                                <form action="{{ route('admin.requests.destroy', $req->id) }}" method="POST" class="delete-form d-inline">
                                                     @csrf @method('DELETE')
-                                                    <button class="btn btn-sm btn-soft-danger confirm-delete">
+                                                    <button type="submit" class="btn btn-sm btn-soft-danger">
                                                         <i class="mdi mdi-trash-can-outline"></i>
                                                     </button>
                                                 </form>

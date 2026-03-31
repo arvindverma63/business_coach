@@ -39,9 +39,9 @@ class ProfileController extends Controller
             'experience_years' => 'nullable|integer',
             'linkedin_url' => 'nullable|url',
             'website_url' => 'nullable|url',
-            'city' => 'nullable|string',
-            'state' => 'nullable|string',
-            'country' => 'nullable|string',
+            'city' => 'required|string|max:255',
+            'state' => 'required|string|max:255',
+            'country' => 'required|in:India',
             'categories' => 'required|array',
             'categories.*' => 'exists:categories,id',
         ]);
@@ -57,12 +57,13 @@ class ProfileController extends Controller
         }
 
         $profileData = $request->only([
-            'company_name', 'designation', 'city', 'state', 'country',
+            'company_name', 'designation', 'city', 'state',
             'bio', 'linkedin_url', 'website_url', 'experience_years', 'gender',
             'show_personal_details'
         ]);
 
         $profileData['show_personal_details'] = $request->has('show_personal_details');
+        $profileData['country'] = 'India';
 
         $this->profileRepo->updateProfile(Auth::id(), $userData, $profileData);
 

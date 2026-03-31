@@ -85,17 +85,7 @@
                                 <input type="text" name="search" class="form-control" placeholder="Name or Email..."
                                     value="{{ request('search') }}">
                             </div>
-                            <div class="col-md-3">
-                                <label class="form-label">Verification Status</label>
-                                <select name="status" class="form-select">
-                                    <option value="">All Status</option>
-                                    <option value="verified" {{ request('status') == 'verified' ? 'selected' : '' }}>
-                                        Verified</option>
-                                    <option value="unverified"
-                                        {{ request('status') == 'unverified' ? 'selected' : '' }}>Unverified</option>
-                                </select>
-                            </div>
-                            <div class="col-md-5 d-flex align-items-end">
+                            <div class="col-md-4 d-flex align-items-end">
                                 <button type="submit" class="btn btn-primary me-2">
                                     <iconify-icon icon="tabler:filter" class="align-middle"></iconify-icon> Filter
                                 </button>
@@ -170,14 +160,6 @@
                                                         class="btn btn-sm btn-soft-info">
                                                         <i class="mdi mdi-eye-outline"></i> View
                                                     </a>
-
-                                                    <form action="{{ route('admin.seekers.destroy', $seeker->id) }}"
-                                                        method="POST" class="d-inline delete-form">
-                                                        @csrf @method('DELETE')
-                                                        <button type="submit" class="btn btn-sm btn-soft-danger">
-                                                            <i class="mdi mdi-trash-can"></i>
-                                                        </button>
-                                                    </form>
                                                 </td>
                                             </tr>
                                         @empty

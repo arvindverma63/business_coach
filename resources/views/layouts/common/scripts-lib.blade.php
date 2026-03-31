@@ -6,6 +6,10 @@
 <script src="{{ asset('assets/libs/waypoints/lib/jquery.waypoints.min.js') }}"></script>
 <script src="{{ asset('assets/libs/jquery.counterup/jquery.counterup.min.js') }}"></script>
 <script src="{{ asset('assets/libs/feather-icons/feather.min.js') }}"></script>
+<script>
+    window.INDIA_LOCATION_DATA_URL = "{{ asset('assets/data/statescities.json') }}";
+</script>
+<script src="{{ asset('assets/js/india-location-picker.js') }}"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 

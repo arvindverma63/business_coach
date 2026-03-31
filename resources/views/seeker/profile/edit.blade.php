@@ -68,24 +68,9 @@
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label fw-medium">Business Domain / Industry</label>
-                                    <select name="business_domain" class="form-select">
-                                        <option value="">Select Domain</option>
-                                        <option value="Real Estate"
-                                            {{ old('business_domain', $profile->business_domain ?? '') == 'Real Estate' ? 'selected' : '' }}>
-                                            Real Estate</option>
-                                        <option value="Technology"
-                                            {{ old('business_domain', $profile->business_domain ?? '') == 'Technology' ? 'selected' : '' }}>
-                                            Technology</option>
-                                        <option value="Retail"
-                                            {{ old('business_domain', $profile->business_domain ?? '') == 'Retail' ? 'selected' : '' }}>
-                                            Retail</option>
-                                        <option value="Healthcare"
-                                            {{ old('business_domain', $profile->business_domain ?? '') == 'Healthcare' ? 'selected' : '' }}>
-                                            Healthcare</option>
-                                        <option value="Finance"
-                                            {{ old('business_domain', $profile->business_domain ?? '') == 'Finance' ? 'selected' : '' }}>
-                                            Finance</option>
-                                    </select>
+                                    <input type="text" name="business_domain" class="form-control"
+                                        value="{{ old('business_domain', $profile->business_domain ?? '') }}"
+                                        placeholder="Enter your business domain or industry">
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label fw-medium">Company Name</label>

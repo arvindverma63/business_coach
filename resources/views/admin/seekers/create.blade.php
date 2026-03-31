@@ -56,23 +56,29 @@
                                             placeholder="e.g. Real Estate, Startups"
                                             value="{{ old('business_domain') }}">
                                     </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label class="form-label">City <span class="text-danger">*</span></label>
-                                        <input type="text" name="city" class="form-control"
-                                            value="{{ old('city') }}">
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label class="form-label">State</label>
-                                        <input type="text" name="state" class="form-control"
-                                            value="{{ old('state') }}">
-                                    </div>
-
-                                    <div class="col-md-6 mb-3 d-none">
-                                        <label class="form-label">Verification Status</label>
-                                        <select name="is_verified" class="form-select">
-                                            <option value="0">Unverified</option>
-                                            <option value="1">Verified</option>
-                                        </select>
+                                    <div class="col-12">
+                                        <div class="row g-3" data-india-location-picker
+                                            data-selected-state="{{ old('state') }}"
+                                            data-selected-city="{{ old('city') }}"
+                                            data-country-value="India">
+                                            <div class="col-md-4 mb-3">
+                                                <label class="form-label">State <span class="text-danger">*</span></label>
+                                                <select name="state" class="form-select" required>
+                                                    <option value="">Select state</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-4 mb-3">
+                                                <label class="form-label">City <span class="text-danger">*</span></label>
+                                                <select name="city" class="form-select" required disabled>
+                                                    <option value="">Select city</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-4 mb-3">
+                                                <label class="form-label">Country</label>
+                                                <input type="text" name="country" class="form-control bg-light"
+                                                    value="India" readonly>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -106,7 +112,7 @@
                 $('#createSeekerForm').on('submit', function(e) {
                     let isValid = true;
                     $('.error-text').remove();
-                    $('.form-control').removeClass('is-invalid');
+                    $('.form-control, .form-select').removeClass('is-invalid');
 
                     // Name
                     let name = $('input[name="name"]');
@@ -133,8 +139,15 @@
                         isValid = false;
                     }
 
+                    // State
+                    let state = $('select[name="state"]');
+                    if (state.val().trim() === '') {
+                        showError(state, 'State is required.');
+                        isValid = false;
+                    }
+
                     // City
-                    let city = $('input[name="city"]');
+                    let city = $('select[name="city"]');
                     if (city.val().trim() === '') {
                         showError(city, 'City is required.');
                         isValid = false;

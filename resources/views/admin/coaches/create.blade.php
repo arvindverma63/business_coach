@@ -100,18 +100,34 @@
                                         <label class="form-label">Company Name</label>
                                         <input type="text" name="company_name" class="form-control">
                                     </div>
-                                    <div class="col-md-4 mb-3">
-                                        <label class="form-label">City <span class="text-danger">*</span></label>
-                                        <input type="text" name="city" class="form-control">
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <label class="form-label">State</label>
-                                        <input type="text" name="state" class="form-control">
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <label class="form-label">Total Experience (Years)</label>
-                                        <input type="number" name="experience_years" class="form-control"
-                                            value="0">
+                                    <div class="col-12">
+                                        <div class="row g-3" data-india-location-picker
+                                            data-selected-state="{{ old('state') }}"
+                                            data-selected-city="{{ old('city') }}"
+                                            data-country-value="India">
+                                            <div class="col-md-3 mb-3">
+                                                <label class="form-label">State <span class="text-danger">*</span></label>
+                                                <select name="state" class="form-select" required>
+                                                    <option value="">Select state</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-3 mb-3">
+                                                <label class="form-label">City <span class="text-danger">*</span></label>
+                                                <select name="city" class="form-select" required disabled>
+                                                    <option value="">Select city</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-3 mb-3">
+                                                <label class="form-label">Country</label>
+                                                <input type="text" name="country" class="form-control bg-light"
+                                                    value="India" readonly>
+                                            </div>
+                                            <div class="col-md-3 mb-3">
+                                                <label class="form-label">Total Experience (Years)</label>
+                                                <input type="number" name="experience_years" class="form-control"
+                                                    value="0">
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">LinkedIn URL</label>
@@ -245,6 +261,11 @@
                     let url = form.attr('action');
                     let formData = new FormData(this);
                     let btn = $('#btnSubmit');
+
+                    if (!this.checkValidity()) {
+                        this.reportValidity();
+                        return;
+                    }
 
                     // Reset errors
                     $('.error-text').remove();

@@ -31,7 +31,14 @@ class PageController extends Controller
             ->take(3)
             ->get();
 
-        $featuredCoaches = \App\Models\CoachProfile::with('user')->where('is_featured', 1)->take(6)->get();
+        $featuredCoaches = \App\Models\CoachProfile::with('user')
+            ->withCount(['receivedConnectionRequests as connection_requests_count'])
+            ->where('is_featured', 1)
+            ->orderByRaw('COALESCE(NULLIF(ranking_score, 0), connection_requests_count) DESC')
+            ->orderByDesc('connection_requests_count')
+            ->orderByDesc('ranking_score')
+            ->take(6)
+            ->get();
 
         return view('webapp.index', compact('categories', 'cities', 'featuredCoaches','blogs'));
     }
@@ -61,6 +68,7 @@ class PageController extends Controller
     public function rank(Request $request)
     {
         $query = \App\Models\CoachProfile::with('user')
+            ->withCount(['receivedConnectionRequests as connection_requests_count'])
             ->where('approval_status', 'approved')
             ->where('is_featured', 1);
 
@@ -75,7 +83,11 @@ class PageController extends Controller
             $query->whereIn('city', (array)$request->city);
         }
         $blogs = $this->blogRepository->getAll(12);
-        $topCoaches = $query->orderBy('current_rank', 'asc')->paginate(10);
+        $topCoaches = $query
+            ->orderByRaw('COALESCE(NULLIF(ranking_score, 0), connection_requests_count) DESC')
+            ->orderByDesc('connection_requests_count')
+            ->orderByDesc('ranking_score')
+            ->paginate(10);
 
 
         return view('webapp.rank', compact('topCoaches', 'blogs', 'filterCities'));
@@ -102,6 +114,7 @@ class PageController extends Controller
         $city = $request->input('city');
 
         $queryBuilder = \App\Models\CoachProfile::with('user')
+            ->withCount(['receivedConnectionRequests as connection_requests_count'])
             ->where('approval_status', 'approved')
             ->where('is_featured', true);
 
@@ -120,7 +133,11 @@ class PageController extends Controller
             });
         }
 
-        $results = $queryBuilder->orderBy('current_rank', 'asc')->paginate(10);
+        $results = $queryBuilder
+            ->orderByRaw('COALESCE(NULLIF(ranking_score, 0), connection_requests_count) DESC')
+            ->orderByDesc('connection_requests_count')
+            ->orderByDesc('ranking_score')
+            ->paginate(10);
 
         $categories = \App\Models\Category::where('is_active', 1)->get();
 
@@ -139,12 +156,19 @@ class PageController extends Controller
             ->take(6)
             ->get();
 
+        $connectionRequest = null;
+        if (auth()->check() && auth()->user()->user_type === 3) {
+            $connectionRequest = \App\Models\MessageRequest::where('sender_id', auth()->id())
+                ->where('receiver_id', $coach->user_id)
+                ->first();
+        }
+
         $blogs = \App\Models\Blog::where('is_published', true)
             ->latest()
             ->take(3)
             ->get();
 
-        return view('webapp.view-profile', compact('coach', 'coachBlogs', 'blogs'));
+        return view('webapp.view-profile', compact('coach', 'coachBlogs', 'blogs', 'connectionRequest'));
     }
 
     public function privacyPolicy(){

@@ -47,16 +47,6 @@
                                                         class="btn btn-sm btn-soft-info">
                                                         <i class="mdi mdi-pencil"></i>
                                                     </a>
-
-                                                    <form
-                                                        action="{{ route('admin.categories.destroy', $category->id) }}"
-                                                        method="POST" class="d-inline delete-form">
-                                                        @csrf @method('DELETE')
-                                                        <button type="submit" class="btn btn-sm btn-soft-danger"
-                                                            onclick="return confirm('Are you sure? removing this category will detach it from all coaches.')">
-                                                            <i class="mdi mdi-trash-can"></i>
-                                                        </button>
-                                                    </form>
                                                 </td>
                                             </tr>
                                         @empty

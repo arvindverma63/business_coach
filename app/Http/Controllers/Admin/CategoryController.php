@@ -45,10 +45,12 @@ class CategoryController extends Controller
     {
         // Simple validation here or use a FormRequest
         $data = $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:categories,name,' . $id,
             'slug' => 'nullable|string|max:255|unique:categories,slug,'.$id,
             'icon_class' => 'nullable|string|max:100',
             'is_active' => 'sometimes|boolean', // sometimes because checkbox sends nothing if unchecked
+        ], [
+            'name.unique' => 'This category name already exists. Please choose a different name.',
         ]);
         
         // Handle checkbox unchecked state manually if needed, or rely on 'sometimes' logic

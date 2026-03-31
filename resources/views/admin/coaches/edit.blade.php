@@ -92,17 +92,38 @@
                                         <label class="form-label">Company</label>
                                         <input type="text" name="company_name" class="form-control" value="{{ old('company_name', $coach->company_name) }}">
                                     </div>
-                                    <div class="col-md-4 mb-3">
-                                        <label class="form-label">City <span class="text-danger">*</span></label>
-                                        <input type="text" name="city" class="form-control" value="{{ old('city', $coach->city) }}">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Ranking Score / Manual Override</label>
+                                        <input type="number" name="ranking_score" class="form-control" value="{{ old('ranking_score', $coach->ranking_score) }}" min="0">
+                                        <small class="text-muted d-block mt-1">The coach list is ordered by connection requests first. Use this only for manual adjustments.</small>
                                     </div>
-                                    <div class="col-md-4 mb-3">
-                                        <label class="form-label">State</label>
-                                        <input type="text" name="state" class="form-control" value="{{ old('state', $coach->state) }}">
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <label class="form-label">Experience (Years)</label>
-                                        <input type="number" name="experience_years" class="form-control" value="{{ old('experience_years', $coach->experience_years) }}">
+                                    <div class="col-12">
+                                        <div class="row g-3" data-india-location-picker
+                                            data-selected-state="{{ old('state', $coach->state ?? '') }}"
+                                            data-selected-city="{{ old('city', $coach->city ?? '') }}"
+                                            data-country-value="India">
+                                            <div class="col-md-3 mb-3">
+                                                <label class="form-label">State <span class="text-danger">*</span></label>
+                                                <select name="state" class="form-select" required>
+                                                    <option value="">Select state</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-3 mb-3">
+                                                <label class="form-label">City <span class="text-danger">*</span></label>
+                                                <select name="city" class="form-select" required disabled>
+                                                    <option value="">Select city</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-3 mb-3">
+                                                <label class="form-label">Country</label>
+                                                <input type="text" name="country" class="form-control bg-light"
+                                                    value="India" readonly>
+                                            </div>
+                                            <div class="col-md-3 mb-3">
+                                                <label class="form-label">Experience (Years)</label>
+                                                <input type="number" name="experience_years" class="form-control" value="{{ old('experience_years', $coach->experience_years) }}">
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">LinkedIn URL</label>
@@ -156,13 +177,14 @@
                                 @csrf @method('PATCH')
                                 <div class="d-grid gap-2">
                                     @if ($coach->approval_status !== 'approved')
-                                        <button name="status" value="approved" class="btn btn-success"><i class="mdi mdi-check-circle-outline me-1"></i> Approve Coach</button>
-                                    @endif
-                                    @if ($coach->approval_status !== 'rejected')
-                                        <button name="status" value="rejected" class="btn btn-outline-danger"><i class="mdi mdi-close-circle-outline me-1"></i> Reject Application</button>
+                                        <button name="status" value="approved" class="btn btn-success">
+                                            <i class="mdi mdi-check-circle-outline me-1"></i> Approved
+                                        </button>
                                     @endif
                                     @if ($coach->approval_status !== 'pending')
-                                        <button name="status" value="pending" class="btn btn-link text-muted">Mark as Pending</button>
+                                        <button name="status" value="pending" class="btn btn-outline-secondary">
+                                            <i class="mdi mdi-close-circle-outline me-1"></i> Unapproved
+                                        </button>
                                     @endif
                                 </div>
                             </form>
@@ -172,8 +194,8 @@
                     <div class="card">
                         <div class="card-header"><h5 class="card-title mb-0">Platform Stats</h5></div>
                         <div class="card-body">
-                            <div class="d-flex justify-content-between mb-3"><span class="text-muted">Current Rank</span><span class="fw-bold">#{{ $coach->current_rank ?? 'N/A' }}</span></div>
-                            <div class="d-flex justify-content-between mb-3"><span class="text-muted">Ranking Score</span><span class="fw-bold">{{ $coach->ranking_score }}</span></div>
+                            <div class="d-flex justify-content-between mb-3"><span class="text-muted">Connection Requests</span><span class="fw-bold">{{ $coach->connection_requests_count ?? 0 }}</span></div>
+                            <div class="d-flex justify-content-between mb-3"><span class="text-muted">Manual Rating</span><span class="fw-bold">{{ $coach->ranking_score }}</span></div>
                             <div class="d-flex justify-content-between mb-3"><span class="text-muted">Total Views</span><span class="fw-bold">{{ $coach->profile_views }}</span></div>
                             <div class="d-flex justify-content-between"><span class="text-muted">Interactions</span><span class="fw-bold">{{ $coach->total_interactions }}</span></div>
                         </div>
@@ -239,9 +261,10 @@
                 $('#editCoachForm').on('submit', function(e) {
                     let isValid = true;
                     $('.error-text').remove();
-                    $('.form-control').removeClass('is-invalid');
+                    $('.form-control, .form-select').removeClass('is-invalid');
                     if ($('input[name="name"]').val().trim() === '') { showError($('input[name="name"]'), 'Name is required'); isValid = false; }
-                    if ($('input[name="city"]').val().trim() === '') { showError($('input[name="city"]'), 'City is required'); isValid = false; }
+                    if ($('[name="state"]').val().trim() === '') { showError($('[name="state"]'), 'State is required'); isValid = false; }
+                    if ($('[name="city"]').val().trim() === '') { showError($('[name="city"]'), 'City is required'); isValid = false; }
                     if ($('#phoneInput').val().trim() !== '+91' && !/^\+91\d{10}$/.test($('#phoneInput').val().trim())) { showError($('#phoneInput'), 'Phone number must be 10 digits after +91.'); isValid = false; }
                     if (!isValid) { e.preventDefault(); $('html, body').animate({ scrollTop: $(".is-invalid").first().offset().top - 100 }, 500); }
                 });
