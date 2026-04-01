@@ -4,6 +4,7 @@ namespace App\Repositories\Eloquent;
 
 use App\Models\Blog;
 use App\Models\BlogComment;
+use App\Models\MessageRequest;
 use App\Repositories\Contracts\CoachDashboardRepositoryInterface;
 use Illuminate\Support\Facades\DB;
 
@@ -13,11 +14,8 @@ class EloquentCoachDashboardRepository implements CoachDashboardRepositoryInterf
     {
         return [
             'total_blogs' => Blog::where('user_id', $coachId)->count(),
-            'total_views' => Blog::where('user_id', $coachId)->sum('view_count'),
+            'requests' => MessageRequest::where('receiver_id', $coachId)->count(),
             'published_posts' => Blog::where('user_id', $coachId)->where('is_published', true)->count(),
-            'pending_comments' => BlogComment::whereHas('blog', function($query) use ($coachId) {
-                $query->where('user_id', $coachId);
-            })->where('status', 'pending')->count(),
         ];
     }
 

@@ -178,12 +178,12 @@
                                 <div class="d-grid gap-2">
                                     @if ($coach->approval_status !== 'approved')
                                         <button name="status" value="approved" class="btn btn-success">
-                                            <i class="mdi mdi-check-circle-outline me-1"></i> Approved
+                                            <i class="mdi mdi-check-circle-outline me-1"></i> Approve
                                         </button>
                                     @endif
                                     @if ($coach->approval_status !== 'pending')
                                         <button name="status" value="pending" class="btn btn-outline-secondary">
-                                            <i class="mdi mdi-close-circle-outline me-1"></i> Unapproved
+                                            <i class="mdi mdi-close-circle-outline me-1"></i> Unapprove
                                         </button>
                                     @endif
                                 </div>
@@ -194,10 +194,8 @@
                     <div class="card">
                         <div class="card-header"><h5 class="card-title mb-0">Platform Stats</h5></div>
                         <div class="card-body">
-                            <div class="d-flex justify-content-between mb-3"><span class="text-muted">Connection Requests</span><span class="fw-bold">{{ $coach->connection_requests_count ?? 0 }}</span></div>
-                            <div class="d-flex justify-content-between mb-3"><span class="text-muted">Manual Rating</span><span class="fw-bold">{{ $coach->ranking_score }}</span></div>
-                            <div class="d-flex justify-content-between mb-3"><span class="text-muted">Total Views</span><span class="fw-bold">{{ $coach->profile_views }}</span></div>
-                            <div class="d-flex justify-content-between"><span class="text-muted">Interactions</span><span class="fw-bold">{{ $coach->total_interactions }}</span></div>
+                            <div class="d-flex justify-content-between mb-3"><span class="text-muted">Requests</span><span class="fw-bold">{{ $coach->connection_requests_count ?? 0 }}</span></div>
+                            <div class="d-flex justify-content-between"><span class="text-muted">Manual Rating</span><span class="fw-bold">{{ $coach->ranking_score }}</span></div>
                         </div>
                     </div>
                 </div>

@@ -546,30 +546,52 @@
             function validateSeekerForm() {
                 let isValid = true;
                 const errors = [];
+                const $form = $('#seekerRegistrationForm');
 
                 // Full Name validation
-                const name = $('#seekerRegistrationForm input[name="name"]').val().trim();
+                const name = $form.find('input[name="name"]').val().trim();
                 if (!name) {
                     isValid = false;
                     errors.push('Full Name is required');
-                    $('#seekerRegistrationForm input[name="name"]').addClass('is-invalid');
+                    $form.find('input[name="name"]').addClass('is-invalid');
                 } else {
-                    $('#seekerRegistrationForm input[name="name"]').removeClass('is-invalid');
+                    $form.find('input[name="name"]').removeClass('is-invalid');
                 }
 
                 // Email validation
-                const email = $('#seekerRegistrationForm input[name="email"]').val().trim();
+                const email = $form.find('input[name="email"]').val().trim();
                 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                 if (!email) {
                     isValid = false;
                     errors.push('Email is required');
-                    $('#seekerRegistrationForm input[name="email"]').addClass('is-invalid');
+                    $form.find('input[name="email"]').addClass('is-invalid');
                 } else if (!emailRegex.test(email)) {
                     isValid = false;
                     errors.push('Please enter a valid email');
-                    $('#seekerRegistrationForm input[name="email"]').addClass('is-invalid');
+                    $form.find('input[name="email"]').addClass('is-invalid');
                 } else {
-                    $('#seekerRegistrationForm input[name="email"]').removeClass('is-invalid');
+                    $form.find('input[name="email"]').removeClass('is-invalid');
+                }
+
+                const stateInput = $form.find('select[name="state"]');
+                const cityInput = $form.find('select[name="city"]');
+                const state = stateInput.val().trim();
+                const city = cityInput.val().trim();
+
+                if (!state) {
+                    isValid = false;
+                    errors.push('State is required');
+                    stateInput.addClass('is-invalid');
+                } else {
+                    stateInput.removeClass('is-invalid');
+                }
+
+                if (!city) {
+                    isValid = false;
+                    errors.push('City is required');
+                    cityInput.addClass('is-invalid');
+                } else {
+                    cityInput.removeClass('is-invalid');
                 }
 
                 if (!isValid && errors.length > 0) {
@@ -825,17 +847,27 @@
 
                     <div class="form-section-title mt-2">Location</div>
 
-                    <!-- Row 4: City + State -->
-                    <div class="row g-3 mb-3">
-                        <div class="col-12 col-sm-6">
-                            <label class="form-label">City</label>
-                            <input type="text" name="city" class="form-control" value=""
-                                placeholder="City" />
+                    <!-- Row 4: State + City + Country -->
+                    <div class="row g-3 mb-3" data-india-location-picker
+                        data-selected-state="{{ old('state') }}"
+                        data-selected-city="{{ old('city') }}"
+                        data-country-value="India">
+                        <div class="col-12 col-sm-4">
+                            <label class="form-label">State <span class="text-danger">*</span></label>
+                            <select name="state" class="form-select" required>
+                                <option value="">Select state</option>
+                            </select>
                         </div>
-                        <div class="col-12 col-sm-6">
-                            <label class="form-label">State</label>
-                            <input type="text" name="state" class="form-control" value=""
-                                placeholder="State" />
+                        <div class="col-12 col-sm-4">
+                            <label class="form-label">City <span class="text-danger">*</span></label>
+                            <select name="city" class="form-select" required disabled>
+                                <option value="">Select city</option>
+                            </select>
+                        </div>
+                        <div class="col-12 col-sm-4">
+                            <label class="form-label">Country</label>
+                            <input type="text" name="country" class="form-control bg-light"
+                                value="India" readonly />
                         </div>
                     </div>
                 </form>

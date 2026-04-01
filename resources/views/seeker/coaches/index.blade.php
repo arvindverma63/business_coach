@@ -24,9 +24,10 @@
                 @php
                     $existingReq = \App\Models\MessageRequest::where('sender_id', auth()->id())
                         ->where('receiver_id', $coach->id)
+                        ->whereIn('status', ['pending', 'accepted'])
                         ->first();
                     $expertiseCategories = $coach->coachProfile?->categories ?? collect();
-                    $coachContents = $coach->blogs ?? collect();
+                    $coachContents = $coach->blogs->concat($coach->mediaGallery ?? collect());
                     $contentCategories = $coachContents->pluck('category')->filter()->unique('id')->sortBy('name')->values();
                 @endphp
 
@@ -54,12 +55,6 @@
                             <div class="d-flex flex-wrap justify-content-center gap-1 mb-3">
                                 @if ($expertiseCategories->isNotEmpty())
                                     @foreach ($expertiseCategories->take(2) as $cat)
-                                        <span
-                                            class="badge bg-soft-info text-info border border-info-subtle text-truncate"
-                                            style="max-width: 130px;">{{ $cat->name }}</span>
-                                    @endforeach
-                                @elseif ($coach->categories && $coach->categories->isNotEmpty())
-                                    @foreach ($coach->categories->take(2) as $cat)
                                         <span
                                             class="badge bg-soft-info text-info border border-info-subtle text-truncate"
                                             style="max-width: 130px;">{{ $cat->name }}</span>
@@ -279,41 +274,58 @@
 
                                 <div class="row g-3" id="coachContentList{{ $coach->id }}">
                                     @forelse ($coachContents as $content)
+                                        @php
+                                            $isBlog = $content instanceof \App\Models\Blog;
+                                        @endphp
                                         <div class="col-md-6 coach-content-item-{{ $coach->id }}"
                                             data-title="{{ \Illuminate\Support\Str::lower($content->title) }}"
-                                            data-body="{{ \Illuminate\Support\Str::lower(strip_tags($content->content)) }}"
+                                            data-body="{{ \Illuminate\Support\Str::lower($isBlog ? strip_tags($content->content) : $content->title) }}"
                                             data-category="{{ \Illuminate\Support\Str::lower($content->category->name ?? 'uncategorized') }}">
                                             <div class="card border-0 shadow-sm h-100">
                                                 <div class="card-body">
                                                     <div class="d-flex align-items-start gap-3">
                                                         <div class="flex-shrink-0">
-                                                            @if ($content->featured_image)
+                                                            @if ($isBlog && $content->featured_image)
                                                                 <img src="{{ asset('storage/' . $content->featured_image) }}"
+                                                                    alt="{{ $content->title }}"
+                                                                    class="rounded"
+                                                                    style="width: 72px; height: 72px; object-fit: cover;">
+                                                            @elseif (!$isBlog && $content->file_type === 'image')
+                                                                <img src="{{ asset($content->url) }}"
                                                                     alt="{{ $content->title }}"
                                                                     class="rounded"
                                                                     style="width: 72px; height: 72px; object-fit: cover;">
                                                             @else
                                                                 <div class="rounded bg-light d-flex align-items-center justify-content-center"
                                                                     style="width: 72px; height: 72px;">
-                                                                    <i class="mdi mdi-file-document-outline fs-28 text-muted"></i>
+                                                                    <i class="mdi {{ $isBlog ? 'mdi-file-document-outline' : $content->icon }} fs-28 text-muted"></i>
                                                                 </div>
                                                             @endif
                                                         </div>
                                                         <div class="flex-grow-1">
                                                             <div class="d-flex flex-wrap gap-2 mb-2">
-                                                                <span class="badge bg-soft-primary text-primary border border-primary-subtle">Blog</span>
+                                                                <span class="badge bg-soft-primary text-primary border border-primary-subtle">
+                                                                    {{ $isBlog ? 'Blog' : ucfirst($content->file_type) }}
+                                                                </span>
                                                                 <span class="badge bg-light text-dark border">{{ $content->category->name ?? 'Uncategorized' }}</span>
                                                             </div>
                                                             <h5 class="fw-bold fs-16 mb-2">{{ $content->title }}</h5>
                                                             <p class="text-muted small mb-3">
-                                                                {{ \Illuminate\Support\Str::limit(strip_tags($content->content), 130) }}
+                                                                {{ \Illuminate\Support\Str::limit($isBlog ? strip_tags($content->content) : $content->title, 130) }}
                                                             </p>
                                                             <div class="d-flex align-items-center justify-content-between gap-3">
                                                                 <small class="text-muted">{{ $content->created_at?->format('d M Y') }}</small>
-                                                                <a href="{{ route('blog-detail', $content->slug) }}"
-                                                                    class="btn btn-outline-primary btn-sm" target="_blank">
-                                                                    Read More
-                                                                </a>
+                                                                @if ($isBlog)
+                                                                    <a href="{{ route('blog-detail', $content->slug) }}"
+                                                                        class="btn btn-outline-primary btn-sm" target="_blank">
+                                                                        Read More
+                                                                    </a>
+                                                                @else
+                                                                    <a href="{{ asset($content->url) }}"
+                                                                        class="btn btn-outline-primary btn-sm" target="_blank">
+                                                                        View File
+                                                                    </a>
+                                                                @endif
                                                             </div>
                                                         </div>
                                                     </div>
@@ -367,7 +379,7 @@
 
             @empty
                 <div class="col-12 text-center py-5">
-                    <img src="{{ asset('assets/images/no-results.png') }}" class="mb-3"
+                    <img src="{{ asset('assets/images/svg/404-error.svg') }}" alt="No results found" class="mb-3"
                         style="width: 100px; opacity: 0.5;">
                     <h5 class="text-muted">No coaches match your search criteria.</h5>
                     <a href="{{ route('seeker.coaches.index') }}" class="btn btn-link">Reset Filters</a>

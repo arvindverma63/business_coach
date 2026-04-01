@@ -52,7 +52,7 @@
                                                 class="badge bg-light text-dark border">{{ $blog->category->name }}</span>
                                         </td>
                                         <td>
-                                            @if ($blog->is_published)
+                                            @if ((bool) $blog->is_published)
                                                 <span class="badge bg-success-subtle text-success">Published</span>
                                             @else
                                                 <span class="badge bg-warning-subtle text-warning">Pending</span>

@@ -26,8 +26,13 @@ class CoachesImport implements ToModel, WithHeadingRow, WithValidation
                 'password' => Hash::make('password'), // You might want to randomize this or send via email
                 'user_type' => 2, // Coach
                 'status' => 1,
+                'phone' => $row['phone'] ?? null,
             ]
         );
+
+        if (!empty($row['phone']) && $user->phone !== $row['phone']) {
+            $user->update(['phone' => $row['phone']]);
+        }
 
         // 2. Check if this user already has a Coach Profile
         $existingProfile = CoachProfile::where('user_id', $user->id)->first();
@@ -38,6 +43,7 @@ class CoachesImport implements ToModel, WithHeadingRow, WithValidation
                 'designation'      => $row['designation'] ?? $existingProfile->designation,
                 'company_name'     => $row['company_name'] ?? $existingProfile->company_name,
                 'city'             => $row['city'] ?? $existingProfile->city,
+                'state'            => $row['state'] ?? $existingProfile->state,
                 'experience_years' => $row['experience_years'] ?? $existingProfile->experience_years,
                 'linkedin_url'     => $row['linkedin_url'] ?? $existingProfile->linkedin_url,
             ]);
@@ -52,6 +58,7 @@ class CoachesImport implements ToModel, WithHeadingRow, WithValidation
             'designation'      => $row['designation'] ?? null,
             'company_name'     => $row['company_name'] ?? null,
             'city'             => $row['city'] ?? null,
+            'state'            => $row['state'] ?? null,
             'experience_years' => $row['experience_years'] ?? 0,
             'linkedin_url'     => $row['linkedin_url'] ?? null,
             'approval_status'  => 'approved',

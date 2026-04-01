@@ -11,7 +11,7 @@
                     <div class="mb-3">
                         <iconify-icon icon="tabler:shield-lock" class="text-primary fs-48"></iconify-icon>
                     </div>
-                    <h3 class="fw-bold text-dark">Welcome Back</h3>
+                    <h3 class="fw-bold text-dark">Welcome </h3>
                     {{-- <p class="text-muted small">Enter your email to receive a secure login code.</p> --}}
                 </div>
 

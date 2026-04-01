@@ -276,8 +276,7 @@
                                         Configuration</a></li>
                                 <li><a href="{{ route('admin.settings.social-links') }}" class="tp-link">Social Links</a>
                                 </li>
-                                <li><a href="{{ route('admin.settings.page-setting') }}" class="tp-link">Page
-                                        Settings</a></li>
+
                             </ul>
                         </div>
                     </li>

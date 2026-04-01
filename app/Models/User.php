@@ -93,4 +93,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Blog::class, 'user_id');
     }
+
+    public function mediaGallery()
+    {
+        return $this->hasMany(MediaGallery::class, 'uploaded_by');
+    }
 }

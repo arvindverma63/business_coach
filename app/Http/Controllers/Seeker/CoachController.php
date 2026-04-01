@@ -24,6 +24,9 @@ class CoachController extends Controller
                         ->where('is_published', true)
                         ->latest();
                 },
+                'mediaGallery' => function ($query) {
+                    $query->with('category')->latest();
+                },
             ])
             ->where('user_type', 2) // Coach
             ->whereHas('coachProfile', function ($q) {
@@ -36,7 +39,7 @@ class CoachController extends Controller
 
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', '%' . $search . '%')
-                    ->orWhereHas('categories', function ($catQuery) use ($search) {
+                    ->orWhereHas('coachProfile.categories', function ($catQuery) use ($search) {
                         $catQuery->where('name', 'like', '%' . $search . '%');
                     });
             });
@@ -54,6 +57,7 @@ class CoachController extends Controller
         // 1. Prevent duplicate requests using the repository check
         $existingRequest = \App\Models\MessageRequest::where('sender_id', $seekerId)
             ->where('receiver_id', $coachId)
+            ->whereIn('status', ['pending', 'accepted'])
             ->first();
 
         if ($existingRequest) {

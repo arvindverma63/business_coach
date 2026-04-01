@@ -4,6 +4,7 @@
             <div class="py-3">
                 <h4 class="fs-18 fw-bold m-0">Global Connection Requests</h4>
                 <p class="text-muted font-size-13">Monitor and manage handshakes between seekers and coaches.</p>
+                <p class="text-muted font-size-12 mb-0">The delete button removes this log entry from admin records only; it does not affect the original seeker/coach accounts.</p>
             </div>
 
             <div class="row">
@@ -34,7 +35,7 @@
                                                 <br><small class="text-muted">{{ $req->receiver->email }}</small>
                                             </td>
                                             <td>
-                                                <small class="text-muted text-truncate d-inline-block" style="max-width: 150px;" title="{{ $req->message }}">
+                                                <small class="text-muted" style="display:block; max-width: 420px; white-space: normal; word-break: break-word;">
                                                     {{ $req->message ?? 'N/A' }}
                                                 </small>
                                             </td>
@@ -51,7 +52,7 @@
                                             <td class="text-end px-3">
                                                 <form action="{{ route('admin.requests.destroy', $req->id) }}" method="POST" class="delete-form d-inline">
                                                     @csrf @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-soft-danger">
+                                                    <button type="submit" class="btn btn-sm btn-soft-danger" title="Delete this log entry">
                                                         <i class="mdi mdi-trash-can-outline"></i>
                                                     </button>
                                                 </form>

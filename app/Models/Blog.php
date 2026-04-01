@@ -27,6 +27,11 @@ class Blog extends Model
         'view_count'
     ];
 
+    protected $casts = [
+        'is_published' => 'boolean',
+        'view_count' => 'integer',
+    ];
+
     protected static function boot()
     {
         parent::boot();

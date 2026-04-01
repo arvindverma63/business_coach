@@ -140,7 +140,7 @@
                                             id="blog-preview" class="img-fluid rounded mb-2"
                                             style="max-height: 120px; width: 100%; object-fit: cover;">
                                         <input type="file" name="featured_image" class="form-control form-control-sm"
-                                            onchange="previewBlogImg(this)">
+                                            accept="image/*" onchange="previewBlogImg(this)">
                                     </div>
                                 </div>
 
@@ -191,11 +191,17 @@
 
             function previewBlogImg(input) {
                 if (input.files && input.files[0]) {
+                    var file = input.files[0];
+                    if (!file.type.startsWith('image/')) {
+                        alert('Please select a valid image file for the cover image.');
+                        input.value = '';
+                        return;
+                    }
                     var reader = new FileReader();
                     reader.onload = function(e) {
                         $('#blog-preview').attr('src', e.target.result);
                     }
-                    reader.readAsDataURL(input.files[0]);
+                    reader.readAsDataURL(file);
                 }
             }
         </script>

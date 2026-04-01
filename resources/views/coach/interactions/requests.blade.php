@@ -60,12 +60,26 @@
                                             <td>
                                                 <span class="text-muted text-truncate d-inline-block"
                                                     style="max-width: 200px;" title="{{ $request->message }}">
-                                                    {{ $request->message ?? 'No introductory message.' }}
+                                                    {{ \Illuminate\Support\Str::limit($request->message ?? 'No introductory message.', 60) }}
                                                 </span>
+                                                @if($request->message)
+                                                    <div>
+                                                        <a href="#" class="text-primary small"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#requestDetailsModal{{ $request->id }}">
+                                                            View full message
+                                                        </a>
+                                                    </div>
+                                                @endif
                                             </td>
                                             <td>{{ $request->created_at->format('d M, Y') }}</td>
                                             <td class="text-end">
                                                 <div class="d-flex justify-content-end gap-2">
+                                                    <button type="button" class="btn btn-sm btn-soft-info px-3"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#requestDetailsModal{{ $request->id }}">
+                                                        <i class="mdi mdi-eye-outline me-1"></i> Details
+                                                    </button>
                                                     <form
                                                         action="{{ route('coach.requests.update', [$request->id, 'accepted']) }}"
                                                         method="POST">
@@ -102,6 +116,57 @@
                                 </tbody>
                             </table>
                         </div>
+
+                        @foreach($requests as $request)
+                            <div class="modal fade" id="requestDetailsModal{{ $request->id }}" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Seeker Request Details</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="row g-4">
+                                                <div class="col-md-4 text-center">
+                                                    @if ($request->sender->profile_image)
+                                                        <img src="{{ asset($request->sender->profile_image) }}"
+                                                            class="rounded-circle mb-3" alt="{{ $request->sender->name }}"
+                                                            style="width: 120px; height: 120px; object-fit: cover;">
+                                                    @else
+                                                        <div class="avatar-lg bg-soft-primary rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center"
+                                                            style="width: 120px; height: 120px;">
+                                                            <span class="text-primary fw-bold fs-2">{{ substr($request->sender->name, 0, 1) }}</span>
+                                                        </div>
+                                                    @endif
+
+                                                    <h5 class="mb-1">{{ $request->sender->name }}</h5>
+                                                    <p class="text-muted mb-1">{{ $request->sender->email }}</p>
+                                                    <p class="text-muted mb-1">Phone: {{ $request->sender->phone ?? 'N/A' }}</p>
+                                                    @if ($request->sender->seekerProfile)
+                                                        <p class="text-muted mb-1">City: {{ $request->sender->seekerProfile->city ?? 'N/A' }}</p>
+                                                        <p class="text-muted mb-1">State: {{ $request->sender->seekerProfile->state ?? 'N/A' }}</p>
+                                                        <p class="text-muted mb-1">Industry: {{ $request->sender->seekerProfile->industry ?? 'N/A' }}</p>
+                                                    @endif
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <h6 class="mb-3">Full Message</h6>
+                                                    <p class="text-muted">{{ $request->message ?? 'No introductory message provided.' }}</p>
+
+                                                    @if ($request->sender->seekerProfile && $request->sender->seekerProfile->bio)
+                                                        <hr>
+                                                        <h6 class="mb-3">Seeker Bio</h6>
+                                                        <p class="text-muted">{{ $request->sender->seekerProfile->bio }}</p>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
 
                         <div class="mt-3">
                             {{ $requests->links() }}

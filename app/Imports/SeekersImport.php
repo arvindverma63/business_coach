@@ -25,8 +25,13 @@ class SeekersImport implements ToModel, WithHeadingRow, WithValidation
                 'password' => Hash::make('password'), // Default password
                 'user_type' => 3, // Seeker
                 'status' => 1,
+                'phone' => $row['phone'] ?? null,
             ]
         );
+
+        if (!empty($row['phone']) && $user->phone !== $row['phone']) {
+            $user->update(['phone' => $row['phone']]);
+        }
 
         $existingProfile = SeekerProfile::where('user_id', $user->id)->first();
 
@@ -48,7 +53,7 @@ class SeekersImport implements ToModel, WithHeadingRow, WithValidation
             'city'            => $row['city'] ?? null,
             'state'           => $row['state'] ?? null,
             'website_link'    => $row['website_link'] ?? null,
-            'is_verified'     => 1, 
+            'is_verified'     => 1,
         ]);
     }
 

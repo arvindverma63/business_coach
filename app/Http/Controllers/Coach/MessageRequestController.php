@@ -32,6 +32,10 @@ class MessageRequestController extends Controller
 
         $this->requestRepo->updateStatus($id, $status);
 
+        if ($status === 'rejected') {
+            $request->sender->notify(new \App\Notifications\RequestStatusNotification($request, 'rejected'));
+        }
+
         $msg = ($status === 'accepted') ? 'Connection accepted! You can now message this seeker.' : 'Connection declined.';
         return back()->with('success', $msg);
     }
