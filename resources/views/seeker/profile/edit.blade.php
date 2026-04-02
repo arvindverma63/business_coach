@@ -52,7 +52,7 @@
                                     <small class="text-muted">Email cannot be changed.</small>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label fw-medium">Phone Number</label>
+                                    <label class="form-label fw-medium">Phone Number <span class="text-danger">*</span></label>
                                     <div class="input-group">
                                         <span class="input-group-text">+91</span>
                                         <input type="text" name="phone" class="form-control phone-input"
@@ -89,12 +89,12 @@
                                         placeholder="e.g. Verma Solutions">
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label fw-medium">City</label>
+                                    <label class="form-label fw-medium">City <span class="text-danger">*</span></label>
                                     <input type="text" name="city" class="form-control"
                                         value="{{ old('city', $profile->city ?? '') }}" placeholder="e.g. Kanpur">
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label fw-medium">State</label>
+                                    <label class="form-label fw-medium">State <span class="text-danger">*</span></label>
                                     <input type="text" name="state" class="form-control"
                                         value="{{ old('state', $profile->state ?? '') }}"
                                         placeholder="e.g. Uttar Pradesh">

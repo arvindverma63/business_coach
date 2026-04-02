@@ -58,11 +58,8 @@ class ProfileController extends Controller
 
         $profileData = $request->only([
             'company_name', 'designation', 'city', 'state',
-            'bio', 'linkedin_url', 'website_url', 'experience_years', 'gender',
-            'show_personal_details'
+            'bio', 'linkedin_url', 'website_url', 'experience_years', 'gender'
         ]);
-
-        $profileData['show_personal_details'] = $request->has('show_personal_details');
         $profileData['country'] = 'India';
 
         $this->profileRepo->updateProfile(Auth::id(), $userData, $profileData);

@@ -113,6 +113,10 @@
                                     <label class="form-label">Featured Image</label>
                                     <input type="file" name="featured_image" id="featured_image" class="form-control"
                                         accept="image/*">
+                                    <small class="text-muted d-block mt-1">Required size: 1267 x 463 px.</small>
+                                    @error('featured_image')
+                                        <div class="text-danger small mt-1">{{ $message }}</div>
+                                    @enderror
                                     <div class="image-preview-container">
                                         @php
                                             $imagePath = $blog->featured_image;

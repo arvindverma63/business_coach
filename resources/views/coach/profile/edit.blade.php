@@ -89,7 +89,7 @@
                                     value="{{ old('email', $user->email) }}">
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label fw-medium">Phone Number</label>
+                                <label class="form-label fw-medium">Phone Number <span class="text-danger">*</span></label>
                                 <input type="text" name="phone"
                                     class="form-control @error('phone') is-invalid @enderror"
                                     value="{{ old('phone', $user->phone) }}" placeholder="+919876543210">
@@ -124,15 +124,6 @@
                                 <input type="number" name="experience_years" class="form-control"
                                     value="{{ old('experience_years', $user->coachProfile->experience_years ?? '') }}">
                             </div>
-                            <div class="col-md-4 d-flex align-items-end pb-2">
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" name="show_personal_details"
-                                        id="show_personal"
-                                        {{ old('show_personal_details', $user->coachProfile->show_personal_details ?? false) ? 'checked' : '' }}>
-                                    <label class="form-check-label fw-medium" for="show_personal">Show Personal
-                                        Details</label>
-                                </div>
-                            </div>
                             <div class="col-12">
                                 <label class="form-label fw-medium">Professional Bio</label>
                                 <textarea name="bio" class="form-control" rows="6">{{ old('bio', $user->coachProfile->bio ?? '') }}</textarea>
@@ -143,13 +134,13 @@
                                     data-selected-city="{{ old('city', $user->coachProfile->city ?? '') }}"
                                     data-country-value="India">
                                     <div class="col-md-4">
-                                        <label class="form-label fw-medium">State</label>
+                                        <label class="form-label fw-medium">State <span class="text-danger">*</span></label>
                                         <select name="state" class="form-select" required>
                                             <option value="">Select state</option>
                                         </select>
                                     </div>
                                     <div class="col-md-4">
-                                        <label class="form-label fw-medium">City</label>
+                                        <label class="form-label fw-medium">City <span class="text-danger">*</span></label>
                                         <select name="city" class="form-select" required disabled>
                                             <option value="">Select city</option>
                                         </select>

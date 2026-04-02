@@ -97,7 +97,6 @@ class CoachController extends Controller
                 $profileData['current_rank'] = $request->filled('current_rank') ? (int) $request->input('current_rank') : null;
                 $profileData['is_visible'] = $request->has('is_visible') ? 1 : 0;
                 $profileData['is_featured'] = $request->has('is_featured') ? 1 : 0;
-                $profileData['show_personal_details'] = $request->has('show_personal_details') ? 1 : 0;
 
                 $this->coachRepo->create($profileData);
             });
@@ -167,7 +166,6 @@ class CoachController extends Controller
                 $profileData['current_rank'] = $request->filled('current_rank') ? (int) $request->input('current_rank') : null;
                 $profileData['is_visible'] = $request->has('is_visible') ? 1 : 0;
                 $profileData['is_featured'] = $request->has('is_featured') ? 1 : 0;
-                $profileData['show_personal_details'] = $request->has('show_personal_details') ? 1 : 0;
 
                 $this->coachRepo->update($coach->id, $profileData);
             });

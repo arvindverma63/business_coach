@@ -23,7 +23,7 @@
                             <iconify-icon icon="tabler:message-dots" class="fs-24"></iconify-icon>
                         </div>
                         <div class="ms-3">
-                            <p class="text-muted mb-1 fw-medium">Message</p>
+                            <p class="text-muted mb-1 fw-medium">All Requests</p>
                             <h4 class="mb-0">{{ $stats['requests'] }}</h4>
                         </div>
                     </div>

@@ -39,39 +39,39 @@
                 {{-- NEW: Messaging Section for Admin --}}
                 <li class="menu-title mt-2">Communications</li>
                 @can('connection.view')
-                <li>
-                    <a href="{{ route('admin.requests.index') }}"
-                        class="tp-link {{ request()->routeIs('admin.requests.*') ? 'active' : '' }}">
-                        <span class="nav-icon">
-                            <iconify-icon icon="tabler:arrows-exchange"></iconify-icon>
-                        </span>
-                        <span class="sidebar-text"> Connection Logs </span>
-                    </a>
-                </li>
+                    <li>
+                        <a href="{{ route('admin.requests.index') }}"
+                            class="tp-link {{ request()->routeIs('admin.requests.*') ? 'active' : '' }}">
+                            <span class="nav-icon">
+                                <iconify-icon icon="tabler:arrows-exchange"></iconify-icon>
+                            </span>
+                            <span class="sidebar-text"> Connection Logs </span>
+                        </a>
+                    </li>
                 @endcan
 
                 @can('enquries.view')
-                <li>
-                    <a href="{{ route('admin.contacts.index') }}"
-                        class="tp-link {{ request()->routeIs('admin.contacts.*') ? 'active' : '' }}">
-                        <span class="nav-icon">
-                            <iconify-icon icon="tabler:phone"></iconify-icon>
-                        </span>
-                        <span class="sidebar-text"> Contact Inquiries </span>
-                    </a>
-                </li>
+                    <li>
+                        <a href="{{ route('admin.contacts.index') }}"
+                            class="tp-link {{ request()->routeIs('admin.contacts.*') ? 'active' : '' }}">
+                            <span class="nav-icon">
+                                <iconify-icon icon="tabler:phone"></iconify-icon>
+                            </span>
+                            <span class="sidebar-text"> Contact Inquiries </span>
+                        </a>
+                    </li>
                 @endcan
 
                 @can('newsletters.view')
-                <li>
-                    <a href="{{ route('admin.newsletters.index') }}"
-                        class="tp-link {{ request()->routeIs('admin.newsletters.*') ? 'active' : '' }}">
-                        <span class="nav-icon">
-                            <iconify-icon icon="tabler:mail"></iconify-icon>
-                        </span>
-                        <span class="sidebar-text"> Newsletters </span>
-                    </a>
-                </li>
+                    <li>
+                        <a href="{{ route('admin.newsletters.index') }}"
+                            class="tp-link {{ request()->routeIs('admin.newsletters.*') ? 'active' : '' }}">
+                            <span class="nav-icon">
+                                <iconify-icon icon="tabler:mail"></iconify-icon>
+                            </span>
+                            <span class="sidebar-text"> Newsletters </span>
+                        </a>
+                    </li>
                 @endcan
 
                 @can('users.view')
@@ -216,6 +216,19 @@
                     </li>
                 @endcan
 
+                @can('banner.view')
+                    <li>
+                        <a href="{{ route('admin.hero-banners.index') }}"
+                            class="tp-link {{ request()->routeIs('admin.hero-banners.*') ? 'active' : '' }}">
+                            <span class="nav-icon">
+                                <iconify-icon icon="tabler:media"></iconify-icon>
+                            </span>
+                            <span class="sidebar-text"> Hero Banners </span>
+                        </a>
+                    </li>
+                @endcan
+
+
                 @if (auth()->user()->can('roles.view') || auth()->user()->can('users.edit'))
                     <li class="menu-title mt-2">Configuration & Setup</li>
                 @endif
@@ -260,7 +273,8 @@
                             </li>
                             <li><a href="{{ route('admin.settings.sms-gateway') }}" class="tp-link">SMS Gateway</a>
                             </li>
-                            <li><a href="{{ route('admin.settings.mail-config') }}" class="tp-link">Mail Configuration</a></li>
+                            <li><a href="{{ route('admin.settings.mail-config') }}" class="tp-link">Mail
+                                    Configuration</a></li>
                             <li><a href="{{ route('admin.settings.social-links') }}" class="tp-link">Social Links</a>
                             </li>
                             <li><a href="{{ route('admin.pages.index') }}" class="tp-link">Pages</a></li>

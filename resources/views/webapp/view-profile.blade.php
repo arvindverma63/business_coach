@@ -51,11 +51,6 @@
                                             {{ $coach->company_name }}<br>
                                             {{ $coach->city }}, {{ $coach->state }}, {{ $coach->country }}
                                         </p>
-                                        <div class="mb-2">
-                                            <span class="badge {{ $showPersonalDetails ? 'bg-success-subtle text-success' : 'bg-secondary-subtle text-secondary' }}">
-                                                Show Personal Details: {{ $showPersonalDetails ? 'On' : 'Off' }}
-                                            </span>
-                                        </div>
                                         <div class="contact-row">
                                             @if($canShowEmail)
                                                 <a href="mailto:{{ $coach->user->email }}" class="contact-item">
@@ -161,7 +156,7 @@
                                                     <a href="javascript:void(0)" class="chat-btn" data-bs-toggle="modal" data-bs-target="#connectCoachModal">Chat With Us</a>
                                                 @endif
                                             @else
-                                                <a href="{{ route('seeker.coaches.index') }}" class="chat-btn">Chat With Us</a>
+                                                <a href="{{ route('user.login') }}" class="chat-btn">Chat With Us</a>
                                             @endif
                                         </div>
 

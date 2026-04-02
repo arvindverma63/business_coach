@@ -14,9 +14,6 @@
                                     <img src="{{ asset($seeker->profile_image) ?? asset('assets/images/users/user.avif') }}"
                                         class="rounded-circle border"
                                         style="width: 48px; height: 48px; object-fit: cover;">
-                                    <span
-                                        class="position-absolute bottom-0 end-0 bg-success border border-2 border-white rounded-circle"
-                                        style="width: 12px; height: 12px;"></span>
                                 </div>
                                 <div class="ms-3">
                                     <h5 class="m-0 fs-16 fw-bold text-dark">{{ $seeker->name }}</h5>

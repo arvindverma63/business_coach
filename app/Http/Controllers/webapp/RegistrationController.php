@@ -86,6 +86,12 @@ class RegistrationController extends Controller
     }
 
     public function seekerRegistration(Request $request){
+        $incomingPhone = trim($request->input('phone', ''));
+        if ($incomingPhone === '' || $incomingPhone === '+91') {
+            $request->merge(['phone' => null]);
+        } else {
+            $request->merge(['phone' => $incomingPhone]);
+        }
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',

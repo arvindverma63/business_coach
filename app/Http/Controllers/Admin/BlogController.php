@@ -46,8 +46,10 @@ class BlogController extends Controller
             'title' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
             'content' => 'required|string',
-            'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048|dimensions:width=1267,height=463',
             'is_published' => 'required|boolean',
+        ], [
+            'featured_image.dimensions' => 'Featured image must be exactly 1267 x 463 px.',
         ]);
 
         $data = $request->except('featured_image');
@@ -95,8 +97,10 @@ class BlogController extends Controller
             'title' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
             'content' => 'required|string',
-            'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048|dimensions:width=1267,height=463',
             'is_published' => 'required|boolean',
+        ], [
+            'featured_image.dimensions' => 'Featured image must be exactly 1267 x 463 px.',
         ]);
 
         $blog = $this->blogRepo->findById($id);

@@ -99,6 +99,10 @@
                                 <div class="mb-3">
                                     <label class="form-label">Featured Image <span class="text-danger">*</span></label>
                                     <input type="file" name="featured_image" id="featured_image" class="form-control" accept="image/*">
+                                    <small class="text-muted d-block mt-1">Required size: 1267 x 463 px.</small>
+                                    @error('featured_image')
+                                        <div class="text-danger small mt-1">{{ $message }}</div>
+                                    @enderror
                                     <div class="image-preview-container">
                                         <img id="img-preview" src="https://placehold.co/600x400?text=No+Image+Selected" alt="Preview">
                                     </div>

@@ -102,7 +102,7 @@
 
                             <div class="row g-3 mb-3">
                                 <div class="col-12 col-sm-6">
-                                    <label class="form-label">Phone Number</label>
+                                    <label class="form-label">Phone Number <span class="text-danger">*</span></label>
                                     <input type="tel" name="phone" id="coach_phone_input" class="form-control"
                                         value="+91" placeholder="+919876543210" maxlength="13"
                                         oninput="validatePhone(this)" />
@@ -124,7 +124,7 @@
                                 </div>
                             </div>
 
-                            <!-- Row 3: Gender + Experience + Toggle -->
+                            <!-- Row 3: Gender + Experience -->
                             <div class="row g-3 mb-3 align-items-end">
                                 <div class="col-12 col-sm-4">
                                     <label class="form-label">Gender</label>
@@ -139,22 +139,6 @@
                                     <label class="form-label">Experience (Years)</label>
                                     <input type="number" name="experience_years" class="form-control"
                                         value="" placeholder="Years" />
-                                </div>
-                                <div class="col-12 col-sm-4">
-                                    <div class="toggle-row pb-1">
-                                        <div class="form-check form-switch mb-0">
-                                            <input class="form-check-input" type="checkbox"
-                                                name="show_personal_details" id="showPersonal" checked />
-                                        </div>
-                                        <label for="showPersonal"
-                                            style="
-                              font-size: 0.78rem;
-                              color: var(--text);
-                              font-weight: 600;
-                              cursor: pointer;
-                            ">Show
-                                            Personal Details</label>
-                                    </div>
                                 </div>
                             </div>
 
@@ -171,13 +155,13 @@
                                 data-selected-city="{{ old('city') }}"
                                 data-country-value="India">
                                 <div class="col-12 col-sm-4">
-                                    <label class="form-label">State</label>
+                                    <label class="form-label">State <span class="text-danger">*</span></label>
                                     <select name="state" class="form-select" required>
                                         <option value="">Select state</option>
                                     </select>
                                 </div>
                                 <div class="col-12 col-sm-4">
-                                    <label class="form-label">City</label>
+                                    <label class="form-label">City <span class="text-danger">*</span></label>
                                     <select name="city" class="form-select" required disabled>
                                         <option value="">Select city</option>
                                     </select>
@@ -731,6 +715,17 @@
                 $(this).removeClass('is-invalid');
             });
 
+            const seekerPhone = document.getElementById('phone_input');
+            const seekerHint = document.getElementById('phone-focus-hint');
+            if (seekerPhone && seekerHint) {
+                seekerPhone.addEventListener('focus', () => seekerHint.classList.remove('d-none'));
+                seekerPhone.addEventListener('blur', () => {
+                    if (!seekerPhone.value.trim()) {
+                        seekerHint.classList.add('d-none');
+                    }
+                });
+            }
+
             // Handle seeker profile image preview
             const seekerProfileImage = document.getElementById('seekerProfileImage');
             const seekerProfilePreview = document.getElementById('seekerProfilePreview');
@@ -801,11 +796,9 @@
                         <div class="col-12 col-sm-6">
                             <label class="form-label">Phone Number</label>
                             <input type="tel" name="phone" id="phone_input" class="form-control"
-                                value="+91" placeholder="+919876543210" maxlength="13"
-                                oninput="validatePhone(this)" required />
-                            <div id="phone-help" class="form-text small text-muted">
-                                Format: +91 followed by 10 digits (Total max 13 characters).
-                            </div>
+                                value="" placeholder="+91XXXXXXXXXX" maxlength="13"
+                                oninput="validatePhone(this)" />
+
                         </div>
                     </div>
                     <div class="row g-3 mb-3">

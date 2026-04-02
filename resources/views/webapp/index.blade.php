@@ -2,6 +2,61 @@
 
     <div class="hero-main">
         <div class="owl-carousel owl-carousel-hero owl-theme">
+            @forelse($heroBanners as $banner)
+            <div class="item">
+                <section class="hero-section">
+                    <div class="container">
+                        <img src="{{ asset('website/assets/img/hero-bg1.webp') }}" alt="" class="hero-bg1" />
+                        <img src="{{ asset('website/assets/img/hero-bg2.webp') }}" alt="" class="hero-bg2" />
+                        <div class="row align-items-center">
+                            <div class="col-lg-7">
+                                <h1 class="hero-title">
+                                    Unlock Clarity, Direction, and Growth With Expert Business Coaching
+                                </h1>
+
+                                <form action="{{ route('webapp.searchCoaches') }}" method="GET">
+                                    <div class="search-box">
+                                        {{-- Search by Name --}}
+                                        <input type="text" name="name" placeholder="Search name...."
+                                            minlength="3" value="{{ request('name') }}" />
+
+                                        {{-- Dynamic Categories --}}
+                                        <select name="category">
+                                            <option value="" selected>Category</option>
+                                            @foreach ($categories as $category)
+                                                <option value="{{ $category->slug }}">{{ $category->name }}</option>
+                                            @endforeach
+                                        </select>
+
+                                        {{-- Dynamic Locations (Cities) --}}
+                                        <select name="city">
+                                            <option value="" selected>Location</option>
+                                            @foreach ($cities as $city)
+                                                <option value="{{ $city }}">{{ ucwords($city) }}</option>
+                                            @endforeach
+                                        </select>
+
+                                        <button type="submit" class="search-btn">
+                                            <i class="bi bi-search"></i>
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <div class="col-lg-5 text-center">
+                                @if($banner->image_url)
+                                    <img src="{{ $banner->image_url }}" class="hero-img" alt="Expert Business Coaching" />
+                                @else
+                                    <img src="{{ asset('website/assets/img/women-hero.webp') }}" class="hero-img"
+                                        alt="Expert Business Coaching" />
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            @empty
+            {{-- Fallback if no banners exist --}}
             <div class="item">
                 <section class="hero-section">
                     <div class="container">
@@ -50,55 +105,7 @@
                     </div>
                 </section>
             </div>
-            <div class="item">
-                <section class="hero-section">
-                    <div class="container">
-                        <img src="{{ asset('website/assets/img/hero-bg1.webp') }}" alt="" class="hero-bg1" />
-                        <img src="{{ asset('website/assets/img/hero-bg2.webp') }}" alt="" class="hero-bg2" />
-                        <div class="row align-items-center">
-                            <div class="col-lg-7">
-                                <h1 class="hero-title">
-                                    Unlock Clarity, Direction, and Growth With Expert Business Coaching
-                                </h1>
-
-                                <form action="{{ route('webapp.searchCoaches') }}" method="GET">
-                                    <div class="search-box">
-                                        {{-- Search by Name --}}
-                                        <input type="text" name="name" placeholder="Search name...."
-                                            minlength="3" value="{{ request('name') }}" />
-
-                                        {{-- Dynamic Categories --}}
-                                        <select name="category">
-                                            <option value="" selected>Category</option>
-                                            @foreach ($categories as $category)
-                                                <option value="{{ $category->slug }}">{{ $category->name }}</option>
-                                            @endforeach
-                                        </select>
-
-                                        {{-- Dynamic Locations (Cities) --}}
-                                        <select name="city">
-                                            <option value="" selected>Location</option>
-                                            @foreach ($cities as $city)
-                                                <option value="{{ $city }}">{{ ucwords($city) }}</option>
-                                            @endforeach
-                                        </select>
-
-                                        <button type="submit" class="search-btn">
-                                            <i class="bi bi-search"></i>
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-
-                            <div class="col-lg-5 text-center">
-                                <img src="{{ asset('website/assets/img/women-hero.webp') }}" class="hero-img"
-                                    alt="Expert Business Coaching" />
-                            </div>
-                        </div>
-                    </div>
-                </section>
-            </div>
-
+            @endforelse
         </div>
     </div>
 
@@ -159,29 +166,28 @@
                         <div class="owl-carousel owl-theme owl-carousel-explore">
                             @forelse($featuredCoaches as $coach)
                                 <div class="item">
-                                    <div class="card-explore">
-                                        <img src="{{ asset('website/assets/img/explorecard-bg.png') }}" alt=""
-                                            class="explorecard-bg" />
-                                        <img src="{{ $coach->user?->profile_photo_path ? asset('storage/' . $coach->user->profile_photo_path) : asset('website/assets/img/person-explore.webp') }}"
-                                            alt="{{ $coach->user->name }}"
-                                            class="person-explore"
-                                            onerror="this.src='{{ asset('website/assets/img/person-explore.webp') }}'" />
-                                        <div class="card-explore-c">
-                                            <div class="card-expore-desc">
-                                                <h4>{{ $coach->user->name }}</h4>
-                                                <p>{{ $coach->bio ? Str::limit($coach->bio, 150) : 'Experienced business coach dedicated to helping you succeed.' }}</p>
-                                            </div>
-                                            <div class="card-explore-content">
-                                                <span class="card-explore-c-span">Coach</span>
-                                                <h4>{{ $coach->user->name }}</h4>
-                                                <p>{{ $coach->designation ?? 'Business Coach' }}</p>
-                                                @if($coach->linkedin_url)
-                                                    <a href="{{ $coach->linkedin_url }}" target="_blank" class="linkedin-a"><i class="bi bi-linkedin"></i></a>
-                                                @endif
-                                            </div>
+                                    <a href="{{ route('view-profile', $coach->id) }}" class="card-explore-link text-decoration-none text-reset d-block">
+                                        <div class="card-explore">
+                                            <img src="{{ asset('website/assets/img/explorecard-bg.png') }}" alt=""
+                                                class="explorecard-bg" />
+                                            <img src="{{ $coach->user?->profile_image ?? asset('website/assets/img/person-explore.webp') }}"
+                                                alt="{{ $coach->user->name }}"
+                                                class="person-explore" />
+                                            <div class="card-explore-c">
+                                                <div class="card-expore-desc">
+                                                    <h4>{{ $coach->user->name }}</h4>
+                                                    <p>{{ $coach->bio ? Str::limit($coach->bio, 150) : 'Experienced business coach dedicated to helping you succeed.' }}</p>
+                                                </div>
+                                                <div class="card-explore-content">
+                                                    <span class="card-explore-c-span">Coach</span>
+                                                    <h4>{{ $coach->user->name }}</h4>
+                                                    <p>{{ $coach->designation ?? 'Business Coach' }}</p>
+                                                    <span class="linkedin-a" aria-hidden="true"><i class="bi bi-arrow-right-short"></i></span>
+                                                </div>
 
+                                            </div>
                                         </div>
-                                    </div>
+                                    </a>
                                 </div>
                             @empty
                                 <div class="item">
@@ -321,6 +327,21 @@
     </section>
     @push('scripts')
         <style>
+            .hero-sort-order {
+                display: inline-block;
+                padding: 6px 12px;
+                border-radius: 999px;
+                background: rgba(255, 255, 255, 0.85);
+                color: #1f2937;
+                letter-spacing: 0.08em;
+                font-size: 12px;
+            }
+
+            .card-explore-link {
+                display: block;
+                cursor: pointer;
+            }
+
             .card-expore-desc {
                 display: none;
             }

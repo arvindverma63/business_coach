@@ -26,7 +26,6 @@ class UpdateCoachProfileRequest extends FormRequest
             'phone' => ['nullable', 'string', 'max:20', Rule::unique('users', 'phone')->ignore($userId, 'id')],
             'profile_image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:2048'],
             'gender' => 'nullable|in:male,female,other',
-            'show_personal_details' => 'boolean',
             'company_name' => 'nullable|string|max:255',
             'designation' => 'nullable|string|max:255',
             'city' => 'nullable|string|max:100',
@@ -55,7 +54,6 @@ class UpdateCoachProfileRequest extends FormRequest
     protected function prepareForValidation()
     {
         $this->merge([
-            'show_personal_details' => $this->has('show_personal_details') ? 1 : 0,
             'is_featured' => $this->has('is_featured') ? 1 : 0,
             'is_visible' => $this->has('is_visible') ? 1 : 0,
         ]);

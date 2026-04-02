@@ -19,9 +19,6 @@
                                     <img src="{{ $coach->profile_image ?? asset('assets/images/users/user.avif') }}"
                                         class="rounded-circle border"
                                         style="width: 48px; height: 48px; object-fit: cover;">
-                                    <span
-                                        class="position-absolute bottom-0 end-0 bg-success border border-2 border-white rounded-circle"
-                                        style="width: 12px; height: 12px;"></span>
                                 </div>
                                 <div class="ms-3">
                                     <h5 class="m-0 fs-16 fw-bold text-dark">{{ $coach->name }}</h5>
@@ -142,7 +139,9 @@
                                 </div>
                                 <div class="col-6 border-start">
                                     <h6 class="fw-bold mb-1 small text-muted text-uppercase">Location</h6>
-                                    <p class="text-dark fw-semibold mb-0">{{ $coach->coachProfile->city ?? 'N/A' }}</p>
+                                    <p class="text-dark fw-semibold mb-0">
+                                        {{ collect([$coach->coachProfile->city, $coach->coachProfile->state])->filter()->implode(', ') ?: 'N/A' }}
+                                    </p>
                                 </div>
                             </div>
 

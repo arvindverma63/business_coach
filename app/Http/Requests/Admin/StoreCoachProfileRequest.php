@@ -19,7 +19,6 @@ class StoreCoachProfileRequest extends FormRequest
             'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
 
             'gender' => 'nullable|in:male,female,other',
-            'show_personal_details' => 'boolean',
             'company_name' => 'nullable|string|max:255',
             'designation' => 'nullable|string|max:255',
             'city' => 'nullable|string|max:100',

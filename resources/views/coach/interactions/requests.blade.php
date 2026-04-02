@@ -145,7 +145,7 @@
                                                     @if ($request->sender->seekerProfile)
                                                         <p class="text-muted mb-1">City: {{ $request->sender->seekerProfile->city ?? 'N/A' }}</p>
                                                         <p class="text-muted mb-1">State: {{ $request->sender->seekerProfile->state ?? 'N/A' }}</p>
-                                                        <p class="text-muted mb-1">Industry: {{ $request->sender->seekerProfile->industry ?? 'N/A' }}</p>
+                                                        <p class="text-muted mb-1">Domain / Industry: {{ $request->sender->seekerProfile->business_domain ?? 'N/A' }}</p>
                                                     @endif
                                                 </div>
                                                 <div class="col-md-8">
@@ -203,7 +203,7 @@
                         const form = this.closest('form');
                         Swal.fire({
                             title: 'Decline Request?',
-                            text: "This user will not be able to message you.",
+                            text: "",
                             icon: 'question',
                             showCancelButton: true,
                             confirmButtonText: 'Yes, decline',

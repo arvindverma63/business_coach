@@ -27,6 +27,7 @@ use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\DB;
 
 use App\Http\Controllers\Admin\NewsletterController;
+use App\Http\Controllers\Admin\HeroBannerController;
 
 
 Route::get('/sitemap-generate', function () {
@@ -144,6 +145,10 @@ Route::middleware('auth', 'role:0,1')->group(function () {
             Route::post('/toggle-status', [NewsletterController::class, 'toggleStatus'])->name('toggle-status');
             Route::delete('/{id}', [NewsletterController::class, 'destroy'])->name('destroy');
         });
+
+        // Hero Banners Management
+        Route::resource('hero-banners', HeroBannerController::class);
+        Route::post('hero-banners/{id}/toggle-status', [HeroBannerController::class, 'toggleStatus'])->name('hero-banners.toggle-status');
 
         Route::get('/connection-logs', [MessageRequestController::class, 'index'])->name('requests.index');
         Route::delete('/connection-logs/{id}', [MessageRequestController::class, 'destroy'])->name('requests.destroy');

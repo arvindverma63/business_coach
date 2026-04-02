@@ -95,12 +95,6 @@
                                 <button type="submit">SUBSCRIBE</button>
                             </div>
 
-                            <label class="newsletter-check">
-                                <input type="checkbox" name="terms" required />
-                                <span>By checking this box, you confirm that you have read and are
-                                    agreeing to our <a href="{{ route('terms-and-conditions') }}" target="_blank">Terms & Conditions</a>
-                                    regarding the storage of the data submitted through this form.</span>
-                            </label>
                         </form>
 
                         {{-- Success/Error Message Container for AJAX --}}

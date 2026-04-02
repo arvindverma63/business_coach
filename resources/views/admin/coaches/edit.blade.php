@@ -149,12 +149,6 @@
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <div class="form-check form-switch mt-2">
-                                            <input class="form-check-input" type="checkbox" name="show_personal_details" value="1" id="showDetails" {{ $coach->show_personal_details ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="showDetails">Show Personal Details</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <div class="form-check form-switch mt-2">
                                             <input class="form-check-input" type="checkbox" name="is_featured" value="1" id="featSwitch" {{ $coach->is_featured ? 'checked' : '' }}>
                                             <label class="form-check-label" for="featSwitch">Featured on Homepage</label>
                                         </div>

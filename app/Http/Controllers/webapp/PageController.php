@@ -39,7 +39,12 @@ class PageController extends Controller
             ->take(6)
             ->get();
 
-        return view('webapp.index', compact('categories', 'cities', 'featuredCoaches','blogs'));
+        // Fetch active hero banners
+        $heroBanners = \App\Models\HeroBanner::where('is_active', true)
+            ->orderBy('sort_order', 'asc')
+            ->get();
+
+        return view('webapp.index', compact('categories', 'cities', 'featuredCoaches','blogs', 'heroBanners'));
     }
 
     public function aboutUs(){

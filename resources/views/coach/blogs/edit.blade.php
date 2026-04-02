@@ -127,6 +127,10 @@
 
                                         <input type="file" name="featured_image" class="form-control form-control-sm"
                                             onchange="previewBlogImg(this)">
+                                        <small class="text-muted d-block mt-1">Required size: 1267 x 463 px.</small>
+                                        @error('featured_image')
+                                            <div class="text-danger small mt-1">{{ $message }}</div>
+                                        @enderror
                                     </div>
                                 </div>
 

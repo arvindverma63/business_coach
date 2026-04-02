@@ -13,15 +13,12 @@ class NewsletterController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name'  => 'nullable|string|max:255',
-            'email' => 'required|email|max:255',
-            'accept_terms' => 'required|accepted'
+            'email' => 'required|email|max:255'
         ]);
 
         if ($validator->fails()) {
-            $message = $validator->errors()->first('accept_terms') ?? $validator->errors()->first();
-            if (strpos($message, 'accept_terms') !== false) {
-                $message = 'You must accept the Terms and Conditions to subscribe.';
-            } elseif (strpos($message, 'email') !== false) {
+            $message = $validator->errors()->first();
+            if (strpos($message, 'email') !== false) {
                 $message = 'Please provide a valid email address.';
             }
             return $this->respondWithError($request, $message);
