@@ -30,10 +30,10 @@
                                     <textarea name="address" class="form-control" rows="3">{{ $settings->address }}</textarea>
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label">Office Timing (HTML allowed)</label>
-                                    <textarea name="office_timing" class="form-control" rows="4" placeholder="e.g. <div class='time-item'>...</div>">{{ $settings->office_timing }}</textarea>
-                                    <small class="text-muted">You can paste the HTML structure here for custom
-                                        styling.</small>
+                                    <label class="form-label">Office Timing (HTML Editor)</label>
+                                    <div id="office-timing-editor" style="height: 250px; background: white; border: 1px solid #ddd; border-radius: 4px;"></div>
+                                    <input type="hidden" name="office_timing" id="office_timing" value="{{ $settings->office_timing }}">
+                                    <small class="text-muted d-block mt-2">Format your office hours with proper line breaks and styling.</small>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Google Map Iframe URL</label>
@@ -62,7 +62,6 @@
                                             <th>Name</th>
                                             <th>Email</th>
                                             <th>Message</th>
-                                            <th class="text-end">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -77,16 +76,10 @@
                                                         Read Message
                                                     </button>
                                                 </td>
-                                                <td class="text-end">
-                                                    <button class="btn btn-sm btn-outline-danger delete-inquiry"
-                                                        data-id="{{ $msg->id }}">
-                                                        <i class="mdi mdi-delete"></i>
-                                                    </button>
-                                                </td>
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="5" class="text-center py-4 text-muted">No messages yet.
+                                                <td colspan="4" class="text-center py-4 text-muted">No messages yet.
                                                 </td>
                                             </tr>
                                         @endforelse
@@ -103,12 +96,44 @@
         </div>
     </div>
 
+    @push('styles')
+        <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    @endpush
+
     @push('scripts')
+        <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
+            // Initialize Quill Editor
+            const quill = new Quill('#office-timing-editor', {
+                theme: 'snow',
+                modules: {
+                    toolbar: [
+                        ['bold', 'italic', 'underline'],
+                        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                        ['blockquote', 'code-block'],
+                        [{ 'header': [1, 2, 3, false] }],
+                        ['link'],
+                        ['clean']
+                    ]
+                },
+                placeholder: 'e.g. Monday - Friday: 9 AM - 6 PM\nSaturday: 10 AM - 4 PM\nSunday: Closed'
+            });
+
+            // Load existing content into Quill
+            const officeTimingValue = document.getElementById('office_timing').value;
+            if (officeTimingValue) {
+                quill.root.innerHTML = officeTimingValue;
+            }
+
             // Update Settings AJAX
             $('#updateSettingsForm').on('submit', function(e) {
                 e.preventDefault();
+
+                // Get Quill content
+                const officeTimingContent = quill.root.innerHTML;
+                document.getElementById('office_timing').value = officeTimingContent;
+
                 let btn = $('#btnSaveSettings');
                 btn.prop('disabled', true).text('Saving...');
 
@@ -120,32 +145,6 @@
                         Swal.fire('Error', 'Failed to update details', 'error');
                     })
                     .always(() => btn.prop('disabled', false).text('Update Details'));
-            });
-
-            // Delete Inquiry AJAX
-            $('.delete-inquiry').on('click', function() {
-                let id = $(this).data('id');
-                Swal.fire({
-                    title: 'Delete this message?',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    confirmButtonText: 'Yes, delete'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.ajax({
-                            url: "{{ url('admin/contact/inquiry') }}/" + id,
-                            type: 'DELETE',
-                            data: {
-                                _token: "{{ csrf_token() }}"
-                            },
-                            success: function(res) {
-                                $(`#inquiry-${id}`).fadeOut();
-                                toastr.success(res.message);
-                            }
-                        });
-                    }
-                });
             });
 
             // Simple Message Viewer

@@ -1,12 +1,17 @@
 <x-app-layout title="Seeker Management | BestBusinessCoachIndia">
     <div class="content">
         <div class="container-fluid">
+            @cannot('seekers.view')
+                <div class="alert alert-danger">You don't have permission to view seekers.</div>
+            @endcannot
+
             <div class="py-3 d-flex align-items-center justify-content-between">
                 <div>
                     <h4 class="fs-18 fw-semibold m-0">Manage Seekers</h4>
                     <p class="text-muted mb-0">Monitor registered users and their activity.</p>
                 </div>
                 <div class="text-end mb-3">
+                    @can('seekers.view')
                     <a href="{{ route('admin.seekers.export.excel') }}" class="btn btn-success me-2">
                         <iconify-icon icon="tabler:file-spreadsheet" class="align-middle fs-16 me-1"></iconify-icon>
                         Excel
@@ -16,6 +21,9 @@
                         <iconify-icon icon="tabler:file-type-pdf" class="align-middle fs-16 me-1"></iconify-icon>
                         PDF
                     </a>
+                    @endcan
+
+                    @can('seekers.create')
                     <button type="button" class="btn btn-info me-2" data-bs-toggle="modal"
                         data-bs-target="#importSeekerModal">
                         <iconify-icon icon="tabler:upload" class="align-middle fs-16 me-1"></iconify-icon>
@@ -25,6 +33,7 @@
                         <iconify-icon icon="tabler:plus" class="align-middle fs-16 me-1"></iconify-icon>
                         Add Seeker
                     </a>
+                    @endcan
                 </div>
             </div>
             <div class="modal fade" id="importSeekerModal" tabindex="-1" aria-hidden="true">

@@ -15,9 +15,14 @@ class EloquentBlogRepository implements BlogRepositoryInterface
         $this->model = $model;
     }
 
-    public function getAll(int $perPage = 10): LengthAwarePaginator
+    public function getAll(int $perPage = 10, bool $onlyPublished = false): LengthAwarePaginator
     {
         $query = $this->model->with(['author', 'category']);
+
+        // Only filter published blogs if explicitly requested (for public website)
+        if ($onlyPublished) {
+            $query->where('is_published', true);
+        }
 
         if (request()->filled('search')) {
             $search = request('search');
@@ -38,7 +43,9 @@ class EloquentBlogRepository implements BlogRepositoryInterface
 
     public function findBySlug(string $slug): ?Blog
     {
-        return $this->model->where('slug', $slug)->first();
+        return $this->model->where('slug', $slug)
+            ->where('is_published', true) // Only allow published blogs
+            ->first();
     }
 
     public function create(array $data): Blog

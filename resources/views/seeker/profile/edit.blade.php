@@ -53,8 +53,18 @@
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label fw-medium">Phone Number</label>
-                                    <input type="text" name="phone" class="form-control"
-                                        value="{{ old('phone', $user->phone) }}" placeholder="e.g. +91 9999999999">
+                                    <div class="input-group">
+                                        <span class="input-group-text">+91</span>
+                                        <input type="text" name="phone" class="form-control phone-input"
+                                            value="{{ old('phone', str_replace('+91', '', $user->phone ?? '')) }}"
+                                            placeholder="9999999999"
+                                            maxlength="10"
+                                            inputmode="numeric"
+                                            @error('phone') is-invalid @enderror>
+                                    </div>
+                                    @error('phone')
+                                        <span class="text-danger font-size-12">{{ $message }}</span>
+                                    @enderror
                                 </div>
                             </div>
                         </div>
@@ -100,21 +110,7 @@
                 </form>
             </div>
 
-            <div class="col-lg-4">
-                <div class="card border-0 shadow-sm bg-primary text-white">
-                    <div class="card-body">
-                        <h6 class="text-white fw-bold mb-3"><i class="mdi mdi-information-outline me-1"></i> Why
-                            complete your profile?</h6>
-                        <ul class="font-size-13 ps-3 mb-0" style="list-style-type: circle;">
-                            <li class="mb-2">Coaches are 80% more likely to accept requests from completed
-                                profiles.</li>
-                            <li class="mb-2">Your industry and city help us recommend the best local mentors.
-                            </li>
-                            <li>Verified seekers get priority access to premium blog content.</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+
         </div>
     </div>
 
@@ -125,6 +121,28 @@
                 if (file) {
                     document.getElementById('imagePreview').src = URL.createObjectURL(file);
                 }
+            }
+
+            // Phone number input - only numeric values
+            const phoneInput = document.querySelector('.phone-input');
+            if (phoneInput) {
+                phoneInput.addEventListener('input', function(e) {
+                    // Remove all non-numeric characters
+                    this.value = this.value.replace(/[^0-9]/g, '');
+
+                    // Limit to 10 digits
+                    if (this.value.length > 10) {
+                        this.value = this.value.slice(0, 10);
+                    }
+                });
+
+                // Prevent non-numeric paste
+                phoneInput.addEventListener('paste', function(e) {
+                    e.preventDefault();
+                    const pastedText = (e.clipboardData || window.clipboardData).getData('text');
+                    const numericOnly = pastedText.replace(/[^0-9]/g, '').slice(0, 10);
+                    this.value = numericOnly;
+                });
             }
         </script>
     @endpush

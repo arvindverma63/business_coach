@@ -40,9 +40,8 @@ class EloquentCoachRepository implements CoachRepositoryInterface
         }
 
         return $query
-            ->orderByRaw('COALESCE(NULLIF(ranking_score, 0), connection_requests_count) DESC')
-            ->orderByDesc('connection_requests_count')
-            ->orderByDesc('ranking_score')
+            ->orderByRaw('CASE WHEN current_rank IS NOT NULL THEN current_rank ELSE 999999 END ASC')
+            ->orderBy('current_rank', 'asc')
             ->orderByDesc('created_at')
             ->paginate($perPage)
             ->withQueryString();
@@ -76,7 +75,7 @@ class EloquentCoachRepository implements CoachRepositoryInterface
     public function create(array $data): CoachProfile
     {
         $profile = $this->model->create($data);
-        
+
         // Sync Categories if provided
         if (isset($data['categories'])) {
             $profile->categories()->sync($data['categories']);
@@ -88,7 +87,7 @@ class EloquentCoachRepository implements CoachRepositoryInterface
     public function update(string $id, array $data): bool
     {
         $profile = $this->model->find($id);
-        
+
         if (!$profile) {
             return false;
         }

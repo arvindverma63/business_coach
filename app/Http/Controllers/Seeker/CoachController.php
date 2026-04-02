@@ -54,7 +54,12 @@ class CoachController extends Controller
     {
         $seekerId = Auth::id();
 
-        // 1. Prevent duplicate requests using the repository check
+        // 1. Prevent self-messaging
+        if ($seekerId === $coachId) {
+            return back()->with('error', 'You cannot send a request to yourself.');
+        }
+
+        // 2. Prevent duplicate active requests (pending or accepted)
         $existingRequest = \App\Models\MessageRequest::where('sender_id', $seekerId)
             ->where('receiver_id', $coachId)
             ->whereIn('status', ['pending', 'accepted'])
@@ -64,18 +69,17 @@ class CoachController extends Controller
             return back()->with('error', 'A connection request is already ' . $existingRequest->status . '.');
         }
 
-        // 2. Prevent self-messaging
-        if ($seekerId === $coachId) {
-            return back()->with('error', 'You cannot send a request to yourself.');
+        // 3. Create the request via repository (handles rejected requests automatically)
+        try {
+            $this->requestRepo->sendRequest([
+                'sender_id' => $seekerId,
+                'receiver_id' => $coachId,
+                'message' => $request->message ?? "Hi, I would like to connect with you for coaching.",
+            ]);
+
+            return back()->with('success', 'Connection request sent successfully!');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Failed to send connection request. Please try again.');
         }
-
-        // 3. Create the request via repository
-        $this->requestRepo->sendRequest([
-            'sender_id' => $seekerId,
-            'receiver_id' => $coachId,
-            'message' => $request->message ?? "Hi, I would like to connect with you for coaching.",
-        ]);
-
-        return back()->with('success', 'Connection request sent successfully!');
     }
 }

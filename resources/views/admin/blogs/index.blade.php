@@ -1,14 +1,20 @@
 <x-app-layout title="Blog Management | BestBusinessCoachIndia">
     <div class="content">
         <div class="container-fluid">
+            @cannot('blogs.view')
+                <div class="alert alert-danger">You don't have permission to view blogs.</div>
+            @endcannot
+
             <div class="py-3 d-flex align-items-center justify-content-between">
                 <div>
                     <h4 class="fs-18 fw-semibold m-0">Manage Blogs</h4>
                     <p class="text-muted mb-0">Create and manage your website articles.</p>
                 </div>
+                @can('blogs.create')
                 <a href="{{ route('admin.blogs.create') }}" class="btn btn-primary d-flex align-items-center">
                     <iconify-icon icon="tabler:plus" class="fs-18 me-1"></iconify-icon> Add New Post
                 </a>
+                @endcan
             </div>
 
             <div class="card mb-3 border-0 shadow-sm">

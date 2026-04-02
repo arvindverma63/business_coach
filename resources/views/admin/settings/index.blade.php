@@ -21,7 +21,7 @@
                             <h5 class="card-title mb-0">App Configuration</h5>
                         </div>
                         <div class="card-body">
-                            
+
                             <form action="{{ route('admin.settings.update') }}" method="POST" enctype="multipart/form-data">
                                 @csrf
                                 @method('PUT')
@@ -32,17 +32,17 @@
                                         <input type="text" class="form-control" name="app_name" value="{{ $settings->get('app_name') }}" placeholder="Fitx App" required>
                                     </div>
 
-                                    <div class="col-md-6 mb-3">
+                                    <div class="col-md-6 mb-3 d-none">
                                         <label class="form-label fw-medium">App Phone</label>
                                         <input type="text" class="form-control" name="app_phone" value="{{ $settings->get('app_phone') }}" placeholder="+1 234 567 890">
                                     </div>
 
-                                    <div class="col-md-6 mb-3">
+                                    <div class="col-md-6 mb-3 d-none">
                                         <label class="form-label fw-medium">Support Email</label>
                                         <input type="email" class="form-control" name="app_email" value="{{ $settings->get('app_email') }}" placeholder="support@fitx.com">
                                     </div>
 
-                                    <div class="col-md-6 mb-3">
+                                    <div class="col-md-6 mb-3 d-none">
                                         <label class="form-label fw-medium">Address</label>
                                         <input type="text" class="form-control" name="app_address" value="{{ $settings->get('app_address') }}" placeholder="123 Fitx St, Gym City">
                                     </div>

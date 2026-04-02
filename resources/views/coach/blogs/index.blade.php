@@ -49,7 +49,7 @@
                                             </div>
                                         </td>
                                         <td><span
-                                                class="badge bg-light text-dark border">{{ $blog->category->name }}</span>
+                                                class="badge bg-light text-dark border">{{ $blog->category?->name ?? 'Uncategorized' }}</span>
                                         </td>
                                         <td>
                                             @if ((bool) $blog->is_published)

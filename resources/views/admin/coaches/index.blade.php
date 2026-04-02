@@ -1,12 +1,17 @@
 <x-app-layout title="Coach Management | BestBusinessCoachIndia">
     <div class="content">
         <div class="container-fluid">
+            @cannot('coaches.view')
+                <div class="alert alert-danger">You don't have permission to view coaches.</div>
+            @endcannot
+
             <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
                 <div class="flex-grow-1">
                     <h4 class="fs-18 fw-semibold m-0">Manage Coaches</h4>
                 </div>
                 <div class="text-end">
                     <div>
+                        @can('coaches.view')
                         <a href="{{ route('admin.coaches.export.excel') }}" class="btn btn-success me-2">
                             <iconify-icon icon="tabler:file-spreadsheet" class="align-middle fs-16 me-1"></iconify-icon>
                             Excel
@@ -16,7 +21,9 @@
                             <iconify-icon icon="tabler:file-type-pdf" class="align-middle fs-16 me-1"></iconify-icon>
                             PDF
                         </a>
+                        @endcan
 
+                        @can('coaches.create')
                         <button type="button" class="btn btn-info me-2" data-bs-toggle="modal"
                             data-bs-target="#importModal">
                             <iconify-icon icon="tabler:upload" class="align-middle fs-16 me-1"></iconify-icon>
@@ -27,6 +34,7 @@
                             <iconify-icon icon="tabler:plus" class="align-middle fs-16 me-1"></iconify-icon>
                             Add Coach
                         </a>
+                        @endcan
                     </div>
                 </div>
             </div>
@@ -173,10 +181,15 @@
                                                     </span>
                                                 </td>
                                                 <td class="text-end">
+                                                    @can('coaches.edit')
                                                     <a href="{{ route('admin.coaches.edit', $coach->id) }}"
                                                         class="btn btn-sm btn-soft-info">
                                                         <i class="mdi mdi-pencil"></i> Manage
                                                     </a>
+                                                    @endcan
+                                                    @cannot('coaches.edit')
+                                                    <span class="text-muted small">No action</span>
+                                                    @endcannot
                                                 </td>
                                             </tr>
                                         @empty

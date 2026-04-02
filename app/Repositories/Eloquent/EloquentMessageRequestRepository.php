@@ -32,6 +32,22 @@ class EloquentMessageRequestRepository implements MessageRequestInterface
 
     public function sendRequest(array $data): MessageRequest
     {
+        // Check if a rejected request exists and reactivate it instead of creating a duplicate
+        $existingRejected = MessageRequest::where('sender_id', $data['sender_id'])
+            ->where('receiver_id', $data['receiver_id'])
+            ->where('status', 'rejected')
+            ->first();
+
+        if ($existingRejected) {
+            // Update the rejected request back to pending
+            $existingRejected->update([
+                'message' => $data['message'] ?? null,
+                'status'  => 'pending'
+            ]);
+            return $existingRejected;
+        }
+
+        // Create a new request if no rejected one exists
         return MessageRequest::create([
             'sender_id'   => $data['sender_id'],
             'receiver_id' => $data['receiver_id'],

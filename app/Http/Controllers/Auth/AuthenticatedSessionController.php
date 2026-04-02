@@ -25,7 +25,7 @@ class AuthenticatedSessionController extends Controller
     public function store(LoginRequest $request): RedirectResponse
     {
         // STEP 1: Uncomment this to see if data reaches here
-        // dd($request->all()); 
+        // dd($request->all());
 
         $request->authenticate();
 
@@ -42,12 +42,16 @@ class AuthenticatedSessionController extends Controller
 
     public function destroy(Request $request): RedirectResponse
     {
+        // Determine user role before logout
+        $user = Auth::user();
+        $role = ($user && $user->user_type == 2) ? 'coach' : 'seeker';
+
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
 
         $request->session()->regenerateToken();
 
-        return redirect('/login')->with('success', 'You have been logged out successfully!');
+        return redirect('/login?role=' . $role)->with('success', 'You have been logged out successfully!');
     }
 }

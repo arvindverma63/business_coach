@@ -157,130 +157,39 @@
                     </div>
                     <div class="col-12">
                         <div class="owl-carousel owl-theme owl-carousel-explore">
-                            <div class="item">
-                                <div class="card-explore">
-                                    <img src="{{ asset('website/assets/img/explorecard-bg.png') }}" alt=""
-                                        class="explorecard-bg" />
-                                    <img src="{{ asset('website/assets/img/person-explore.webp') }}" alt=""
-                                        class="person-explore" />
-                                    <div class="card-explore-c">
-                                        <div class="card-expore-desc">
-                                            <h4>Karan Joshi</h4>
-                                            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quam nesciunt
-                                                reprehenderit est magni adipisci tempore excepturi a dolorum quos fugit
-                                                facere veniam voluptates veritatis voluptatibus aliquid nobis, placeat
-                                                maiores earum.</p>
-                                        </div>
-                                        <div class="card-explore-content">
-                                            <span class="card-explore-c-span">Coach</span>
-                                            <h4>Karan Joshi</h4>
-                                            <p>Master In Business Studies</p>
-                                            <a href="" class="linkedin-a"><i class="bi bi-linkedin"></i></a>
-                                        </div>
+                            @forelse($featuredCoaches as $coach)
+                                <div class="item">
+                                    <div class="card-explore">
+                                        <img src="{{ asset('website/assets/img/explorecard-bg.png') }}" alt=""
+                                            class="explorecard-bg" />
+                                        <img src="{{ $coach->user?->profile_photo_path ? asset('storage/' . $coach->user->profile_photo_path) : asset('website/assets/img/person-explore.webp') }}"
+                                            alt="{{ $coach->user->name }}"
+                                            class="person-explore"
+                                            onerror="this.src='{{ asset('website/assets/img/person-explore.webp') }}'" />
+                                        <div class="card-explore-c">
+                                            <div class="card-expore-desc">
+                                                <h4>{{ $coach->user->name }}</h4>
+                                                <p>{{ $coach->bio ? Str::limit($coach->bio, 150) : 'Experienced business coach dedicated to helping you succeed.' }}</p>
+                                            </div>
+                                            <div class="card-explore-content">
+                                                <span class="card-explore-c-span">Coach</span>
+                                                <h4>{{ $coach->user->name }}</h4>
+                                                <p>{{ $coach->designation ?? 'Business Coach' }}</p>
+                                                @if($coach->linkedin_url)
+                                                    <a href="{{ $coach->linkedin_url }}" target="_blank" class="linkedin-a"><i class="bi bi-linkedin"></i></a>
+                                                @endif
+                                            </div>
 
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-
-                            <div class="item">
-                                <div class="card-explore">
-                                    <img src="{{ asset('website/assets/img/explorecard-bg.png') }}" alt=""
-                                        class="explorecard-bg" />
-                                    <img src="{{ asset('website/assets/img/person-explore.webp') }}" alt=""
-                                        class="person-explore" />
-                                    <div class="card-explore-c">
-                                        <div class="card-expore-desc">
-                                            <h4>Karan Joshi</h4>
-                                            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quam nesciunt
-                                                reprehenderit est magni adipisci tempore excepturi a dolorum quos fugit
-                                                facere veniam voluptates veritatis voluptatibus aliquid nobis, placeat
-                                                maiores earum.</p>
-                                        </div>
-                                        <div class="card-explore-content">
-                                            <span class="card-explore-c-span">Coach</span>
-                                            <h4>Karan Joshi</h4>
-                                            <p>Master In Business Studies</p>
-                                            <a href="" class="linkedin-a"><i class="bi bi-linkedin"></i></a>
-                                        </div>
-
+                            @empty
+                                <div class="item">
+                                    <div class="card-explore text-center p-4">
+                                        <p>No featured coaches available at the moment.</p>
                                     </div>
                                 </div>
-                            </div>
-
-                            <div class="item">
-                                <div class="card-explore">
-                                    <img src="{{ asset('website/assets/img/explorecard-bg.png') }}" alt=""
-                                        class="explorecard-bg" />
-                                    <img src="{{ asset('website/assets/img/person-explore.webp') }}" alt=""
-                                        class="person-explore" />
-                                    <div class="card-explore-c">
-                                        <div class="card-expore-desc">
-                                            <h4>Karan Joshi</h4>
-                                            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quam nesciunt
-                                                reprehenderit est magni adipisci tempore excepturi a dolorum quos fugit
-                                                facere veniam voluptates veritatis voluptatibus aliquid nobis, placeat
-                                                maiores earum.</p>
-                                        </div>
-                                        <div class="card-explore-content">
-                                            <span class="card-explore-c-span">Coach</span>
-                                            <h4>Karan Joshi</h4>
-                                            <p>Master In Business Studies</p>
-                                            <a href="" class="linkedin-a"><i class="bi bi-linkedin"></i></a>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="item">
-                                <div class="card-explore">
-                                    <img src="{{ asset('website/assets/img/explorecard-bg.png') }}" alt=""
-                                        class="explorecard-bg" />
-                                    <img src="{{ asset('website/assets/img/person-explore.webp') }}" alt=""
-                                        class="person-explore" />
-                                    <div class="card-explore-c">
-                                        <div class="card-expore-desc">
-                                            <h4>Karan Joshi</h4>
-                                            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quam nesciunt
-                                                reprehenderit est magni adipisci tempore excepturi a dolorum quos fugit
-                                                facere veniam voluptates veritatis voluptatibus aliquid nobis, placeat
-                                                maiores earum.</p>
-                                        </div>
-                                        <div class="card-explore-content">
-                                            <span class="card-explore-c-span">Coach</span>
-                                            <h4>Karan Joshi</h4>
-                                            <p>Master In Business Studies</p>
-                                            <a href="" class="linkedin-a"><i class="bi bi-linkedin"></i></a>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="item">
-                                <div class="card-explore">
-                                    <img src="{{ asset('website/assets/img/explorecard-bg.png') }}" alt=""
-                                        class="explorecard-bg" />
-                                    <img src="{{ asset('website/assets/img/person-explore.webp') }}" alt=""
-                                        class="person-explore" />
-                                    <div class="card-explore-c">
-                                        <div class="card-expore-desc">
-                                            <h4>Karan Joshi</h4>
-                                            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quam nesciunt
-                                                reprehenderit est magni adipisci tempore excepturi a dolorum quos fugit
-                                                facere veniam voluptates veritatis voluptatibus aliquid nobis, placeat
-                                                maiores earum.</p>
-                                        </div>
-                                        <div class="card-explore-content">
-                                            <span class="card-explore-c-span">Coach</span>
-                                            <h4>Karan Joshi</h4>
-                                            <p>Master In Business Studies</p>
-                                            <a href="" class="linkedin-a"><i class="bi bi-linkedin"></i></a>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
+                            @endforelse
                         </div>
                     </div>
                 </div>
@@ -376,8 +285,9 @@
     <section class="blog-section">
         <div class="container">
             <div class="row">
-                <div class="col-12">
+                <div class="col-12 d-flex justify-content-between align-items-center">
                     <h2>Trending <span>Blogs.</span></h2>
+                    <a href="{{ route('webapp.blogs') }}" class="btn btn-primary text-white">View All</a>
                 </div>
             </div>
             <div class="row">

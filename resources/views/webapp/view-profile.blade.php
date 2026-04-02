@@ -105,6 +105,40 @@
                                 </div>
                             </div>
 
+                            @if($media && $media->count() > 0)
+                                <div class="media-gallery-section" style="padding: 30px 0; border-bottom: 1px solid #e0e0e0;">
+                                    <h3 style="margin-bottom: 20px; font-weight: 600;">Gallery</h3>
+                                    <div class="row g-3">
+                                        @foreach($media as $item)
+                                            <div class="col-md-4 col-lg-3">
+                                                @php
+                                                    $filePath = 'storage/' . $item->file_name;
+                                                    $mimeType = $item->mime_type ?? '';
+                                                @endphp
+                                                @if(strpos($mimeType, 'image') !== false)
+                                                    <div style="overflow: hidden; border-radius: 8px; aspect-ratio: 1; background: #f5f5f5;">
+                                                        <img src="{{ asset($filePath) }}"
+                                                            alt="{{ $item->name }}"
+                                                            style="width: 100%; height: 100%; object-fit: cover; cursor: pointer;"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#mediaModal"
+                                                            data-image-url="{{ asset($filePath) }}"
+                                                            onclick="openMediaModal(this)" />
+                                                    </div>
+                                                @elseif(strpos($mimeType, 'video') !== false)
+                                                    <div style="overflow: hidden; border-radius: 8px; aspect-ratio: 1; background: #000;">
+                                                        <video style="width: 100%; height: 100%; object-fit: cover;" controls>
+                                                            <source src="{{ asset($filePath) }}" type="{{ $mimeType }}">
+                                                            Your browser does not support the video tag.
+                                                        </video>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endif
+
                             <div class="journey-section">
                                 <div class="row">
                                     <div class="col-12">
@@ -127,7 +161,7 @@
                                                     <a href="javascript:void(0)" class="chat-btn" data-bs-toggle="modal" data-bs-target="#connectCoachModal">Chat With Us</a>
                                                 @endif
                                             @else
-                                                <a href="{{ route('login') }}" class="chat-btn">Chat With Us</a>
+                                                <a href="{{ route('seeker.coaches.index') }}" class="chat-btn">Chat With Us</a>
                                             @endif
                                         </div>
 
@@ -290,5 +324,28 @@
                 </div>
             </div>
         </div>
+
+        {{-- Media Gallery Modal --}}
+        <div class="modal fade" id="mediaModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header border-0">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <img id="mediaModalImage" src="" alt="Gallery Image" style="width: 100%; height: auto; border-radius: 8px;">
+                    </div>
+                </div>
+            </div>
+        </div>
     @endif
+
+    @push('scripts')
+        <script>
+            function openMediaModal(element) {
+                const imageUrl = element.dataset.imageUrl;
+                document.getElementById('mediaModalImage').src = imageUrl;
+            }
+        </script>
+    @endpush
 </x-web-app-layout>

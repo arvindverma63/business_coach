@@ -1,15 +1,21 @@
 <x-app-layout title="User Management | BestBusinessCoachIndia Admin">
     <div class="content">
         <div class="container-fluid">
+            @cannot('users.view')
+                <div class="alert alert-danger">You don't have permission to view users.</div>
+            @endcannot
+
             <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
                 <div class="flex-grow-1">
                     <h4 class="fs-18 fw-semibold m-0">Users List</h4>
                 </div>
+                @can('users.create')
                 <div class="text-end">
                     <a href="{{ route('admin.users.create') }}" class="btn btn-primary">
                         <i class="mdi mdi-plus me-1"></i> Add User
                     </a>
                 </div>
+                @endcan
             </div>
             <div class="card mb-3">
                 <div class="card-body">

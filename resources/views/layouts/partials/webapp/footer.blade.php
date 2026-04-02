@@ -68,6 +68,12 @@
                             <i class="bi bi-send-fill"></i>
                         </button>
                     </div>
+                    <div class="form-check mt-3">
+                        <input class="form-check-input" type="checkbox" name="accept_terms" id="newsletter_terms" required>
+                        <label class="form-check-label" for="newsletter_terms">
+                            I agree to the <a href="{{ route('terms-and-conditions') }}" target="_blank" class="text-decoration-none">Terms and Conditions</a>
+                        </label>
+                    </div>
                     {{-- Container for AJAX messages --}}
                     <div id="newsletter-status" class="mt-2 small" style="display:none;"></div>
                 </form>
@@ -96,6 +102,16 @@
                 $('#newsletterForm').on('submit', function (e) {
                     e.preventDefault();
 
+                    // Validate checkbox
+                    if (!$('#newsletter_terms').is(':checked')) {
+                        $('#newsletter-status')
+                            .removeClass('text-success text-danger')
+                            .addClass('text-danger')
+                            .html('Please accept the Terms and Conditions.')
+                            .fadeIn();
+                        return false;
+                    }
+
                     const $form = $(this);
                     const $btn = $('#newsletter_btn');
                     const $status = $('#newsletter-status');
@@ -112,7 +128,7 @@
                         dataType: 'json',
                         success: function (response) {
                             $status.addClass('text-success').html(response.message).fadeIn();
-                            $form.trigger('reset'); // Clear the email input
+                            $form.trigger('reset'); // Clear the email input and checkbox
                         },
                         error: function (xhr) {
                             let errorMsg = 'Something went wrong. Please try again.';

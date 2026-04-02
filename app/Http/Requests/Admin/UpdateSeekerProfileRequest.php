@@ -16,14 +16,13 @@ class UpdateSeekerProfileRequest extends FormRequest
 
     public function rules(): array
     {
-        $routeSeeker = $this->route('seeker') ?? $this->route('id');
-        $seekerId = $routeSeeker instanceof SeekerProfile ? $routeSeeker->getKey() : $routeSeeker;
+        $seekerId = $this->route('seeker');
         $seeker = SeekerProfile::query()->find($seekerId);
         $userId = $seeker?->user_id;
 
         return [
             'name' => ['required', 'string', 'max:255'],
-            'phone' => ['required', 'digits:10', Rule::unique('users', 'phone',)->ignore($userId, 'id')],
+            'phone' => ['required', 'digits:10', Rule::unique('users', 'phone')->ignore($userId)],
             'business_domain' => ['nullable', 'string', 'max:255'],
             'company_name' => ['nullable', 'string', 'max:255'],
             'city' => ['required', 'string', 'max:100'],

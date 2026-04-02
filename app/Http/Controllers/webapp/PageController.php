@@ -34,9 +34,8 @@ class PageController extends Controller
         $featuredCoaches = \App\Models\CoachProfile::with('user')
             ->withCount(['receivedConnectionRequests as connection_requests_count'])
             ->where('is_featured', 1)
-            ->orderByRaw('COALESCE(NULLIF(ranking_score, 0), connection_requests_count) DESC')
-            ->orderByDesc('connection_requests_count')
-            ->orderByDesc('ranking_score')
+            ->orderByRaw('CASE WHEN current_rank IS NOT NULL THEN current_rank ELSE 999999 END ASC')
+            ->orderBy('current_rank', 'asc')
             ->take(6)
             ->get();
 
@@ -48,7 +47,7 @@ class PageController extends Controller
     }
 
     public function blogs(){
-        $blogs = $this->blogRepository->getAll(12);
+        $blogs = $this->blogRepository->getAll(12, true); // Show only published blogs
         $categories = Category::where('is_active', true)->get();
         return view('webapp.blogs', compact('blogs', 'categories'));
     }
@@ -82,11 +81,10 @@ class PageController extends Controller
         if ($request->has('city')) {
             $query->whereIn('city', (array)$request->city);
         }
-        $blogs = $this->blogRepository->getAll(12);
+        $blogs = $this->blogRepository->getAll(12, true); // Show only published blogs
         $topCoaches = $query
-            ->orderByRaw('COALESCE(NULLIF(ranking_score, 0), connection_requests_count) DESC')
-            ->orderByDesc('connection_requests_count')
-            ->orderByDesc('ranking_score')
+            ->orderByRaw('CASE WHEN current_rank IS NOT NULL THEN current_rank ELSE 999999 END ASC')
+            ->orderBy('current_rank', 'asc')
             ->paginate(10);
 
 
@@ -134,9 +132,8 @@ class PageController extends Controller
         }
 
         $results = $queryBuilder
-            ->orderByRaw('COALESCE(NULLIF(ranking_score, 0), connection_requests_count) DESC')
-            ->orderByDesc('connection_requests_count')
-            ->orderByDesc('ranking_score')
+            ->orderByRaw('CASE WHEN current_rank IS NOT NULL THEN current_rank ELSE 999999 END ASC')
+            ->orderBy('current_rank', 'asc')
             ->paginate(10);
 
         $categories = \App\Models\Category::where('is_active', 1)->get();
@@ -156,6 +153,12 @@ class PageController extends Controller
             ->take(6)
             ->get();
 
+        // Fetch coach media
+        $media = \App\Models\Media::where('model_type', 'App\\Models\\User')
+            ->where('model_id', $coach->user_id)
+            ->where('collection_name', 'profile_media')
+            ->get();
+
         $connectionRequest = null;
         if (auth()->check() && auth()->user()->user_type === 3) {
             $connectionRequest = \App\Models\MessageRequest::where('sender_id', auth()->id())
@@ -168,7 +171,7 @@ class PageController extends Controller
             ->take(3)
             ->get();
 
-        return view('webapp.view-profile', compact('coach', 'coachBlogs', 'blogs', 'connectionRequest'));
+        return view('webapp.view-profile', compact('coach', 'coachBlogs', 'blogs', 'connectionRequest', 'media'));
     }
 
     public function privacyPolicy(){

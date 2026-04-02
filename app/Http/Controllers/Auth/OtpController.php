@@ -16,25 +16,25 @@ class OtpController extends Controller
     }
 
 
-    public function sendOtp(Request $request) 
+    public function sendOtp(Request $request)
     {
         $request->validate(['email' => 'required|email|exists:users,email']);
 
         // Check standard and trashed users
         $user = User::where('email', $request->email)->first();
-        
+
         if (!$user) {
             $isSoftDeleted = User::withTrashed()->where('email', $request->email)->exists();
-            
+
             if ($isSoftDeleted) {
                 return response()->json([
-                    'status' => false, 
+                    'status' => false,
                     'message' => 'This account has been deactivated or deleted.'
                 ], 403);
             }
 
             return response()->json([
-                'status' => false, 
+                'status' => false,
                 'message' => 'User record not found in active database.'
             ], 404);
         }
@@ -85,11 +85,15 @@ class OtpController extends Controller
     }
 
     public function logout(Request $request) {
+        // Determine user role before logout
+        $user = Auth::user();
+        $role = ($user && $user->user_type == 2) ? 'coach' : 'seeker';
+
         Auth::logout();
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('user.login')->with('success', 'Logged out successfully.');
+        return redirect()->route('user.login', ['role' => $role])->with('success', 'Logged out successfully.');
     }
 }

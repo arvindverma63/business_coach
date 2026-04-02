@@ -38,6 +38,7 @@
 
                 {{-- NEW: Messaging Section for Admin --}}
                 <li class="menu-title mt-2">Communications</li>
+                @can('connection.view')
                 <li>
                     <a href="{{ route('admin.requests.index') }}"
                         class="tp-link {{ request()->routeIs('admin.requests.*') ? 'active' : '' }}">
@@ -47,6 +48,31 @@
                         <span class="sidebar-text"> Connection Logs </span>
                     </a>
                 </li>
+                @endcan
+
+                @can('enquries.view')
+                <li>
+                    <a href="{{ route('admin.contacts.index') }}"
+                        class="tp-link {{ request()->routeIs('admin.contacts.*') ? 'active' : '' }}">
+                        <span class="nav-icon">
+                            <iconify-icon icon="tabler:phone"></iconify-icon>
+                        </span>
+                        <span class="sidebar-text"> Contact Inquiries </span>
+                    </a>
+                </li>
+                @endcan
+
+                @can('newsletters.view')
+                <li>
+                    <a href="{{ route('admin.newsletters.index') }}"
+                        class="tp-link {{ request()->routeIs('admin.newsletters.*') ? 'active' : '' }}">
+                        <span class="nav-icon">
+                            <iconify-icon icon="tabler:mail"></iconify-icon>
+                        </span>
+                        <span class="sidebar-text"> Newsletters </span>
+                    </a>
+                </li>
+                @endcan
 
                 @can('users.view')
                     <li class="menu-title mt-2">User Management</li>
@@ -190,45 +216,8 @@
                     </li>
                 @endcan
 
-                @can('newsletters.view')
-                    <li>
-                        <a href="{{ route('admin.newsletters.index') }}"
-                            class="tp-link {{ request()->routeIs('admin.newsletters.*') ? 'active' : '' }}">
-                            <span class="nav-icon">
-                                <iconify-icon icon="tabler:mail"></iconify-icon>
-                            </span>
-                            <span class="sidebar-text"> Newsletters </span>
-                        </a>
-                    </li>
-                @endcan
-
-                @can('contacts.view')
-                    <li>
-                        <a href="{{ route('admin.contacts.index') }}"
-                            class="tp-link {{ request()->routeIs('admin.contacts.*') ? 'active' : '' }}">
-                            <span class="nav-icon">
-                                <iconify-icon icon="tabler:phone"></iconify-icon>
-                            </span>
-                            <span class="sidebar-text"> Contact Inquiries </span>
-                        </a>
-                    </li>
-                @endcan
-
-                @can('settings.manage')
-                    <li class="menu-title mt-2">Pages</li>
-                    <li>
-                        <a href="{{ route('admin.pages.index') }}"
-                            class="tp-link {{ request()->routeIs('admin.pages.*') ? 'active' : '' }}">
-                            <span class="nav-icon">
-                                <iconify-icon icon="tabler:file-description"></iconify-icon>
-                            </span>
-                            <span class="sidebar-text"> Manage Pages </span>
-                        </a>
-                    </li>
-                @endcan
-
-                @if (auth()->user()->can('roles.view') || auth()->user()->can('settings.manage'))
-                    <li class="menu-title mt-2">Configuration</li>
+                @if (auth()->user()->can('roles.view') || auth()->user()->can('users.edit'))
+                    <li class="menu-title mt-2">Configuration & Setup</li>
                 @endif
 
                 @can('roles.view')
@@ -255,32 +244,29 @@
                     </li>
                 @endcan
 
-                @can('settings.manage')
-                    <li>
-                        <a href="#sidebarSettings" data-bs-toggle="collapse"
-                            class="{{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">
-                            <span class="nav-icon">
-                                <iconify-icon icon="tabler:settings"></iconify-icon>
-                            </span>
-                            <span class="sidebar-text"> Settings </span>
-                            <span class="menu-arrow"></span>
-                        </a>
-                        <div class="collapse {{ request()->routeIs('admin.settings.*') ? 'show' : '' }}"
-                            id="sidebarSettings">
-                            <ul class="nav-second-level">
-                                <li><a href="{{ route('admin.settings.index') }}" class="tp-link">General Settings</a>
-                                </li>
-                                <li><a href="{{ route('admin.settings.sms-gateway') }}" class="tp-link">SMS Gateway</a>
-                                </li>
-                                <li><a href="{{ route('admin.settings.mail-config') }}" class="tp-link">Mail
-                                        Configuration</a></li>
-                                <li><a href="{{ route('admin.settings.social-links') }}" class="tp-link">Social Links</a>
-                                </li>
-
-                            </ul>
-                        </div>
-                    </li>
-                @endcan
+                <li>
+                    <a href="#sidebarSettings" data-bs-toggle="collapse"
+                        class="{{ request()->routeIs(['admin.settings.*', 'admin.pages.*', 'admin.profile.*']) ? 'active' : '' }}">
+                        <span class="nav-icon">
+                            <iconify-icon icon="tabler:settings"></iconify-icon>
+                        </span>
+                        <span class="sidebar-text"> Settings </span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <div class="collapse {{ request()->routeIs(['admin.settings.*', 'admin.pages.*', 'admin.profile.*']) ? 'show' : '' }}"
+                        id="sidebarSettings">
+                        <ul class="nav-second-level">
+                            <li><a href="{{ route('admin.settings.index') }}" class="tp-link">General Settings</a>
+                            </li>
+                            <li><a href="{{ route('admin.settings.sms-gateway') }}" class="tp-link">SMS Gateway</a>
+                            </li>
+                            <li><a href="{{ route('admin.settings.mail-config') }}" class="tp-link">Mail Configuration</a></li>
+                            <li><a href="{{ route('admin.settings.social-links') }}" class="tp-link">Social Links</a>
+                            </li>
+                            <li><a href="{{ route('admin.pages.index') }}" class="tp-link">Pages</a></li>
+                        </ul>
+                    </div>
+                </li>
 
             </ul>
         </div>

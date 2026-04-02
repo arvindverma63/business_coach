@@ -24,14 +24,23 @@ class ProfileController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255',
+            'phone' => 'nullable|numeric|digits:10',
             'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
             'business_domain' => 'nullable|string',
             'company_name' => 'nullable|string',
             'city' => 'nullable|string',
             'state' => 'nullable|string',
+        ], [
+            'phone.numeric' => 'Phone number must contain only digits.',
+            'phone.digits' => 'Phone number must be exactly 10 digits.',
         ]);
 
         $userData = ['name' => $request->name];
+
+        // Store phone with +91 prefix if provided
+        if ($request->filled('phone')) {
+            $userData['phone'] = '+91' . $request->phone;
+        }
 
         if ($request->hasFile('profile_image')) {
             if ($user->profile_image && file_exists(public_path($user->profile_image))) {
