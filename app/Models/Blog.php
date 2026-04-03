@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class Blog extends Model
@@ -50,6 +51,11 @@ class Blog extends Model
     public function category()
     {
         return $this->belongsTo(Category::class, 'category_id');
+    }
+
+    public function getFeaturedImageUrlAttribute(): ?string
+    {
+        return $this->featured_image ? asset(Storage::url($this->featured_image)) : null;
     }
 
     /**

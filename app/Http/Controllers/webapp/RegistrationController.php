@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers\webapp;
 
+use App\Mail\OtpMail;
 use App\Http\Controllers\Controller;
 use App\Models\CoachProfile;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class RegistrationController extends Controller
 {
@@ -43,7 +47,7 @@ class RegistrationController extends Controller
                 'name' => $validated['name'],
                 'email' => $validated['email'],
                 'phone' => $validated['phone'] ?? null,
-                'password' => bcrypt($validated['email']),
+                'password' => Hash::make(Str::random(32)),
                 'user_type' => 2,
                 'profile_image' => $profilePicturePath ? 'storage/' . $profilePicturePath : null,
             ]);
@@ -73,16 +77,19 @@ class RegistrationController extends Controller
             $coachProfile->categories()->sync($validated['categories']);
         });
 
+        $this->sendOtpToUser($validated['email']);
+
         // Return JSON response for AJAX requests
         if ($request->expectsJson()) {
             return response()->json([
                 'success' => true,
-                'message' => 'Registration successful! Your profile is pending approval.',
-                'redirect' => route('user.login')
+                'message' => 'Registration successful! We have sent an OTP to your email address.',
+                'redirect' => route('user.login', ['email' => $validated['email']])
             ], 201);
         }
 
-        return redirect()->route('user.login')->with('success', 'Registration successful! Your profile is pending approval.');
+        return redirect()->route('user.login', ['email' => $validated['email']])
+            ->with('success', 'Registration successful! We have sent an OTP to your email address.');
     }
 
     public function seekerRegistration(Request $request){
@@ -117,7 +124,7 @@ class RegistrationController extends Controller
             'email' => $validated['email'],
             'phone' => $validated['phone'] ?? null,
             'profile_image' => $profileImagePath ? 'storage/' . $profileImagePath : null,
-            'password' => bcrypt($validated['email']),
+            'password' => Hash::make(Str::random(32)),
             'user_type' => 3, // 1 for seeker, 2 for coach
         ]);
 
@@ -137,15 +144,34 @@ class RegistrationController extends Controller
             ]);
         }
 
+        $this->sendOtpToUser($validated['email']);
+
         // Return JSON response for AJAX requests
         if ($request->expectsJson()) {
             return response()->json([
                 'success' => true,
-                'message' => 'Registration successful! Please log in to your account.',
-                'redirect' => route('user.login')
+                'message' => 'Registration successful! We have sent an OTP to your email address.',
+                'redirect' => route('user.login', ['email' => $validated['email']])
             ], 201);
         }
 
-        return redirect()->route('user.login')->with('success', 'Registration successful! Please log in to your account.');
+        return redirect()->route('user.login', ['email' => $validated['email']])
+            ->with('success', 'Registration successful! We have sent an OTP to your email address.');
+    }
+
+    private function sendOtpToUser(string $email): void
+    {
+        $otp = random_int(100000, 999999);
+
+        User::where('email', $email)->update([
+            'otp' => $otp,
+            'otp_expires_at' => now()->addMinutes(10),
+        ]);
+
+        try {
+            Mail::to($email)->send(new OtpMail($otp));
+        } catch (\Throwable $e) {
+            report($e);
+        }
     }
 }

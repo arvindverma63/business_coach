@@ -31,12 +31,18 @@ class MessagingController extends Controller
                 ->with('error', 'You must have an accepted connection request to message this coach.');
         }
 
-        $coach = User::with(['coachProfile.categories'])->findOrFail($coachId);
+        $coach = User::with([
+            'coachProfile.categories',
+            'mediaGallery' => function ($query) {
+                $query->with('category')->latest();
+            },
+        ])->findOrFail($coachId);
         $coachContents = Blog::with('category')
             ->where('user_id', $coachId)
             ->where('is_published', true)
             ->latest()
             ->get();
+        $coachMedia = $coach->mediaGallery;
         $messages = $this->interactionRepo->getConversation($seekerId, $coachId);
 
         auth()->user()->unreadNotifications()
@@ -45,7 +51,7 @@ class MessagingController extends Controller
             ->get()
             ->markAsRead();
 
-        return view('seeker.messaging.chat', compact('coach', 'messages', 'coachContents'));
+        return view('seeker.messaging.chat', compact('coach', 'messages', 'coachContents', 'coachMedia'));
     }
 
     public function fetchMessages($coachId) {

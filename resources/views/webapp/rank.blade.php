@@ -98,6 +98,14 @@
         @forelse($topCoaches as $coach)
             @php
                 $rankPosition = $topCoaches->firstItem() ? $topCoaches->firstItem() + $loop->index : $loop->iteration;
+                // Check for existing connection request if user is authenticated seeker
+                $existingReq = null;
+                if (auth()->check() && auth()->user()->user_type === 3) {
+                    $existingReq = \App\Models\MessageRequest::where('sender_id', auth()->id())
+                        ->where('receiver_id', $coach->user->id)
+                        ->whereIn('status', ['pending', 'accepted'])
+                        ->first();
+                }
             @endphp
             <div class="col-12 col-md-6">
                 <div class="coach-card">
@@ -124,11 +132,33 @@
                         <p class="coach-desc">
                             {{ Str::limit($coach->bio, 140) }}
                         </p>
-                        <div class="coach-footer">
+                        <div class="coach-footer" style="gap: 8px; display: flex; flex-wrap: wrap; align-items: center;">
                             <a href="{{ route('view-profile', $coach->id) }}" class="vote-btn" style="text-decoration: none;">
                                 View Profile
                                 <img src="{{ asset('website/assets/img/svgicon1.svg') }}" alt="" />
                             </a>
+
+                            {{-- Connection Request Button - Only show if authenticated seeker --}}
+                            @if(auth()->check() && auth()->user()->user_type === 3)
+                                @if (!$existingReq)
+                                    <button type="button" class="btn btn-primary btn-sm py-1" data-bs-toggle="modal"
+                                        data-bs-target="#connectModal{{ $coach->id }}"
+                                        style="border-radius: 6px; padding: 6px 12px; font-size: 0.875rem;">
+                                        Connect
+                                    </button>
+                                @elseif($existingReq->status == 'pending')
+                                    <button class="btn btn-soft-warning btn-sm py-1" disabled
+                                        style="border-radius: 6px; padding: 6px 12px; font-size: 0.875rem;">
+                                        <i class="mdi mdi-clock-outline me-1"></i>Pending
+                                    </button>
+                                @elseif($existingReq->status == 'accepted')
+                                    <a href="{{ route('seeker.messaging.chat', $coach->user->id) }}" class="btn btn-success btn-sm py-1"
+                                        style="border-radius: 6px; padding: 6px 12px; font-size: 0.875rem; text-decoration: none;">
+                                        <i class="mdi mdi-message-text-outline me-1"></i>Chat
+                                    </a>
+                                @endif
+                            @endif
+
                             @if($coach->website_url)
                                 <a href="{{ $coach->website_url }}" target="_blank" class="globe-btn" title="Website">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -155,6 +185,39 @@
     <div class="pagination-wrap mt-4" id="paginationWrap">
         {{ $topCoaches->appends(request()->query())->links() }}
     </div>
+
+    {{-- Connection Request Modals --}}
+    @if(auth()->check() && auth()->user()->user_type === 3)
+        @forelse($topCoaches as $coach)
+            <div class="modal fade" id="connectModal{{ $coach->id }}" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header border-bottom">
+                            <h5 class="modal-title" id="connectModalLabel">Connect with {{ $coach->user->name }}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p class="text-muted mb-3">Send a connection request to {{ $coach->user->name }} to start a conversation.</p>
+                            <form action="{{ route('seeker.message-request.store') }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="receiver_id" value="{{ $coach->user->id }}">
+                                <div class="mb-3">
+                                    <label for="message{{ $coach->id }}" class="form-label">Your Message</label>
+                                    <textarea class="form-control" id="message{{ $coach->id }}" name="message" rows="4" placeholder="Introduce yourself and explain why you want to connect..."></textarea>
+                                </div>
+                                <div class="modal-footer border-top">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="submit" class="btn btn-primary">Send Request</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @empty
+        @endforelse
+    @endif
+
 </div>
                 </div>
             </div>

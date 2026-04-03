@@ -1,56 +1,70 @@
 <x-web-app-layout>
 
     <div class="hero-main">
+        <div class="wrraper-baner-c">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-7">
+                        <h1 class="hero-title">
+                            Unlock Clarity, Direction, and Growth With Expert Business Coaching
+                        </h1>
+
+                        <form action="{{ route('webapp.searchCoaches') }}" method="GET">
+                            <div class="search-box">
+                                {{-- Search by Name --}}
+                                <input type="text" name="name" placeholder="Search name...." minlength="3"
+                                    value="{{ request('name') }}" />
+
+                                {{-- Dynamic Categories --}}
+                                <select name="category">
+                                    <option value="" selected>Category</option>
+                                    @foreach ($categories as $category)
+                                    <option value="{{ $category->slug }}">{{ $category->name }}</option>
+                                    @endforeach
+                                </select>
+
+                                {{-- Dynamic Locations (Cities) --}}
+                                <select name="city">
+                                    <option value="" selected>Location</option>
+                                    @foreach ($cities as $city)
+                                    <option value="{{ $city }}">{{ ucwords($city) }}</option>
+                                    @endforeach
+                                </select>
+
+                                <button type="submit" class="search-btn">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="owl-carousel owl-carousel-hero owl-theme">
             @forelse($heroBanners as $banner)
             <div class="item">
                 <section class="hero-section">
                     <div class="container">
-                        <img src="{{ asset('website/assets/img/hero-bg1.webp') }}" alt="" class="hero-bg1" />
-                        <img src="{{ asset('website/assets/img/hero-bg2.webp') }}" alt="" class="hero-bg2" />
+                       @if($banner->image_url)
+                                <img src="{{ $banner->image_url }}" class="hero-img" alt="Expert Business Coaching" />
+                                @else
+                                <img src="{{ asset('website/assets/img/women-hero.webp') }}" class="hero-img"
+                                    alt="Expert Business Coaching" />
+                                @endif
                         <div class="row align-items-center">
-                            <div class="col-lg-7">
-                                <h1 class="hero-title">
-                                    Unlock Clarity, Direction, and Growth With Expert Business Coaching
-                                </h1>
 
-                                <form action="{{ route('webapp.searchCoaches') }}" method="GET">
-                                    <div class="search-box">
-                                        {{-- Search by Name --}}
-                                        <input type="text" name="name" placeholder="Search name...."
-                                            minlength="3" value="{{ request('name') }}" />
+                            <!-- <div class="col-lg-7">
 
-                                        {{-- Dynamic Categories --}}
-                                        <select name="category">
-                                            <option value="" selected>Category</option>
-                                            @foreach ($categories as $category)
-                                                <option value="{{ $category->slug }}">{{ $category->name }}</option>
-                                            @endforeach
-                                        </select>
-
-                                        {{-- Dynamic Locations (Cities) --}}
-                                        <select name="city">
-                                            <option value="" selected>Location</option>
-                                            @foreach ($cities as $city)
-                                                <option value="{{ $city }}">{{ ucwords($city) }}</option>
-                                            @endforeach
-                                        </select>
-
-                                        <button type="submit" class="search-btn">
-                                            <i class="bi bi-search"></i>
-                                        </button>
-                                    </div>
-                                </form>
                             </div>
-
                             <div class="col-lg-5 text-center">
                                 @if($banner->image_url)
-                                    <img src="{{ $banner->image_url }}" class="hero-img" alt="Expert Business Coaching" />
+                                <img src="{{ $banner->image_url }}" class="hero-img" alt="Expert Business Coaching" />
                                 @else
-                                    <img src="{{ asset('website/assets/img/women-hero.webp') }}" class="hero-img"
-                                        alt="Expert Business Coaching" />
+                                <img src="{{ asset('website/assets/img/women-hero.webp') }}" class="hero-img"
+                                    alt="Expert Business Coaching" />
                                 @endif
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                 </section>
@@ -71,14 +85,14 @@
                                 <form action="{{ route('webapp.searchCoaches') }}" method="GET">
                                     <div class="search-box">
                                         {{-- Search by Name --}}
-                                        <input type="text" name="name" placeholder="Search name...."
-                                            minlength="3" value="{{ request('name') }}" />
+                                        <input type="text" name="name" placeholder="Search name...." minlength="3"
+                                            value="{{ request('name') }}" />
 
                                         {{-- Dynamic Categories --}}
                                         <select name="category">
                                             <option value="" selected>Category</option>
                                             @foreach ($categories as $category)
-                                                <option value="{{ $category->slug }}">{{ $category->name }}</option>
+                                            <option value="{{ $category->slug }}">{{ $category->name }}</option>
                                             @endforeach
                                         </select>
 
@@ -86,7 +100,7 @@
                                         <select name="city">
                                             <option value="" selected>Location</option>
                                             @foreach ($cities as $city)
-                                                <option value="{{ $city }}">{{ ucwords($city) }}</option>
+                                            <option value="{{ $city }}">{{ ucwords($city) }}</option>
                                             @endforeach
                                         </select>
 
@@ -123,8 +137,7 @@
                     <p>In this environment, coaching has evolved from a support function into a strategic necessity.</p>
                     <p>This platform exists to reflect that evolution—by making business coaching credible,
                         structured, and outcome-driven, rather than personality-led or promotional.</p>
-                    <img src="{{ asset('website/assets/img/coachingsection.webp') }}" alt=""
-                        class="coachingsection" />
+                    <img src="{{ asset('website/assets/img/coachingsection.webp') }}" alt="" class="coachingsection" />
                 </div>
             </div>
         </div>
@@ -132,10 +145,8 @@
 
 
     <section class="coaching-section">
-        <img src="{{ asset('website/assets/img/section-coachingbg1.webp') }}" alt=""
-            class="section-coachingbg1" />
-        <img src="{{ asset('website/assets/img/section-coachingbg2.webp') }}" alt=""
-            class="section-coachingbg2" />
+        <img src="{{ asset('website/assets/img/section-coachingbg1.webp') }}" alt="" class="section-coachingbg1" />
+        <img src="{{ asset('website/assets/img/section-coachingbg2.webp') }}" alt="" class="section-coachingbg2" />
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-md-10">
@@ -165,36 +176,38 @@
                     <div class="col-12">
                         <div class="owl-carousel owl-theme owl-carousel-explore">
                             @forelse($featuredCoaches as $coach)
-                                <div class="item">
-                                    <a href="{{ route('view-profile', $coach->id) }}" class="card-explore-link text-decoration-none text-reset d-block">
-                                        <div class="card-explore">
-                                            <img src="{{ asset('website/assets/img/explorecard-bg.png') }}" alt=""
-                                                class="explorecard-bg" />
-                                            <img src="{{ $coach->user?->profile_image ?? asset('website/assets/img/person-explore.webp') }}"
-                                                alt="{{ $coach->user->name }}"
-                                                class="person-explore" />
-                                            <div class="card-explore-c">
-                                                <div class="card-expore-desc">
-                                                    <h4>{{ $coach->user->name }}</h4>
-                                                    <p>{{ $coach->bio ? Str::limit($coach->bio, 150) : 'Experienced business coach dedicated to helping you succeed.' }}</p>
-                                                </div>
-                                                <div class="card-explore-content">
-                                                    <span class="card-explore-c-span">Coach</span>
-                                                    <h4>{{ $coach->user->name }}</h4>
-                                                    <p>{{ $coach->designation ?? 'Business Coach' }}</p>
-                                                    <span class="linkedin-a" aria-hidden="true"><i class="bi bi-arrow-right-short"></i></span>
-                                                </div>
-
+                            <div class="item">
+                                <a href="{{ route('view-profile', $coach->id) }}"
+                                    class="card-explore-link text-decoration-none text-reset d-block">
+                                    <div class="card-explore">
+                                        <img src="{{ asset('website/assets/img/explorecard-bg.png') }}" alt=""
+                                            class="explorecard-bg" />
+                                        <img src="{{ $coach->user?->profile_image ?? asset('website/assets/img/person-explore.webp') }}"
+                                            alt="{{ $coach->user->name }}" class="person-explore" />
+                                        <div class="card-explore-c">
+                                            <div class="card-expore-desc">
+                                                <h4>{{ $coach->user->name }}</h4>
+                                                <p>{{ $coach->bio ? Str::limit($coach->bio, 150) : 'Experienced business coach dedicated to helping you succeed.' }}
+                                                </p>
                                             </div>
+                                            <div class="card-explore-content">
+                                                <span class="card-explore-c-span">Coach</span>
+                                                <h4>{{ $coach->user->name }}</h4>
+                                                <p>{{ $coach->designation ?? 'Business Coach' }}</p>
+                                                <span class="linkedin-a" aria-hidden="true"><i
+                                                        class="bi bi-arrow-right-short"></i></span>
+                                            </div>
+
                                         </div>
-                                    </a>
-                                </div>
-                            @empty
-                                <div class="item">
-                                    <div class="card-explore text-center p-4">
-                                        <p>No featured coaches available at the moment.</p>
                                     </div>
+                                </a>
+                            </div>
+                            @empty
+                            <div class="item">
+                                <div class="card-explore text-center p-4">
+                                    <p>No featured coaches available at the moment.</p>
                                 </div>
+                            </div>
                             @endforelse
                         </div>
                     </div>
@@ -220,13 +233,11 @@
         </section>
         <img src="{{ asset('website/assets/img/Frame2147239271777.png') }}" alt="" class="frame636">
     </section>
-    <section class="testimonial-section"
-        style="background-image:url({{ asset('website/assets/img/wehavebg.png') }})">
+    <section class="testimonial-section" style="background-image:url({{ asset('website/assets/img/wehavebg.png') }})">
         <div class="container">
             <div class="row">
                 <div class="col-md-5">
-                    <img src="{{ asset('website/assets/img/testimonail-per.webp') }}" alt=""
-                        class="testimonailimg" />
+                    <img src="{{ asset('website/assets/img/testimonail-per.webp') }}" alt="" class="testimonailimg" />
                 </div>
                 <div class="col-md-7">
                     <div class="t">
@@ -298,187 +309,190 @@
             </div>
             <div class="row">
                 @forelse($blogs as $blog)
-                    <div class="col-md-4 mb-4">
-                        <div class="blog-card">
-                            {{-- Handle dynamic image with fallback --}}
-                            <img src="{{ $blog->featured_image ? asset('storage/' . $blog->featured_image) : asset('website/assets/img/blog-imag.png') }}"
-                                alt="{{ $blog->title }}" style="width: 100%; height: 250px; object-fit: cover;" />
+                <div class="col-md-4 mb-4">
+                    <div class="blog-card">
+                        {{-- Handle dynamic image with fallback --}}
+                        <img src="{{ $blog->featured_image ? asset('storage/' . $blog->featured_image) : asset('website/assets/img/blog-imag.png') }}"
+                            alt="{{ $blog->title }}" style="width: 100%; height: 250px; object-fit: cover;" />
 
-                            <div class="blog-content">
-                                <h3>{{ $blog->title }}</h3>
-                                <p>
-                                    {{ Str::limit(strip_tags($blog->content), 120) }}
-                                </p>
-                            </div>
-
-                            {{-- Dynamic Link --}}
-                            <a href="{{ route('blog-detail', $blog->slug) }}" class="button-blog">
-                                <i class="bi bi-arrow-right-short"></i>
-                            </a>
+                        <div class="blog-content">
+                            <h3>{{ $blog->title }}</h3>
+                            <p>
+                                {{ Str::limit(strip_tags($blog->content), 120) }}
+                            </p>
                         </div>
+
+                        {{-- Dynamic Link --}}
+                        <a href="{{ route('blog-detail', $blog->slug) }}" class="button-blog">
+                            <i class="bi bi-arrow-right-short"></i>
+                        </a>
                     </div>
+                </div>
                 @empty
-                    <div class="col-12">
-                        <p class="text-center">No blogs available at the moment.</p>
-                    </div>
+                <div class="col-12">
+                    <p class="text-center">No blogs available at the moment.</p>
+                </div>
                 @endforelse
             </div>
         </div>
     </section>
     @push('scripts')
-        <style>
-            .hero-sort-order {
-                display: inline-block;
-                padding: 6px 12px;
-                border-radius: 999px;
-                background: rgba(255, 255, 255, 0.85);
-                color: #1f2937;
-                letter-spacing: 0.08em;
-                font-size: 12px;
+    <style>
+    .hero-sort-order {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.85);
+        color: #1f2937;
+        letter-spacing: 0.08em;
+        font-size: 12px;
+    }
+
+    .card-explore-link {
+        display: block;
+        cursor: pointer;
+    }
+
+    .card-expore-desc {
+        display: none;
+    }
+
+    .card-expore-desc p {
+        font-size: 16px !important;
+        width: 100%;
+    }
+
+    .card-explore:hover .person-explore {
+        display: none;
+    }
+
+    .card-explore:hover .card-explore-c .card-explore-content {
+        display: none;
+    }
+
+    .card-explore:hover .card-explore-c .card-expore-desc {
+        display: block;
+    }
+    </style>
+    <script>
+    $(".owl-carousel.owl-carousel-explore").owlCarousel({
+        loop: true,
+        center: true,
+        margin: 10,
+        nav: false,
+
+        autoplay: false,
+        autoplayTimeout: 3000, // 3 second
+        autoplayHoverPause: true,
+
+        responsive: {
+            0: {
+                items: 1,
+            },
+            600: {
+                items: 3,
+            },
+            1000: {
+                stagePadding: 400,
+                items: 1,
+            },
+        },
+    });
+
+    $(".owl-carousel.owl-carousel-testimonial").owlCarousel({
+        loop: true,
+        margin: 10,
+        nav: true,
+        navText: [
+            "<i class='bi bi-arrow-left-short'></i>",
+            "<i class='bi bi-arrow-right-short'></i>",
+        ],
+        responsive: {
+            0: {
+                items: 1,
+            },
+            600: {
+                items: 1,
+            },
+            1000: {
+                items: 1,
+            },
+        },
+    });
+
+    $(".owl-carousel.owl-carousel-hero").owlCarousel({
+        loop: true,
+        margin: 10,
+        nav: true,
+        autoplay: true, // autoplay ON
+        autoplayTimeout: 1000, // 3 sec delay
+        autoplayHoverPause: true, // hover pe pause
+        responsive: {
+            0: {
+                items: 1,
+            },
+            600: {
+                items: 1,
+            },
+            1000: {
+                items: 1,
+            },
+        },
+    });
+    </script>
+    <script>
+    // Image upload preview
+    document
+        .getElementById("avatarInput")
+        .addEventListener("change", function() {
+            const file = this.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                document.getElementById("avatarImg").src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+    </script>
+    <script>
+    /* image preview */
+
+    document
+        .getElementById("profileInput")
+        .addEventListener("change", function(e) {
+            const file = e.target.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    document.getElementById("profilePreview").src = e.target.result;
+                };
+
+                reader.readAsDataURL(file);
             }
-
-            .card-explore-link {
-                display: block;
-                cursor: pointer;
-            }
-
-            .card-expore-desc {
-                display: none;
-            }
-
-            .card-expore-desc p {
-                font-size: 16px !important;
-                width: 100%;
-            }
-
-            .card-explore:hover .person-explore {
-                display: none;
-            }
-
-            .card-explore:hover .card-explore-c .card-explore-content {
-                display: none;
-            }
-
-            .card-explore:hover .card-explore-c .card-expore-desc {
-                display: block;
-            }
-        </style>
-        <script>
-            $(".owl-carousel.owl-carousel-explore").owlCarousel({
-                loop: true,
-                center: true,
-                margin: 10,
-                nav: false,
-
-                autoplay: false,
-                autoplayTimeout: 3000, // 3 second
-                autoplayHoverPause: true,
-
-                responsive: {
-                    0: {
-                        items: 1,
-                    },
-                    600: {
-                        items: 3,
-                    },
-                    1000: {
-                        stagePadding: 400,
-                        items: 1,
-                    },
-                },
-            });
-
-            $(".owl-carousel.owl-carousel-testimonial").owlCarousel({
-                loop: true,
-                margin: 10,
-                nav: true,
-                navText: [
-                    "<i class='bi bi-arrow-left-short'></i>",
-                    "<i class='bi bi-arrow-right-short'></i>",
-                ],
-                responsive: {
-                    0: {
-                        items: 1,
-                    },
-                    600: {
-                        items: 1,
-                    },
-                    1000: {
-                        items: 1,
-                    },
-                },
-            });
-
-            $(".owl-carousel.owl-carousel-hero").owlCarousel({
-                loop: true,
-                margin: 10,
-                nav: true,
-                responsive: {
-                    0: {
-                        items: 1,
-                    },
-                    600: {
-                        items: 1,
-                    },
-                    1000: {
-                        items: 1,
-                    },
-                },
-            });
-        </script>
-        <script>
-            // Image upload preview
-            document
-                .getElementById("avatarInput")
-                .addEventListener("change", function() {
-                    const file = this.files[0];
-                    if (!file) return;
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        document.getElementById("avatarImg").src = e.target.result;
-                    };
-                    reader.readAsDataURL(file);
-                });
-        </script>
-        <script>
-            /* image preview */
-
-            document
-                .getElementById("profileInput")
-                .addEventListener("change", function(e) {
-                    const file = e.target.files[0];
-
-                    if (file) {
-                        const reader = new FileReader();
-
-                        reader.onload = function(e) {
-                            document.getElementById("profilePreview").src = e.target.result;
-                        };
-
-                        reader.readAsDataURL(file);
-                    }
-                });
-        </script>
+        });
+    </script>
     @endpush
 
     @push('scripts')
-        <script>
-            $(document).ready(function() {
-                const urlParams = new URLSearchParams(window.location.search);
+    <script>
+    $(document).ready(function() {
+        const urlParams = new URLSearchParams(window.location.search);
 
-                if (urlParams.get('register') === 'seeker') {
-                    var seekerModal = new bootstrap.Modal(document.getElementById('profileModal1'));
-                    seekerModal.show();
-                } else if (urlParams.get('register') === 'coach') {
-                    var coachModal = new bootstrap.Modal(document.getElementById('profileModal'));
-                    coachModal.show();
-                }
+        if (urlParams.get('register') === 'seeker') {
+            var seekerModal = new bootstrap.Modal(document.getElementById('profileModal1'));
+            seekerModal.show();
+        } else if (urlParams.get('register') === 'coach') {
+            var coachModal = new bootstrap.Modal(document.getElementById('profileModal'));
+            coachModal.show();
+        }
 
-                if (urlParams.get('register') === 'seeker' || urlParams.get('register') === 'coach') {
-                    window.history.replaceState({}, document.title, window.location.pathname);
-                }
-            });
-        </script>
+        if (urlParams.get('register') === 'seeker' || urlParams.get('register') === 'coach') {
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+    });
+    </script>
     @endpush
 
 </x-web-app-layout>

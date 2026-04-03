@@ -23,7 +23,7 @@
                                 <iconify-icon icon="tabler:mail"></iconify-icon>
                             </span>
                             <input type="email" id="email" class="form-control bg-light border-start-0"
-                                placeholder="name@company.com" required>
+                                placeholder="name@company.com" value="{{ request('email') }}" required>
                         </div>
                         <div id="email-error" class="text-danger small mt-1 d-none">Please enter a valid email.</div>
                     </div>

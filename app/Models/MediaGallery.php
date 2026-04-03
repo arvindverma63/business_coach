@@ -35,7 +35,7 @@ class MediaGallery extends Model
 
     public function getUrlAttribute()
     {
-        return Storage::url($this->file_path);
+        return asset(Storage::url($this->file_path));
     }
 
     public function category()

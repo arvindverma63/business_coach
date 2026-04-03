@@ -234,8 +234,8 @@
                                     <div class="card-body">
                                         <div class="d-flex align-items-start gap-3">
                                             <div class="flex-shrink-0">
-                                                @if ($content->featured_image)
-                                                    <img src="{{ asset('storage/' . $content->featured_image) }}"
+                                                @if ($content->featured_image_url)
+                                                    <img src="{{ $content->featured_image_url }}"
                                                         alt="{{ $content->title }}"
                                                         class="rounded"
                                                         style="width: 72px; height: 72px; object-fit: cover;">
@@ -276,9 +276,80 @@
                         @endforelse
                     </div>
 
+                    <div class="mt-5">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <div>
+                                <h6 class="fw-bold mb-1">Uploaded Media</h6>
+                                <p class="text-muted small mb-0">Photos and videos uploaded by this coach.</p>
+                            </div>
+                            <span class="badge bg-light text-dark border">{{ $coachMedia->count() }} Items</span>
+                        </div>
+
+                        @if($coachMedia->isNotEmpty())
+                            <div class="row g-3">
+                                @foreach($coachMedia as $item)
+                                    @php
+                                        $mediaUrl = $item->url;
+                                        $mediaType = $item->file_type ?? 'file';
+                                    @endphp
+                                    <div class="col-md-4 col-lg-3">
+                                        @if($mediaType === 'image')
+                                            <div style="overflow: hidden; border-radius: 8px; aspect-ratio: 1; background: #f5f5f5;">
+                                                <img src="{{ $mediaUrl }}"
+                                                    alt="{{ $item->title }}"
+                                                    style="width: 100%; height: 100%; object-fit: cover; cursor: pointer;"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#mediaModal{{ $coach->id }}"
+                                                    data-image-url="{{ $mediaUrl }}"
+                                                    onclick="openCoachMediaModal(this, '{{ $coach->id }}')" />
+                                            </div>
+                                        @elseif($mediaType === 'video')
+                                            <div style="overflow: hidden; border-radius: 8px; aspect-ratio: 1; background: #000;">
+                                                <video style="width: 100%; height: 100%; object-fit: cover;" controls>
+                                                    <source src="{{ $mediaUrl }}" type="{{ $item->mime_type }}">
+                                                    Your browser does not support the video tag.
+                                                </video>
+                                            </div>
+                                        @else
+                                            <a href="{{ $mediaUrl }}" target="_blank"
+                                                class="d-flex align-items-center justify-content-center border rounded bg-light text-decoration-none text-dark"
+                                                style="aspect-ratio: 1;">
+                                                <div class="text-center p-3">
+                                                    <i class="mdi mdi-file-outline fs-28 d-block mb-2"></i>
+                                                    <small>{{ $item->title }}</small>
+                                                </div>
+                                            </a>
+                                        @endif
+                                        <div class="mt-2 small text-muted text-truncate">
+                                            {{ $item->category->name ?? 'Uncategorized' }}
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @else
+                            <div class="text-center py-4 text-muted border rounded-3 bg-light-subtle">
+                                No uploaded media is available for this coach yet.
+                            </div>
+                        @endif
+                    </div>
+
                     <div class="text-center py-4 text-muted d-none" id="coachContentEmpty{{ $coach->id }}">
                         No content matches the selected filters.
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="mediaModal{{ $coach->id }}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <img id="mediaModalImage{{ $coach->id }}" src="" alt="Gallery Image"
+                        style="width: 100%; height: auto; border-radius: 8px;">
                 </div>
             </div>
         </div>
@@ -368,6 +439,11 @@
 
                 $('#contentSearch{{ $coach->id }}, #contentCategory{{ $coach->id }}').on('input change', filterCoachContent);
             });
+
+            function openCoachMediaModal(element, coachId) {
+                const imageUrl = element.dataset.imageUrl;
+                document.getElementById(`mediaModalImage${coachId}`).src = imageUrl;
+            }
         </script>
     @endpush
 </x-seeker-layout>
