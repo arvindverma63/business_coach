@@ -60,6 +60,15 @@
                 position: sticky;
                 top: 80px;
             }
+              @media (max-width: 768px) {
+                .content-page{
+                    width:100%!important;
+                }
+                .content{
+                    padding:0px!important;
+                    margin-top:10px!important;    
+                }
+             }
         </style>
     @endpush
 

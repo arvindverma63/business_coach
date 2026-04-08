@@ -104,7 +104,9 @@
 
             <div class="timing">
                 @if ($settings->office_timing)
-                    {!! $settings->office_timing !!}
+                    <div class="office-timing-html">
+                        {!! $settings->office_timing !!}
+                    </div>
                 @else
                     <div class="time-item">
                         <small>Monday</small>
@@ -132,6 +134,21 @@
     </main>
 
     @push('scripts')
+        <style>
+            .office-timing-html p {
+                margin-bottom: 0.75rem;
+            }
+
+            .office-timing-html p:last-child {
+                margin-bottom: 0;
+            }
+
+            .office-timing-html ul,
+            .office-timing-html ol {
+                margin-bottom: 0.75rem;
+                padding-left: 1.25rem;
+            }
+        </style>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
             $(document).ready(function() {

@@ -132,6 +132,7 @@
                                         <tr>
                                             <th>Coach Name</th>
                                             <th>Expertise</th>
+                                            <th>Ranking Score</th>
                                             <th>Status</th>
                                             <th>Connection Requests</th>
                                             <th class="text-end">Action</th>
@@ -164,6 +165,11 @@
                                                     <small class="text-muted">{{ $coach->company_name }}</small>
                                                 </td>
                                                 <td>
+                                                    <span class="badge bg-soft-info text-info">
+                                                        {{ $coach->ranking_score ?? 0 }}
+                                                    </span>
+                                                </td>
+                                                <td>
                                                     @if ($coach->approval_status === 'approved')
                                                         <span
                                                             class="badge bg-success-subtle text-success">Approved</span>
@@ -194,7 +200,7 @@
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="5" class="text-center text-muted py-4">No coaches
+                                                <td colspan="6" class="text-center text-muted py-4">No coaches
                                                     found.
                                                 </td>
                                             </tr>

@@ -6,6 +6,45 @@
             ($msg->coach_id === Auth::id() && $msg->subject === 'Coach Reply') || $msg->sender_id === Auth::id();
     @endphp
 
+    <style>
+             .content-page{
+            width:100%;
+        }
+       
+           @media (max-width: 768px) {
+             #message-container .message-box{
+            max-width:200px!important;
+        }
+        #message-container .text-white {
+             max-width:200px!important;
+        }
+            .content{
+                padding:0px;
+                margin-top:10px;
+            }
+            .btn-back{
+                    width: fit-content;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 4px;
+    /* display: block; */
+    margin-left: auto;
+            }
+            .chat-header{
+                gap:4px;
+            }
+            div#message-container .text-white {
+    padding: 12px !important;
+    width: max-content;
+    display: block;
+    margin-left: auto;
+}
+    .chat-page-container {
+        padding: 0.5rem;
+        height: 78vh;
+    }
+           }
+    </style>
     <div class="d-flex mb-4 {{ $isCoachReply ? 'justify-content-end' : 'justify-content-start' }}">
         <div class="message-content {{ $isCoachReply ? 'text-end' : '' }}" style="max-width: 70%;">
 

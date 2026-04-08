@@ -160,10 +160,12 @@
                                         <label class="form-label">Ranking Score</label>
                                         <input type="number" name="ranking_score" class="form-control"
                                             value="0">
+                                        <small class="text-muted d-block mt-1">Ranking score is the first priority on the website.</small>
                                     </div>
                                     <div class="col-md-3 mb-3">
                                         <label class="form-label">Current Rank</label>
                                         <input type="number" name="current_rank" class="form-control">
+                                        <small class="text-muted d-block mt-1">This is kept for admin reference only.</small>
                                     </div>
                                     <div class="col-md-3 mb-3">
                                         <label class="form-label">Approval Status</label>

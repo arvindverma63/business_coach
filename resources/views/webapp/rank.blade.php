@@ -22,7 +22,52 @@
             </div>
         </section>
 
-        <section class="sectionarc-sences">
+        <style>
+            
+        </style>
+        <section class="mobile-rank-silder">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="rank-siderr">
+                            <div class="owl-carousel owl-theme owl-carouselrankk">
+                                @forelse($topCoaches as $coach)
+                                    @php
+                                        $displayRank = $topCoaches->firstItem() ? $topCoaches->firstItem() + $loop->index : $loop->iteration;
+                                    @endphp
+                                    <div class="item">
+                                        <div class="rank-card-hh">
+                                            <a href="{{ route('view-profile', $coach->id) }}">
+                                                <div class="rankimagemb">
+                                                    <img src="{{ $coach->user->profile_image ? asset($coach->user->profile_image) : asset('website/assets/img/Rectangle5339.png') }}"
+                                                        alt="{{ $coach->user->name }}">
+                                                </div>
+
+                                                <div class="card-infou">
+                                                    <div class="rank-badge">Rank #{{ str_pad($displayRank, 2, '0', STR_PAD_LEFT) }}</div>
+                                                    <div class="nameu">{{ $coach->user->name }}</div>
+                                                    <div class="roleu">{{ $coach->designation ?? 'Business Coach' }}</div>
+                                                    <button type="button">View Profile</button>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                @empty
+                                    <div class="item">
+                                        <div class="rank-card-hh">
+                                            <div class="card-infou text-center">
+                                                <div class="nameu">No coaches found.</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforelse
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="sectionarc-sences desktopranksider">
             <div class="arc-scene" id="arcScene"></div>
         </section>
 
@@ -67,13 +112,6 @@
                                     </div>
                                 </div>
 
-                                    <div class="wrrperfilter1">
-                                        <div class="filter-group-title">Select Year</div>
-                                        <div class="filter-cols" id="yearFilter">
-                                            <label><input type="checkbox" value="2026" checked disabled /> 2026</label>
-                                            <label><input type="checkbox" value="2025" disabled /> 2025</label>
-                                        </div>
-                                    </div>
                                 </div>
                             </form>
 
@@ -332,6 +370,29 @@
     </main>
 
 @push('scripts')
+<script>
+    $('.owl-carouselrankk').owlCarousel({
+    loop:true,
+    margin:10,
+     navText: [
+        "<i class='bi bi-chevron-left'></i>",
+        "<i class='bi bi-chevron-right'></i>"
+    ],
+    nav:true,
+    dots:false,
+    responsive:{
+        0:{
+            items:2
+        },
+        600:{
+            items:3
+        },
+        1000:{
+            items:5
+        }
+    }
+})
+</script>
 <script>
     @php
         $arcCards = $topCoaches->take(7)->map(function($coach, $index) {

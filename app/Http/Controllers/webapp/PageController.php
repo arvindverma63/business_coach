@@ -21,7 +21,9 @@ class PageController extends Controller
     public function index(){
         $categories = \App\Models\Category::where('is_active', 1)->get();
 
-        $cities = \App\Models\CoachProfile::whereNotNull('city')
+        $cities = \App\Models\CoachProfile::where('approval_status', 'approved')
+            ->where('is_featured', 1)
+            ->whereNotNull('city')
             ->where('city', '!=', '')
             ->distinct()
             ->pluck('city');
@@ -33,9 +35,11 @@ class PageController extends Controller
 
         $featuredCoaches = \App\Models\CoachProfile::with('user')
             ->withCount(['receivedConnectionRequests as connection_requests_count'])
+            ->where('approval_status', 'approved')
             ->where('is_featured', 1)
-            ->orderByRaw('CASE WHEN current_rank IS NOT NULL THEN current_rank ELSE 999999 END ASC')
-            ->orderBy('current_rank', 'asc')
+            ->orderByDesc('ranking_score')
+            ->orderByDesc('connection_requests_count')
+            ->orderByDesc('created_at')
             ->take(6)
             ->get();
 
@@ -76,20 +80,23 @@ class PageController extends Controller
             ->where('approval_status', 'approved')
             ->where('is_featured', 1);
 
-        $filterCities = \App\Models\CoachProfile::whereNotNull('city')
-        ->where('city', '!=', '')
-        ->select('city')
-        ->distinct()
-        ->orderBy('city', 'asc')
-        ->pluck('city');
+        $filterCities = \App\Models\CoachProfile::where('approval_status', 'approved')
+            ->where('is_featured', 1)
+            ->whereNotNull('city')
+            ->where('city', '!=', '')
+            ->select('city')
+            ->distinct()
+            ->orderBy('city', 'asc')
+            ->pluck('city');
 
         if ($request->has('city')) {
             $query->whereIn('city', (array)$request->city);
         }
         $blogs = $this->blogRepository->getAll(12, true); // Show only published blogs
         $topCoaches = $query
-            ->orderByRaw('CASE WHEN current_rank IS NOT NULL THEN current_rank ELSE 999999 END ASC')
-            ->orderBy('current_rank', 'asc')
+            ->orderByDesc('ranking_score')
+            ->orderByDesc('connection_requests_count')
+            ->orderByDesc('created_at')
             ->paginate(10);
 
 
@@ -101,7 +108,9 @@ class PageController extends Controller
         $categories = \App\Models\Category::where('is_active', 1)->get();
 
         // Fetch unique cities from coach profiles
-        $cities = \App\Models\CoachProfile::whereNotNull('city')
+        $cities = \App\Models\CoachProfile::where('approval_status', 'approved')
+            ->where('is_featured', 1)
+            ->whereNotNull('city')
             ->where('city', '!=', '')
             ->distinct()
             ->orderBy('city', 'asc')
@@ -137,13 +146,16 @@ class PageController extends Controller
         }
 
         $results = $queryBuilder
-            ->orderByRaw('CASE WHEN current_rank IS NOT NULL THEN current_rank ELSE 999999 END ASC')
-            ->orderBy('current_rank', 'asc')
+            ->orderByDesc('ranking_score')
+            ->orderByDesc('connection_requests_count')
+            ->orderByDesc('created_at')
             ->paginate(10);
 
         $categories = \App\Models\Category::where('is_active', 1)->get();
 
-        $cities = \App\Models\CoachProfile::whereNotNull('city')
+        $cities = \App\Models\CoachProfile::where('approval_status', 'approved')
+        ->where('is_featured', 1)
+            ->whereNotNull('city')
             ->where('city', '!=', '')
             ->distinct()
             ->pluck('city');

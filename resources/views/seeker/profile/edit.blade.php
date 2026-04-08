@@ -1,12 +1,37 @@
 <x-seeker-layout title="Edit Profile | BestBusinessCoach">
-    <div class="container-fluid">
-        <div class="py-3">
+    <style>
+        .wrapper-editptpr{
+            background-color: #ffffff;
+            min-height: 100vh;
+            padding: 2rem;
+            border-radius:20px;
+        }
+       
+        @media (max-width: 767px) {
+            .content{
+                padding:0px;
+                margin-top:10px;
+            }
+            .wrapper-editptpr{
+                    background-color: #ffffff;
+    min-height: 100vh;
+    padding: 10px 4px;
+    border-radius: 20px;
+            }
+            .card-body{
+                padding:10px;
+            }
+        }
+    </style>
+ <div class="wrapper-editptpr">
+       <div class="container-fluid">
+        <div class="pri">
             <h4 class="fs-20 fw-bold m-0 text-dark">My Profile Settings</h4>
             <p class="text-muted font-size-13">Update your personal information and business preferences.</p>
         </div>
 
         <div class="row">
-            <div class="col-lg-8">
+            <div class="col-lg-12">
                 <form action="{{ route('seeker.profile.update') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PATCH')
@@ -113,6 +138,7 @@
 
         </div>
     </div>
+ </div>
 
     @push('scripts')
         <script>

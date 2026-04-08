@@ -1,10 +1,53 @@
+<style>
+.btnlefsidedesk {}
+
+.btnlefsidemob {
+    display: none;
+}
+
+@media (max-width: 992px) {
+    .btnlefsidedesk {
+        display: none !important;
+    }
+
+    .btnlefsidemob {
+        display: block;
+        background: none;
+        border: none;
+        padding: 0px;
+    }
+
+    .app-sidebar-menu {
+        left: -260px;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .app-sidebar-menu.active {
+        left: 0px;
+    }
+    .dropdown-menu.dropdown-menu-end.dropdown-xl.show {
+    min-width: auto;
+}
+.dropdown-menu.dropdown-menu-end.profile-dropdown.show , .dropdown-menu.dropdown-menu-end.dropdown-xl.show {
+    width: 300px;
+    left: auto !important;
+}
+.dropdown-menu.dropdown-menu-end.dropdown-xl.show{
+        right: -34px !important;
+}
+}
+</style>
 <div class="topbar-custom">
     <div class="container-fluid">
         <div class="d-flex justify-content-between">
             <ul class="list-unstyled topnav-menu mb-0 d-flex align-items-center">
                 <li>
-                    <button type="button" class="button-toggle-menu nav-link">
+                    <button type="button" class="button-toggle-menu nav-link btnlefsidedesk" >
                         <iconify-icon icon="tabler:align-left"
+                            class="fs-20 align-middle text-dark topbar-button"></iconify-icon>
+                    </button>
+                    <button class="btnlefsidemob">
+<iconify-icon icon="tabler:align-left"
                             class="fs-20 align-middle text-dark topbar-button"></iconify-icon>
                     </button>
                 </li>
@@ -213,5 +256,10 @@
 
             setInterval(refreshNotifications, 15000);
         });
+        $(document).ready(function() {
+    $('.btnlefsidemob').click(function() {
+        $('.app-sidebar-menu').toggleClass('active'); // yahan apni class name change kar sakte ho
+    });
+});
     </script>
 @endpush

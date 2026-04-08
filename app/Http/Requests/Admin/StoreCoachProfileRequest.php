@@ -24,6 +24,8 @@ class StoreCoachProfileRequest extends FormRequest
             'city' => 'nullable|string|max:100',
             'state' => 'nullable|string|max:100',
             'country' => 'nullable|string|max:100',
+            'ranking_score' => 'nullable|integer|min:0',
+            'current_rank' => 'nullable|integer|min:0',
             'linkedin_url' => 'nullable|url|max:255',
             'website_url' => 'nullable|url|max:255',
             'experience_years' => 'nullable|integer|min:0',

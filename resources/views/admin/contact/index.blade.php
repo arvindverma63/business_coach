@@ -18,7 +18,7 @@
                                 <div class="mb-3">
                                     <label class="form-label">Contact Phone</label>
                                     <input type="text" name="phone" class="form-control"
-                                        value="{{ $settings->phone }}">
+                                        value="{{ $settings->phone }}" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Contact Email</label>
@@ -97,41 +97,45 @@
     </div>
 
     @push('styles')
-        <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     @endpush
 
     @push('scripts')
-        <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+        <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
-            // Initialize Quill Editor
-            const quill = new Quill('#office-timing-editor', {
-                theme: 'snow',
-                modules: {
-                    toolbar: [
-                        ['bold', 'italic', 'underline'],
-                        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                        ['blockquote', 'code-block'],
-                        [{ 'header': [1, 2, 3, false] }],
-                        ['link'],
-                        ['clean']
-                    ]
-                },
-                placeholder: 'e.g. Monday - Friday: 9 AM - 6 PM\nSaturday: 10 AM - 4 PM\nSunday: Closed'
+            let officeTimingEditor = null;
+            ClassicEditor.create(document.querySelector('#office-timing-editor'), {
+                toolbar: [
+                    'heading',
+                    '|',
+                    'bold',
+                    'italic',
+                    'underline',
+                    'bulletedList',
+                    'numberedList',
+                    'blockQuote',
+                    'link',
+                    'undo',
+                    'redo'
+                ]
+            }).then(editor => {
+                officeTimingEditor = editor;
+                const officeTimingValue = document.getElementById('office_timing').value;
+                if (officeTimingValue) {
+                    editor.setData(officeTimingValue);
+                }
+                editor.model.document.on('change:data', function() {
+                    document.getElementById('office_timing').value = editor.getData();
+                });
+            }).catch(error => {
+                console.error(error);
             });
-
-            // Load existing content into Quill
-            const officeTimingValue = document.getElementById('office_timing').value;
-            if (officeTimingValue) {
-                quill.root.innerHTML = officeTimingValue;
-            }
 
             // Update Settings AJAX
             $('#updateSettingsForm').on('submit', function(e) {
                 e.preventDefault();
 
-                // Get Quill content
-                const officeTimingContent = quill.root.innerHTML;
+                const officeTimingContent = officeTimingEditor ? officeTimingEditor.getData() : document.getElementById('office_timing').value;
                 document.getElementById('office_timing').value = officeTimingContent;
 
                 let btn = $('#btnSaveSettings');

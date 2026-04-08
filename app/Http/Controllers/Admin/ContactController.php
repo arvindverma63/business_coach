@@ -57,7 +57,7 @@ class ContactController extends Controller
     {
         $request->validate([
             'email' => 'required|email',
-            'phone' => 'required',
+            'phone' => ['required', 'regex:/^[0-9]+$/'],
             'address' => 'required'
         ]);
 

@@ -4,7 +4,7 @@
         <div class="wrraper-baner-c">
             <div class="container">
                 <div class="row">
-                    <div class="col-lg-7">
+                    <div class="col-lg-7 hero-unlock">
                         <h1 class="hero-title">
                             Unlock Clarity, Direction, and Growth With Expert Business Coaching
                         </h1>
@@ -46,12 +46,13 @@
             <div class="item">
                 <section class="hero-section">
                     <div class="container">
-                       @if($banner->image_url)
-                                <img src="{{ $banner->image_url }}" class="hero-img" alt="Expert Business Coaching" />
-                                @else
-                                <img src="{{ asset('website/assets/img/women-hero.webp') }}" class="hero-img"
-                                    alt="Expert Business Coaching" />
-                                @endif
+                        <picture>
+                            @if($banner->mobile_image_url)
+                                <source media="(max-width: 767px)" srcset="{{ $banner->mobile_image_url }}">
+                            @endif
+                            <img src="{{ $banner->image_url ?? $banner->mobile_image_url ?? asset('website/assets/img/women-hero.webp') }}"
+                                class="hero-img" alt="Expert Business Coaching" />
+                        </picture>
                         <div class="row align-items-center">
 
                             <!-- <div class="col-lg-7">
@@ -161,7 +162,9 @@
                         and sustain a successful coaching practice.
                     </p>
 
-                    <a href="#" class="community-btn"> Join Our Global Community → </a>
+                    <a href="#" class="community-btn" data-bs-toggle="modal" data-bs-target="#profileModal">
+                        Join Our Global Community →
+                    </a>
                 </div>
             </div>
         </div>
@@ -221,7 +224,7 @@
                         <h2>Community</h2>
                         <p>Engage with a dynamic network that fuels your development, and reminds you that you’re never
                             doing this work alone.</p>
-                        <a href="">Learn More <i class="bi bi-arrow-right"></i></a>
+                        <a href="{{ route('webapp.about-us') }}">Learn More <i class="bi bi-arrow-right"></i></a>
                     </div>
                 </div>
                 <div class="row">
@@ -419,26 +422,21 @@
             },
         },
     });
-
+$(document).ready(function () {
     $(".owl-carousel.owl-carousel-hero").owlCarousel({
         loop: true,
         margin: 10,
         nav: true,
-        autoplay: true, // autoplay ON
-        autoplayTimeout: 1000, // 3 sec delay
-        autoplayHoverPause: true, // hover pe pause
+        autoplay: true,
+        autoplayTimeout: 1000,
+        autoplayHoverPause: true,
         responsive: {
-            0: {
-                items: 1,
-            },
-            600: {
-                items: 1,
-            },
-            1000: {
-                items: 1,
-            },
-        },
+            0: { items: 1 },
+            600: { items: 1 },
+            1000: { items: 1 }
+        }
     });
+});
     </script>
     <script>
     // Image upload preview

@@ -51,7 +51,7 @@
     }
 
     .topbar-custom {
-        background: brown !important;
+        background: #4d0091 !important;
     }
 
     .logo-box {
@@ -63,7 +63,7 @@
     }
 
     .topbar-custom .topnav-menu .topbar-button {
-        background: brown;
+        background: #4d0091;
         color: white !important;
     }
 

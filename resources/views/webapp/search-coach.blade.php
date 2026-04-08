@@ -123,7 +123,7 @@
                                         <div class="coach-card-body">
                                             <div class="coach-name">
                                                 <a href="{{ route('view-profile', $coach->id) }}" style="text-decoration: none; color: inherit;">
-                                                    {{ str_pad($rankPosition, 2, '0', STR_PAD_LEFT) }} {{ $coach->user->name }}
+                                                    Rank #{{ str_pad($rankPosition, 2, '0', STR_PAD_LEFT) }} {{ $coach->user->name }}
                                                 </a>
                                             </div>
                                             <div class="text-muted small mb-2">
@@ -151,17 +151,22 @@
                                     </div>
                                 </div>
                             @empty
-                                <div class="col-12 text-center py-5">
-                                    <div class="no-results" id="noResults">
-                                        No coaches found matching your criteria.
+                                <div class="col-12">
+                                    <div class="no-results-card text-center py-5 px-3">
+                                        <div class="no-results-title">No coaches found.</div>
+                                        <p class="no-results-subtitle mb-0">
+                                            Try adjusting your city, category, or name search.
+                                        </p>
                                     </div>
                                 </div>
                             @endforelse
                         </div>
 
-                        <div class="pagination-wrap mt-4" id="paginationWrap">
-                            {{ $results->appends(request()->query())->links() }}
-                        </div>
+                        @if($results->hasPages() && $results->total() > 0)
+                            <div class="pagination-wrap mt-4" id="paginationWrap">
+                                {{ $results->appends(request()->query())->links() }}
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -174,4 +179,25 @@
 
         {{-- Testimonials, CTA, etc. --}}
     </main>
+
+    @push('styles')
+        <style>
+            .no-results-card {
+                border: 1px dashed rgba(91, 33, 182, 0.35);
+                border-radius: 18px;
+                background: rgba(91, 33, 182, 0.04);
+            }
+
+            .no-results-title {
+                font-size: 1.4rem;
+                font-weight: 700;
+                color: #111827;
+            }
+
+            .no-results-subtitle {
+                margin-top: 8px;
+                color: #6b7280;
+            }
+        </style>
+    @endpush
 </x-web-app-layout>

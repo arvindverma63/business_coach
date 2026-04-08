@@ -32,6 +32,15 @@
                                 </div>
 
                                 <div class="mb-3">
+                                    <label class="form-label">Mobile Banner Image</label>
+                                    <input type="file" name="mobile_image" class="form-control @error('mobile_image') is-invalid @enderror" accept="image/*">
+                                    <small class="form-text text-muted">Shown on mobile screens. You can upload a separate banner image for mobile.</small>
+                                    @error('mobile_image')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <div class="mb-3">
                                     <label class="form-label">Sort Order</label>
                                     <input type="number" name="sort_order" class="form-control @error('sort_order') is-invalid @enderror"
                                         value="{{ old('sort_order', 0) }}" min="0">

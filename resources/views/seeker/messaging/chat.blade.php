@@ -7,7 +7,7 @@
 
     <div class="container-fluid">
         <div class="row justify-content-center">
-            <div class="col-xl-9">
+            <div class="col-12">
                 <div class="card border-0 shadow-sm mb-0"
                     style="height: calc(100vh - 150px); display: flex; flex-direction: column; overflow: hidden;">
 

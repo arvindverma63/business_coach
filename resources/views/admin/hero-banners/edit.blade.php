@@ -38,6 +38,20 @@
                                 </div>
 
                                 <div class="mb-3">
+                                    <label class="form-label">Mobile Banner Image</label>
+                                    @if($heroBanner->mobile_image_url)
+                                    <div class="mb-2">
+                                        <img src="{{ $heroBanner->mobile_image_url }}" alt="{{ $heroBanner->title }}" style="max-height: 150px;">
+                                    </div>
+                                    @endif
+                                    <input type="file" name="mobile_image" class="form-control @error('mobile_image') is-invalid @enderror" accept="image/*">
+                                    <small class="form-text text-muted">Shown on mobile screens. Upload a separate banner image for mobile if needed.</small>
+                                    @error('mobile_image')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <div class="mb-3">
                                     <label class="form-label">Sort Order</label>
                                     <input type="number" name="sort_order" class="form-control @error('sort_order') is-invalid @enderror"
                                         value="{{ old('sort_order', $heroBanner->sort_order) }}" min="0">

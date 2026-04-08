@@ -40,11 +40,9 @@ class BlogController extends Controller
             'title' => 'required|max:255',
             'category_id' => 'required|exists:categories,id',
             'content' => 'required',
-            'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048|dimensions:width=1267,height=463',
+            'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:500',
-        ], [
-            'featured_image.dimensions' => 'Featured image must be exactly 1267 x 463 px.',
         ]);
 
         if ($request->hasFile('featured_image')) {
@@ -71,11 +69,9 @@ class BlogController extends Controller
             'title' => 'required|max:255',
             'category_id' => 'required|exists:categories,id',
             'content' => 'required',
-            'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048|dimensions:width=1267,height=463',
+            'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:500',
-        ], [
-            'featured_image.dimensions' => 'Featured image must be exactly 1267 x 463 px.',
         ]);
 
         if ($request->hasFile('featured_image')) {

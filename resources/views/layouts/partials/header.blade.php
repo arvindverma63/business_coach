@@ -3,7 +3,7 @@
         <div class="d-flex justify-content-between">
             <ul class="list-unstyled topnav-menu mb-0 d-flex align-items-center">
                 <li>
-                    <button type="button" class="button-toggle-menu nav-link">
+                    <button type="button" class="buttddddddon-toggle-menu nav-link">
                         <iconify-icon icon="tabler:align-left"
                             class="fs-20 align-middle text-dark topbar-button"></iconify-icon>
                     </button>

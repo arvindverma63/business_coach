@@ -5,12 +5,16 @@ namespace App\Http\Controllers\webapp;
 use App\Http\Controllers\Controller;
 use App\Models\Newsletter;
 use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Validator;
 
 class NewsletterController extends Controller
 {
     public function subscribe(Request $request)
     {
+        $email = mb_strtolower(trim((string) $request->input('email')));
+        $name = trim((string) $request->input('name', ''));
+
         $validator = Validator::make($request->all(), [
             'name'  => 'nullable|string|max:255',
             'email' => 'required|email|max:255'
@@ -24,26 +28,43 @@ class NewsletterController extends Controller
             return $this->respondWithError($request, $message);
         }
 
-        $subscriber = Newsletter::where('email', $request->email)->first();
+        if ($email === '') {
+            return $this->respondWithError($request, 'Please provide a valid email address.');
+        }
+
+        $subscriber = Newsletter::whereRaw('LOWER(email) = ?', [$email])->first();
 
         if ($subscriber) {
             if (!$subscriber->is_active) {
                 $subscriber->update([
                     'is_active' => true,
-                    'name' => $request->name ?? $subscriber->name // Update name if provided
+                    'name' => $name !== '' ? $name : $subscriber->name
                 ]);
                 return $this->respondWithSuccess($request, 'Welcome back! Your subscription is reactivated.');
             }
             return $this->respondWithError($request, 'This email is already subscribed.');
         }
 
-        Newsletter::create([
-            'name'  => $request->name,
-            'email' => $request->email,
-            'is_active' => true,
-        ]);
+        try {
+            Newsletter::create([
+                'name'  => $name !== '' ? $name : null,
+                'email' => $email,
+                'is_active' => true,
+            ]);
+        } catch (QueryException $e) {
+            if ($this->isDuplicateEmailException($e)) {
+                return $this->respondWithError($request, 'This email is already subscribed.');
+            }
+
+            throw $e;
+        }
 
         return $this->respondWithSuccess($request, 'Thank you for subscribing!');
+    }
+
+    private function isDuplicateEmailException(QueryException $e): bool
+    {
+        return str_contains($e->getMessage(), 'Duplicate') || str_contains($e->getMessage(), 'UNIQUE');
     }
 
     private function respondWithError($request, $message)

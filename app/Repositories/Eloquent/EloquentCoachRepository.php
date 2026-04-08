@@ -40,8 +40,8 @@ class EloquentCoachRepository implements CoachRepositoryInterface
         }
 
         return $query
-            ->orderByRaw('CASE WHEN current_rank IS NOT NULL THEN current_rank ELSE 999999 END ASC')
-            ->orderBy('current_rank', 'asc')
+            ->orderByDesc('ranking_score')
+            ->orderByDesc('connection_requests_count')
             ->orderByDesc('created_at')
             ->paginate($perPage)
             ->withQueryString();

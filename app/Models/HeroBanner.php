@@ -17,6 +17,7 @@ class HeroBanner extends Model
         'subtitle',
         'description',
         'image',
+        'mobile_image',
         'button_text',
         'button_url',
         'sort_order',
@@ -31,5 +32,10 @@ class HeroBanner extends Model
     public function getImageUrlAttribute(): ?string
     {
         return $this->image ? asset(Storage::url($this->image)) : null;
+    }
+
+    public function getMobileImageUrlAttribute(): ?string
+    {
+        return $this->mobile_image ? asset(Storage::url($this->mobile_image)) : null;
     }
 }

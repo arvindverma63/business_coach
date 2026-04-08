@@ -93,16 +93,16 @@ class RegistrationController extends Controller
     }
 
     public function seekerRegistration(Request $request){
-        $incomingPhone = trim($request->input('phone', ''));
-        if ($incomingPhone === '' || $incomingPhone === '+91') {
+        $incomingPhone = preg_replace('/\D+/', '', (string) $request->input('phone', ''));
+        if ($incomingPhone === '') {
             $request->merge(['phone' => null]);
         } else {
-            $request->merge(['phone' => $incomingPhone]);
+            $request->merge(['phone' => '+91' . $incomingPhone]);
         }
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'phone' => 'nullable|unique:users,phone',
+            'phone' => ['nullable', 'regex:/^\+91[0-9]{10}$/', 'unique:users,phone'],
             'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'business_domain' => 'nullable|string|max:255',
             'company_name' => 'nullable|string|max:255',

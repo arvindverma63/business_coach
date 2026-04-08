@@ -190,4 +190,16 @@
     .cursor-pointer {
         cursor: pointer;
     }
+    .btn-primary{
+        background-color: #4d0091 !important;
+    }
+     @media (max-width: 767px) {
+        .content-page{
+            width:100%!important;
+        }
+        .content{
+            padding:0px!important;
+            margin-top:10px!important;
+        }
+     }
 </style>

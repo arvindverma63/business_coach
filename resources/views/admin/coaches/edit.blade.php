@@ -95,7 +95,12 @@
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">Ranking Score / Manual Override</label>
                                         <input type="number" name="ranking_score" class="form-control" value="{{ old('ranking_score', $coach->ranking_score) }}" min="0">
-                                        <small class="text-muted d-block mt-1">The coach list is ordered by connection requests first. Use this only for manual adjustments.</small>
+                                        <small class="text-muted d-block mt-1">Ranking score is the first priority. If a coach has no ranking score, connection requests decide the order.</small>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Current Rank</label>
+                                        <input type="number" name="current_rank" class="form-control" value="{{ old('current_rank', $coach->current_rank) }}" min="0">
+                                        <small class="text-muted d-block mt-1">This field is kept for admin reference only and does not control website ranking.</small>
                                     </div>
                                     <div class="col-12">
                                         <div class="row g-3" data-india-location-picker

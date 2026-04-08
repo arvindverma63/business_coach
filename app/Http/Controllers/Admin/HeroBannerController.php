@@ -9,6 +9,18 @@ use Illuminate\Support\Facades\Storage;
 
 class HeroBannerController extends Controller
 {
+    private function storeUploadedImage(Request $request, string $field, string $directory): ?string
+    {
+        return $request->hasFile($field) ? $request->file($field)->store($directory, 'public') : null;
+    }
+
+    private function deleteStoredImage(?string $path): void
+    {
+        if ($path && Storage::disk('public')->exists($path)) {
+            Storage::disk('public')->delete($path);
+        }
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -33,14 +45,13 @@ class HeroBannerController extends Controller
     {
         $validated = $request->validate([
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'mobile_image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
             'sort_order' => 'nullable|integer|min:0',
             'is_active' => 'nullable|boolean',
         ]);
 
-        // Handle image uploads
-        if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('hero-banners', 'public');
-        }
+        $validated['image'] = $this->storeUploadedImage($request, 'image', 'hero-banners');
+        $validated['mobile_image'] = $this->storeUploadedImage($request, 'mobile_image', 'hero-banners');
 
         $validated['title'] = 'Hero Banner';
         $validated['subtitle'] = null;
@@ -70,16 +81,19 @@ class HeroBannerController extends Controller
     {
         $validated = $request->validate([
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'mobile_image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
             'sort_order' => 'nullable|integer|min:0',
             'is_active' => 'nullable|boolean',
         ]);
 
-        // Handle image uploads
         if ($request->hasFile('image')) {
-            if ($heroBanner->image && Storage::disk('public')->exists($heroBanner->image)) {
-                Storage::disk('public')->delete($heroBanner->image);
-            }
+            $this->deleteStoredImage($heroBanner->image);
             $validated['image'] = $request->file('image')->store('hero-banners', 'public');
+        }
+
+        if ($request->hasFile('mobile_image')) {
+            $this->deleteStoredImage($heroBanner->mobile_image);
+            $validated['mobile_image'] = $request->file('mobile_image')->store('hero-banners', 'public');
         }
 
         $validated['is_active'] = $request->has('is_active');
@@ -95,9 +109,8 @@ class HeroBannerController extends Controller
      */
     public function destroy(HeroBanner $heroBanner)
     {
-        if ($heroBanner->image && Storage::disk('public')->exists($heroBanner->image)) {
-            Storage::disk('public')->delete($heroBanner->image);
-        }
+        $this->deleteStoredImage($heroBanner->image);
+        $this->deleteStoredImage($heroBanner->mobile_image);
 
         $heroBanner->delete();
         return redirect()->route('admin.hero-banners.index')->with('success', 'Hero banner deleted successfully.');

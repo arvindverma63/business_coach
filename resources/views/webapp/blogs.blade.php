@@ -21,7 +21,7 @@
                 <div class="row">
                     <div class="col-md-7 blog-c">
                         <h1>Visa Immigration for a Brighter You Future</h1>
-                        <a href="">Learn More <i class="bi bi-arrow-right"></i></a>
+                        <a href="{{ route('webapp.about-us') }}">Learn More <i class="bi bi-arrow-right"></i></a>
                     </div>
                     <div class="col-md-5">
                         <img src="{{ asset('website/assets/img/User.png') }}" alt="" class="User-blog" />

@@ -1,11 +1,51 @@
+<style>
+.btnlefsidedesk {}
+
+.btnlefsidemob {
+    display: none;
+}
+
+@media (max-width: 992px) {
+    .btnlefsidedesk {
+        display: none !important;
+    }
+
+    .btnlefsidemob {
+        display: block;
+        background: none;
+        border: none;
+        padding: 0px;
+    }
+
+    .app-sidebar-menu {
+        left: -260px;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .app-sidebar-menu.active {
+        left: 0px;
+    }
+    .dropdown-menu.dropdown-menu-end.profile-dropdown.show , .dropdown-menu.dropdown-menu-end.dropdown-xl.show {
+    width: 300px;
+    left: auto !important;
+}
+.dropdown-menu.dropdown-menu-end.dropdown-xl.show{
+        right: -34px !important;
+}
+}
+</style>
 <div class="topbar-custom">
     <div class="container-fluid">
         <div class="d-flex justify-content-between">
             <ul class="list-unstyled topnav-menu mb-0 d-flex align-items-center">
                 <li>
-                    <button type="button" class="button-toggle-menu nav-link">
-                        <iconify-icon icon="tabler:align-left"
-                            class="fs-20 align-middle text-dark topbar-button"></iconify-icon>
+                    <button type="button" class="button-toggle-menu nav-link btnlefsidedesk">
+                        <iconify-icon icon="tabler:align-left" class="fs-20 align-middle text-dark topbar-button">
+                        </iconify-icon>
+                    </button>
+                    <button class="btnlefsidemob">
+                        <iconify-icon icon="tabler:align-left" class="fs-20 align-middle text-dark topbar-button">
+                        </iconify-icon>
                     </button>
                 </li>
             </ul>
@@ -15,10 +55,11 @@
                 <li class="dropdown notification-list topbar-dropdown">
                     <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
                         aria-haspopup="false" aria-expanded="false">
-                        <iconify-icon icon="tabler:bell"
-                            class="fs-20 text-dark align-middle topbar-button"></iconify-icon>
+                        <iconify-icon icon="tabler:bell" class="fs-20 text-dark align-middle topbar-button">
+                        </iconify-icon>
 
-                        <span class="badge bg-danger rounded-circle noti-icon-badge {{ auth()->user()->unreadNotifications->count() > 0 ? '' : 'd-none' }}"
+                        <span
+                            class="badge bg-danger rounded-circle noti-icon-badge {{ auth()->user()->unreadNotifications->count() > 0 ? '' : 'd-none' }}"
                             id="notification-badge">
                             {{ auth()->user()->unreadNotifications->count() }}
                         </span>
@@ -29,9 +70,11 @@
                             <h5 class="m-0 fs-16">
                                 <span class="float-end">
                                     <a href="{{ route('notifications.markAsRead') }}" class="text-dark">
-                                        <small><iconify-icon icon="tabler:checks"
-                                                class="fs-18 text-dark align-middle"></iconify-icon> Mark all
-                                            read</small>
+                                        <small>
+                                            <iconify-icon icon="tabler:checks" class="fs-18 text-dark align-middle">
+                                            </iconify-icon> Mark all
+                                            read
+                                        </small>
                                     </a>
                                 </span>
                                 Notifications
@@ -40,31 +83,30 @@
 
                         <div class="noti-scroll" data-simplebar id="notification-list">
                             @forelse(auth()->user()->unreadNotifications as $notification)
-                                <a href="#" class="dropdown-item notify-item">
-                                    <div class="d-flex align-items-start">
-                                        <div
-                                            class="notify-icon bg-{{ $notification->data['type'] ?? 'primary' }}-subtle text-{{ $notification->data['type'] ?? 'primary' }}">
-                                            <iconify-icon
-                                                icon="{{ $notification->data['icon'] ?? 'tabler:info-circle' }}"
-                                                class="fs-18"></iconify-icon>
-                                        </div>
-                                        <div class="notify-details ms-2">
-                                            <h6 class="notify-title mb-1 fw-semibold">
-                                                {{ $notification->data['title'] ?? 'Notification' }}
-                                            </h6>
-                                            <p class="notify-desc mb-0 text-muted fs-12">
-                                                {{ $notification->data['message'] ?? '' }}
-                                            </p>
-                                            <p class="notify-time mb-0 text-muted fs-11">
-                                                {{ $notification->created_at->diffForHumans() }}
-                                            </p>
-                                        </div>
+                            <a href="#" class="dropdown-item notify-item">
+                                <div class="d-flex align-items-start">
+                                    <div
+                                        class="notify-icon bg-{{ $notification->data['type'] ?? 'primary' }}-subtle text-{{ $notification->data['type'] ?? 'primary' }}">
+                                        <iconify-icon icon="{{ $notification->data['icon'] ?? 'tabler:info-circle' }}"
+                                            class="fs-18"></iconify-icon>
                                     </div>
-                                </a>
-                            @empty
-                                <div class="dropdown-item text-center p-3 text-muted">
-                                    <small>No new notifications</small>
+                                    <div class="notify-details ms-2">
+                                        <h6 class="notify-title mb-1 fw-semibold">
+                                            {{ $notification->data['title'] ?? 'Notification' }}
+                                        </h6>
+                                        <p class="notify-desc mb-0 text-muted fs-12">
+                                            {{ $notification->data['message'] ?? '' }}
+                                        </p>
+                                        <p class="notify-time mb-0 text-muted fs-11">
+                                            {{ $notification->created_at->diffForHumans() }}
+                                        </p>
+                                    </div>
                                 </div>
+                            </a>
+                            @empty
+                            <div class="dropdown-item text-center p-3 text-muted">
+                                <small>No new notifications</small>
+                            </div>
                             @endforelse
                         </div>
 
@@ -76,8 +118,8 @@
                 </li>
 
                 <li class="dropdown notification-list topbar-dropdown">
-                    <a class="nav-link dropdown-toggle nav-user me-0" data-bs-toggle="dropdown" href="#"
-                        role="button" aria-haspopup="false" aria-expanded="false">
+                    <a class="nav-link dropdown-toggle nav-user me-0" data-bs-toggle="dropdown" href="#" role="button"
+                        aria-haspopup="false" aria-expanded="false">
                         <img src="{{ auth()->user()->profile_image ?: 'https://ui-avatars.com/api/?name=' . auth()->user()->name }}"
                             alt="user-image" class="rounded-circle" style="object-fit: cover;" />
                     </a>
@@ -91,7 +133,8 @@
                         </a>
                         <div class="dropdown-divider"></div>
 
-                        <form method="POST" action="{{ route('coach.logout') }}" id="logout-form" style="display: none;">
+                        <form method="POST" action="{{ route('coach.logout') }}" id="logout-form"
+                            style="display: none;">
                             @csrf
                         </form>
 
@@ -107,7 +150,8 @@
     </div>
 </div>
 
-<div class="modal fade" id="notificationsModal" tabindex="-1" aria-labelledby="notificationsModalLabel" aria-hidden="true">
+<div class="modal fade" id="notificationsModal" tabindex="-1" aria-labelledby="notificationsModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
@@ -122,26 +166,26 @@
 </div>
 
 @push('scripts')
-    <script>
-        $(function() {
-            const feedUrl = @json(route('notifications.feed'));
-            const allUrl = @json(route('notifications.all'));
-            const badge = $('#notification-badge');
-            const list = $('#notification-list');
-            const allList = $('#all-notifications-list');
-            const notificationsModal = new bootstrap.Modal(document.getElementById('notificationsModal'));
+<script>
+$(function() {
+    const feedUrl = @json(route('notifications.feed'));
+    const allUrl = @json(route('notifications.all'));
+    const badge = $('#notification-badge');
+    const list = $('#notification-list');
+    const allList = $('#all-notifications-list');
+    const notificationsModal = new bootstrap.Modal(document.getElementById('notificationsModal'));
 
-            function renderNotifications(items) {
-                if (!items.length) {
-                    return `
+    function renderNotifications(items) {
+        if (!items.length) {
+            return `
                         <div class="dropdown-item text-center p-3 text-muted">
                             <small>No new notifications</small>
                         </div>
                     `;
-                }
+        }
 
-                return items.map(function(item) {
-                    return `
+        return items.map(function(item) {
+            return `
                         <a href="#" class="dropdown-item notify-item">
                             <div class="d-flex align-items-start">
                                 <div class="notify-icon bg-${item.type}-subtle text-${item.type}">
@@ -155,20 +199,20 @@
                             </div>
                         </a>
                     `;
-                }).join('');
-            }
+        }).join('');
+    }
 
-            function renderAllNotifications(items) {
-                if (!items.length) {
-                    return '<div class="text-center text-muted py-4">No notifications found.</div>';
-                }
+    function renderAllNotifications(items) {
+        if (!items.length) {
+            return '<div class="text-center text-muted py-4">No notifications found.</div>';
+        }
 
-                return items.map(function(item) {
-                    const readBadge = item.read
-                        ? '<span class="badge bg-light text-muted border">Read</span>'
-                        : '<span class="badge bg-primary-subtle text-primary">Unread</span>';
+        return items.map(function(item) {
+            const readBadge = item.read ?
+                '<span class="badge bg-light text-muted border">Read</span>' :
+                '<span class="badge bg-primary-subtle text-primary">Unread</span>';
 
-                    return `
+            return `
                         <div class="border rounded-3 p-3 mb-3">
                             <div class="d-flex align-items-start justify-content-between gap-3">
                                 <div class="d-flex align-items-start gap-3">
@@ -185,33 +229,40 @@
                             </div>
                         </div>
                     `;
-                }).join('');
-            }
+        }).join('');
+    }
 
-            function refreshNotifications() {
-                $.get(feedUrl)
-                    .done(function(response) {
-                        const count = Number(response.count || 0);
-                        badge.text(count);
-                        badge.toggleClass('d-none', count === 0);
-                        list.html(renderNotifications(response.notifications || []));
-                    });
-            }
-
-            $('#view-all-notifications').on('click', function() {
-                notificationsModal.show();
-                allList.html('<div class="text-center text-muted py-4">Loading notifications...</div>');
-
-                $.get(allUrl)
-                    .done(function(response) {
-                        allList.html(renderAllNotifications(response.notifications || []));
-                    })
-                    .fail(function() {
-                        allList.html('<div class="text-center text-danger py-4">Failed to load notifications.</div>');
-                    });
+    function refreshNotifications() {
+        $.get(feedUrl)
+            .done(function(response) {
+                const count = Number(response.count || 0);
+                badge.text(count);
+                badge.toggleClass('d-none', count === 0);
+                list.html(renderNotifications(response.notifications || []));
             });
+    }
 
-            setInterval(refreshNotifications, 15000);
-        });
-    </script>
+    $('#view-all-notifications').on('click', function() {
+        notificationsModal.show();
+        allList.html('<div class="text-center text-muted py-4">Loading notifications...</div>');
+
+        $.get(allUrl)
+            .done(function(response) {
+                allList.html(renderAllNotifications(response.notifications || []));
+            })
+            .fail(function() {
+                allList.html(
+                    '<div class="text-center text-danger py-4">Failed to load notifications.</div>'
+                    );
+            });
+    });
+
+    setInterval(refreshNotifications, 15000);
+});
+$(document).ready(function() {
+    $('.btnlefsidemob').click(function() {
+        $('.app-sidebar-menu').toggleClass('active'); // yahan apni class name change kar sakte ho
+    });
+});
+</script>
 @endpush

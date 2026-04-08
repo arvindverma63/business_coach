@@ -795,10 +795,13 @@
                     <div class="row g-3 mb-3">
                         <div class="col-12 col-sm-6">
                             <label class="form-label">Phone Number</label>
-                            <input type="tel" name="phone" id="phone_input" class="form-control"
-                                value="" placeholder="+91XXXXXXXXXX" maxlength="13"
-                                oninput="validatePhone(this)" />
-
+                            <div class="input-group">
+                                <span class="input-group-text bg-light">+91</span>
+                                <input type="text" name="phone" id="phone_input" class="form-control"
+                                    value="" placeholder="9876543210" maxlength="10"
+                                    inputmode="numeric" pattern="[0-9]*" oninput="validateSeekerPhone(this)" />
+                            </div>
+                            <small id="phone-focus-hint" class="text-muted d-none">Enter 10 digits after +91.</small>
                         </div>
                     </div>
                     <div class="row g-3 mb-3">
@@ -880,43 +883,20 @@
     </div>
 </div>
 <script>
-    function validatePhone(input) {
-        let value = input.value;
-
-        // 1. Force the string to start with '+'
-        if (!value.startsWith('+')) {
-            // If they deleted the +, put it back at the start
-            value = '+' + value.replace(/\D/g, '');
-        }
-
-        // 2. Remove any character that is NOT a digit (except the leading +)
-        // We slice from index 1 to keep the '+' and clean the rest
-        const plusSign = value.charAt(0);
-        const digits = value.slice(1).replace(/\D/g, '');
-
-        value = plusSign + digits;
-
-        // 3. Enforce Max Length of 13
-        if (value.length > 13) {
-            value = value.slice(0, 13);
-        }
-
-        input.value = value;
+    function validateSeekerPhone(input) {
+        input.value = input.value.replace(/\D/g, '').slice(0, 10);
     }
 
-    // Optional: Prevent the user from deleting the +91 prefix entirely
-    ['phone_input', 'coach_phone_input'].forEach(function(inputId) {
-        const input = document.getElementById(inputId);
-        if (input) {
-            input.addEventListener('keydown', function(e) {
-                if (this.selectionStart <= 3 && e.key === 'Backspace') {
-                    if (this.value.length <= 3) {
-                        e.preventDefault();
-                    }
-                }
-            });
-        }
-    });
+    const seekerPhone = document.getElementById('phone_input');
+    const seekerHint = document.getElementById('phone-focus-hint');
+    if (seekerPhone && seekerHint) {
+        seekerPhone.addEventListener('focus', () => seekerHint.classList.remove('d-none'));
+        seekerPhone.addEventListener('blur', () => {
+            if (!seekerPhone.value.trim()) {
+                seekerHint.classList.add('d-none');
+            }
+        });
+    }
 </script>
 @push('scripts')
     <script>
